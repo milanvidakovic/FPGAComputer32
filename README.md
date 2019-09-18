@@ -1,13 +1,13 @@
-# FPGAComputer
+# FPGAComputer32
 This is a 32-bit computer implemented in the DE0-NANO FPGA.
 
-The computer has 32-bit CPU, 64KB static RAM, UART (115200 bps), VGA (640x480, text-based frame buffer, 80x60 characters, or the graphics mode of 320x240 pixels, each one in one of 8 colors, with 16 hardware sprites), and PS/2 keyboard support.
+The computer has 32-bit CPU, 40KB static RAM, 32MB dynamic RAM, UART (115200 bps), VGA video (640x480, text-based frame buffer, 80x60 characters, or the graphics mode of 320x240 pixels, each one in one of 8 colors, with 16 hardware sprites, or 640x480 pixels, two colors), and PS/2 keyboard support.
 
-The 32-bit CPU has 16 general-purpose registers (r0 - r7), pc (program counter), sp (stack pointer), ir (instruction register), mbr (memory buffer register), h (higher word when multiplying, or remainder when dividing).
+The 32-bit CPU has 16 general-purpose registers (r0 - r15), pc (program counter), sp (stack pointer - r15 register), ir (instruction register), mbr (memory buffer register), h (higher word when multiplying, or remainder when dividing - r14 register).
 
-The address bus is 24 bits wide, addressing 32MB. Data bus is 16 bits wide, but all the addresses are 8-bit aligned, meaning that two bytes are fetched with one memory access.
+The address bus is 24 bits wide, addressing 32MB. Data bus is 16 bits wide, but all the addresses are 8-bit aligned, meaning that two bytes are fetched with one memory access (using even addresses).
 
-Video output is VGA, 640x480. Text mode hase 80x60 characters, each character being 8x8  pixels in dimensions. Video frame buffer in text mode has 4800 16-bit words (80x60 characters), starting at 1024 decimal. The lower byte has the ASCII character, while the upper byte has the attributes (3 bits for the background color, 3 bits for the foreground color, inverted, and the two bits unused). 
+Video output is VGA, 640x480. Text mode has 80x60 characters, each character being 8x8  pixels in dimensions. Video frame buffer in text mode has 4800 16-bit words (80x60 characters), starting at 1024 decimal. The lower byte has the ASCII character, while the upper byte has the attributes (3 bits for the background color, 3 bits for the foreground color, inverted, and the two bits unused). 
 
 In graphics mode, the resolution is 320x240 pixels. Each pixel is 4 bits long, having two pixels per byte in the frame buffer. Frame buffer starts at 1024 decimal. Each pixel's color is defined by those four bits by: xrgb.
 
@@ -35,30 +35,52 @@ VGA female connector is connected via resistors to the GPIO-0 expansion header o
 * GPIO_HS (pin 8, GPIO_05, PIN_B4) -> 470Ohm -> VGA_HORIZONTAL_SYNC,
 * GPIO_VS (pin 10, GPIO_07, PIN_B5) -> 470Ohm -> VGA_VERTICAL_SYNC.
 
-# VGA graphics mode
-Graphics mode is 320x240 pixels. Since the text mode is the default mode, to switch to the graphics mode, you need to type in the assembler code following:
+# VGA graphics mode 8 colors
+This graphics mode is 320x240 pixels. Since the text mode is the default mode, to switch to this graphics mode, you need to type in the assembler code following:
 
 ```
-mov r0, 1
+mov.w r0, 1
 out [128], r0
 ```
 
 To switch back to the text mode, you need to enter:
 
 ```
-mov r0, 0
+mov.w r0, 0
 out [128], r0
 ```
 
-One byte of the video memory is organised like this:
+Video memory starts from address 1024. One byte of the video memory is organised like this:
 
 xrgbxrgb
 
 One byte holds two pixels. The x bit is unused, and the other bits define red, green and blue component of the color for each of those two pixels. Video frame buffer starts at the address 1024 (decimal). So, if you want to put four white pixels at the top left corner of the screen (from the (0,0) to the (3,0) coordinates), you need to type:
 
 ```
-mov r0, 0x7777
-st [26880], r0
+mov.w r0, 0x7777
+st.s [1024], r0
+```
+
+# VGA graphics mode two colors
+This graphics mode is 640x480 pixels. Since the text mode is the default mode, to switch to this graphics mode, you need to type in the assembler code following:
+
+```
+mov.w r0, 2
+out [128], r0
+```
+
+To switch back to the text mode, you need to enter:
+
+```
+mov.w r0, 0
+out [128], r0
+```
+
+Video memory starts from address 1024. One byte of the video memory holds 8 pixels, each being 1 or 0. If you want to put four white and four black pixels at the top left corner of the screen (from the (0,0) to the (7,0) coordinates), you need to type:
+
+```
+mov.w r0, 0xF0
+st.b [1024], r0
 ```
 
 ## Hardware Sprites
@@ -68,7 +90,7 @@ The computer supports up to 16 hardware sprites, each being 16x16 pixels. Each s
 * y coordinate (2 bytes)
 * transparent color (2 bytes).
 
-The sprite structure for the first sprite starts at 56 decimal. Each next sprite structure starts 8 bytes later. 
+The sprite structure for the first sprite starts at 64 decimal. Each next sprite structure starts 8 bytes later. 
 
 Sprite definition consists of 16 lines, each line described by 16 pixels, each pixel defined by 4 bits: xrgb.
 This means that one sprite line consists of 8 bytes (two pixels per byte), so total bytes needed for the sprite definition is 8x16 bytes.
@@ -76,15 +98,15 @@ This means that one sprite line consists of 8 bytes (two pixels per byte), so to
 Here is the example of showing one sprite at (25, 25):
 
 ```
-  mov r0, sprite_def
-  mov r1, 56
-  st [r1], r0  ; sprite definition is at sprite_def address
-  mov r0, 25
-  st [r1 + 2], r0  ; x = 25  at addr 58
-  mov r0, 25
-  st [r1 + 4], r0  ; y = 25  at addr 60
-  mov r0, 0
-  st [r1 + 6], r0  ; transparent color is black (0) at addr 62
+  mov.w r0, sprite_def
+  mov.w r1, 56
+  st.s [r1], r0  ; sprite definition is at sprite_def address
+  mov.w r0, 25
+  st.s [r1 + 2], r0  ; x = 25  at addr 58
+  mov.w r0, 25
+  st.s [r1 + 4], r0  ; y = 25  at addr 60
+  mov.w r0, 0
+  st.s [r1 + 6], r0  ; transparent color is black (0) at addr 62
   ; sprite definition
 sprite_def:
   #d16 0x0000, 0x0000, 0x0000, 0x0000  ; 0
@@ -127,7 +149,7 @@ To send a byte, first you need to check if the UART TX is free. You can do it by
 ```
 loop:
       in r5, [65]   ; tx busy in r5
-      cmp r5, 0    
+      cmp.w r5, 0    
       jz not_busy   ; if not busy, send back the received character
       j loop
 not_busy:
