@@ -9,7 +9,9 @@ The address bus is 24 bits wide, addressing 32MB. Data bus is 16 bits wide, but 
 
 Video output is VGA, 640x480. Text mode has 80x60 characters, each character being 8x8  pixels in dimensions. Video frame buffer in text mode has 4800 16-bit words (80x60 characters), starting at 1024 decimal. The lower byte has the ASCII character, while the upper byte has the attributes (3 bits for the background color, 3 bits for the foreground color, inverted, and the two bits unused). 
 
-In graphics mode, the resolution is 320x240 pixels. Each pixel is 4 bits long, having two pixels per byte in the frame buffer. Frame buffer starts at 1024 decimal. Each pixel's color is defined by those four bits by: xrgb.
+In graphics mode 1, the resolution is 320x240 pixels. Each pixel is 4 bits long, having two pixels per byte in the frame buffer. Frame buffer starts at 1024 decimal. Each pixel's color is defined by those four bits by: xrgb.
+
+In graphics mode 2, the resolution is 640x480 pixels. Each pixel is 1 bit long, having value 1 (white) or 0 (black). Therefore, one byte of the frame buffer holds 8 pixels. Frame buffer starts at 1024 decimal. 
 
 This computer has three interrupts: IRQ0, IRQ1 and IRQ2. IRQ0 is connected to the internal timer, which is incremented every millisecond. The IRQ1 is connected to the UART, while IRQ2 is connected to the PS/2 keyboard. Whenever a byte comes to the UART, it generates an IRQ1. Whenever a PS/2 key is pressed, couple of bytes are received (make and break codes), in a sequence, each causing the IRQ2 to fire.
 
@@ -84,7 +86,7 @@ st.b [1024], r0
 ```
 
 ## Hardware Sprites
-The computer supports up to 16 hardware sprites, each being 16x16 pixels. Each sprite is defined by the 8-byte structure:
+The computer supports up to 16 hardware sprites, each being 16x16 pixels, in graphics mode 1 (320x240). Each sprite is defined by the 8-byte structure:
 * sprite definition address (2 bytes); must be below 0xB000 (at 0xB000 SDRAM starts, and sprites cannot be loaded from the SDRAM - only from Static RAM)
 * x coordinate (2 bytes)
 * y coordinate (2 bytes)
