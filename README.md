@@ -171,7 +171,7 @@ PS/2 connector is connected to the GPIO ports of the DE0-NANO board:
 * Data is connected to the GPIO31 (PIN_D11) port
 * Clock is connected to the GPIO33 (PIN_B12) port.
 
-To read the received make/brak code, you need to use the IN instruction:
+To read the received make/break code, you need to use the IN instruction:
 
 ```
 in r1, [68]; r1 holds the received byte from the PS/2 keyboard
