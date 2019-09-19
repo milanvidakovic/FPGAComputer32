@@ -101,14 +101,14 @@ Here is the example of showing one sprite at (25, 25):
 
 ```
   mov.w r0, sprite_def
-  mov.w r1, 56
+  mov.w r1, 64
   st.s [r1], r0  ; sprite definition is at sprite_def address
   mov.w r0, 25
-  st.s [r1 + 2], r0  ; x = 25  at addr 58
+  st.s [r1 + 2], r0  ; x = 25  at addr 66
   mov.w r0, 25
-  st.s [r1 + 4], r0  ; y = 25  at addr 60
+  st.s [r1 + 4], r0  ; y = 25  at addr 68
   mov.w r0, 0
-  st.s [r1 + 6], r0  ; transparent color is black (0) at addr 62
+  st.s [r1 + 6], r0  ; transparent color is black (0) at addr 70
   ; sprite definition
 sprite_def:
   #d16 0x0000, 0x0000, 0x0000, 0x0000  ; 0
