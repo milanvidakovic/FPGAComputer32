@@ -698,6 +698,36 @@ else begin
 							end
 						endcase
 					end // end of MOV.B reg, xx
+					4'b1110: begin
+						// MOV.W regx, regy + xx
+						`ifdef DEBUG
+						$display("%2x: MOV.W r%-d, %4d",ir[3:0], (ir[11:8]), data_r);
+						`endif
+						case (mc_count)
+							0: begin
+								mbr <= 0;
+								// get the xx
+								addr <= (pc + 2) >> 1;
+								pc <= pc + 2;
+								mc_count <= 1;
+								next_state <= EXECUTE;
+								state <= READ_DATA;
+							end
+							1: begin
+								mbr[31:16] <= data_r;
+								addr <= (pc + 2) >> 1;
+								pc <= pc + 2;
+								mc_count <= 2;
+								next_state <= EXECUTE;
+								state <= READ_DATA;
+							end
+							2: begin
+								regs[ir[11:8]] <= mbr + data_r + regs[ir[15:12]];
+								state <= CHECK_IRQ;
+								pc <= pc + 2;
+							end
+						endcase
+					end // end of MOV.W regx, regy + xx
 					// HALT
 					4'b1111: begin
 						`ifdef DEBUG
