@@ -1886,27 +1886,27 @@ else begin
 									alu_op <= ALU_ADD;
 								else
 									alu_op <= ALU_SUB;
-								if ((ir[7:4] == 10) || (ir[7:4] == 13)) 
-									alu_b <= (mbr + data_r);
-								else if ((ir[7:4] == 11) || (ir[7:4] == 14)) begin
-									if (ir[7:4] < 13) 
-										alu_b <= {{16{data_r[15]}}, data_r};
-									else
-										alu_b <= {16'd0, data_r};
+								
+								if ((ir[7:4] == 2) || (ir[7:4] == 10)) 
+									alu_a <= (mbr + data_r);
+								else if ((ir[7:4] == 3) || (ir[7:4] == 11))
+										alu_a <= {{16{data_r[15]}}, data_r};
+								else if ((ir[7:4] == 6) || (ir[7:4] == 14)) begin
+										alu_a <= {16'd0, data_r};
 								end
 								else begin
 									if (mbr_e[0] == 1) begin
 										// odd address
-										if (ir[7:4] < 13) 
-											alu_b <= {{24{data_r[7]}}, data_r[7:0]};
+										if ((ir[7:4] == 4) || (ir[7:4] == 12)) 
+											alu_a <= {{24{data_r[7]}}, data_r[7:0]};
 										else
-											alu_b <= {24'd0, data_r[7:0]};
+											alu_a <= {24'd0, data_r[7:0]};
 									end
 									else begin
-										if (ir[7:4] < 13) 
-											alu_b <= {{24{data_r[15]}}, data_r[15:8]};
+										if ((ir[7:4] == 4) || (ir[7:4] == 12)) 
+											alu_a <= {{24{data_r[15]}}, data_r[15:8]};
 										else
-											alu_b <= {24'd0, data_r[15:8]};
+											alu_a <= {24'd0, data_r[15:8]};
 									end
 								end
 								alu_b <= 1;
@@ -2199,17 +2199,17 @@ else begin
 							4: begin
 								alu_op <= ALU_INV;
 								if (ir[7:4] == 10) 
-									alu_b <= (mbr + data_r);
+									alu_a <= (mbr + data_r);
 								else if (ir[7:4] == 11) begin
-									alu_b <= {{16{data_r[15]}}, data_r};
+									alu_a <= {{16{data_r[15]}}, data_r};
 								end
 								else begin
 									if (mbr_e[0] == 1) begin
 										// odd address
-										alu_b <= {{24{data_r[7]}}, data_r[7:0]};
+										alu_a <= {{24{data_r[7]}}, data_r[7:0]};
 									end
 									else begin
-										alu_b <= {{24{data_r[15]}}, data_r[15:8]};
+										alu_a <= {{24{data_r[15]}}, data_r[15:8]};
 									end
 								end
 								alu_b <= 1;

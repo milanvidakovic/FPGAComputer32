@@ -89,6 +89,7 @@ assign valid = (x < 640) && (y < 480);
 
 reg [3:0]count_read;
 reg [1:0]mem_read;
+reg mem_read_again;
 
 always @(posedge clk) begin
 	if (reset) begin
@@ -98,6 +99,7 @@ always @(posedge clk) begin
 end
 
 always @(posedge clk50) begin
+		
 	if (reset) begin
 		x <= 10'b0;
 		y <= 10'b0;
@@ -120,15 +122,22 @@ always @(posedge clk50) begin
 					y <= 10'b0;
 				end
 			end
+			
 			if (mem_read) begin
 				curr_char <= data;
-				rd <= 1'bz;
-				wr <= 1'bz;
+				//rd <= 1'bz;
+				//wr <= 1'bz;
 				mem_read <= 1'b0;
+				mem_read_again <= 1'b1;
 			end
 		end 
 		else begin
-			// this is the other cycle when we divide 50MHz
+			if (mem_read_again)begin
+				curr_char <= data;
+				//rd <= 1'bz;
+				//wr <= 1'bz;
+				mem_read_again <= 1'b0;
+			end			// this is the other cycle when we divide 50MHz
 			if (vga_mode == 0) begin
 				if (x >= 640) begin
 					if ((x >= 640) && (y >= 480) && ((state == H_BLANK))) begin

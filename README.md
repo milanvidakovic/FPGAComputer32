@@ -178,8 +178,3 @@ in r1, [68]; r1 holds the received byte from the PS/2 keyboard
 ```
 You need to make additional code to parse make/break code. 
 
-# Misc
-
-Custom assembler files are here: https://github.com/milanvidakovic/Assembler32/
-
-Blog info: https://mvidakovic.blogspot.com/2019/05/32-bit-fpga-based-computer.html
