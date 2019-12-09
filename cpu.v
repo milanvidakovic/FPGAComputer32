@@ -78,13 +78,24 @@ localparam ALU_NEG = 4'd11;
 
 localparam SDRAM_START_ADDR = 32'hB000/2;
 
+localparam PORT_UART_RX_BYTE					= 640	; //port which contains received byte via UART
+localparam PORT_UART_TX_BUSY					= 650	; //port which has 1 when UART TX is busy
+localparam PORT_UART_TX_SEND_BYTE			= 660	; //port for sending character via UART
+localparam PORT_LED								= 670	; //port for setting eight LEDs (write)
+localparam PORT_KEYBOARD 						= 680	; //raw keyboard character read port 
+localparam PORT_MILLIS 							= 690	; //current number of milliseconds counted so far
+
+localparam PORT_VIDEO_MODE						= 1280	; //video mode type (0-text; 1-graphics), (write)
+localparam PORT_TIMER     						= 1290	; //timer irq port (number of milliseconds before the irq is triggered)
+localparam VGA_TEXT_INVERSE					= 1300	; //if 1, then the screen is inversed (black letters on white background)
+
 
 reg	[5:0]  next_state;
 reg	[5:0]  state;
 
 reg	[15:0] rd_data_r;
 reg [15:0]   data_r, data_to_write;
-reg [23:0]   addr;
+reg [31:0]   addr;
 
 // ###########################################
 // SDRAM INIT PAUSE
@@ -350,16 +361,16 @@ else begin
 							end
 							1: begin
 								case (data_r)
-									64: begin    // UART RX DATA
+									PORT_UART_RX_BYTE: begin    // UART RX DATA
 										regs[ir[11:8]] <= {24'b0, rx_data_r};
 									end
-									65: begin   // UART TX BUSY
+									PORT_UART_TX_BUSY: begin   // UART TX BUSY
 										regs[ir[11:8]] <= {31'b0, tx_busy};
 									end
-									68: begin    // keyboard data
+									PORT_KEYBOARD: begin    // keyboard data
 										regs[ir[11:8]] <= {24'b0, ps2_data_r};
 									end
-									69: begin	// milliseconds counted so far
+									PORT_MILLIS: begin	// milliseconds counted so far
 										regs[ir[11:8]] <= millis_counter;
 									end
 								endcase // end of case(mbr)
@@ -390,21 +401,21 @@ else begin
 							end
 							2: begin
 								case (mbr)
-									66: begin  // UART TX data 
+									PORT_UART_TX_SEND_BYTE: begin  // UART TX data 
 										tx_data <= regs[ir[15:12]];
 										tx_send <= 1'b1;
 									end
-									67: begin  // LEDs
+									PORT_LED: begin  // LEDs
 										LED[7:0] <= regs[ir[15:12]];
 									end
-									128: begin  // graphics mode: 0 - text; 1 - 320x240 8 colors; 2 - 640x480 two colors
+									PORT_VIDEO_MODE: begin  // graphics mode: 0 - text; 1 - 320x240 8 colors; 2 - 640x480 two colors
 										vga_mode <= regs[ir[15:12]];
 									end
-									129: begin
+									PORT_TIMER: begin
 										// number of milliseconds to expire to cause IRQ 0
 										timer <= regs[ir[15:12]];
 									end
-									130: begin
+									VGA_TEXT_INVERSE: begin
 										// if 0 -> normal (white letters on black background)
 										// if 1 -> inverted (black letters on white background)
 										inverse <= regs[ir[15:12]];
@@ -742,134 +753,144 @@ else begin
 			end // end of GROUP 0
 			// GROUP - 1 (JUMP)
 			4'b0001: begin 
-				case (mc_count)
-					0: begin
-						`ifdef DEBUG
-						$display("JUMP SECTION");
-						`endif
-						// read the xx
-						addr <= (pc + 2) >> 1;
-						pc <= pc + 2;
-						mc_count <= 1;
-						next_state <= EXECUTE;
-						state <= READ_DATA;
-					end
-					1: begin
-						mbr[31:16] <= data_r;
-						addr <= (pc + 2) >> 1;
-						pc <= pc + 4;
-						next_state <= EXECUTE;
-						state <= READ_DATA;
-						mc_count <= 2;
-					end
-					2: begin
-						case (ir[7:4])
-							// J xx
-							4'b0000: begin
+				if (ir[7:4] == 4'b1111) begin
+					// Jump to the registar content address
+					`ifdef DEBUG
+					$display("%2x: JR r%-d", ir[3:0], ir[15:12]);
+					`endif
+					pc <= regs[ir[15:12]];
+					state <= CHECK_IRQ;
+				end // end of JR
+				else begin
+					case (mc_count)
+						0: begin
 							`ifdef DEBUG
-							$display("%2x: J %x", ir[3:0], data_r);
+							$display("JUMP SECTION");
 							`endif
-								pc <= data_r;
-							end // end of J xx
-							// JZ xx
-							4'b0001: begin
-							`ifdef DEBUG
-							$display("%2x: JZ %x", ir[3:0], data_r);
-							`endif
-								if (f[ZERO] == 1) begin
+							// read the xx
+							addr <= (pc + 2) >> 1;
+							pc <= pc + 2;
+							mc_count <= 1;
+							next_state <= EXECUTE;
+							state <= READ_DATA;
+						end
+						1: begin
+							mbr[31:16] <= data_r;
+							addr <= (pc + 2) >> 1;
+							pc <= pc + 4;
+							next_state <= EXECUTE;
+							state <= READ_DATA;
+							mc_count <= 2;
+						end
+						2: begin
+							case (ir[7:4])
+								// J xx
+								4'b0000: begin
+								`ifdef DEBUG
+								$display("%2x: J %x", ir[3:0], data_r);
+								`endif
 									pc <= data_r;
+								end // end of J xx
+								// JZ xx
+								4'b0001: begin
+								`ifdef DEBUG
+								$display("%2x: JZ %x", ir[3:0], data_r);
+								`endif
+									if (f[ZERO] == 1) begin
+										pc <= data_r;
+									end
+								end // end of JZ xx
+								// JNZ xx
+								4'b0010: begin
+								`ifdef DEBUG
+								$display("%2x: JNZ %x", ir[3:0], data_r);
+								`endif
+									if (f[ZERO] == 0) begin
+										pc <= data_r;
+									end
+								end // end of JNZ xx
+								// JC xx
+								4'b0011: begin
+								`ifdef DEBUG
+								$display("%2x: JC %x", ir[3:0], data_r);
+								`endif
+									if (f[CARRY] == 1) begin
+										pc <= data_r;
+									end
+								end // end of JC xx
+								// JNC xx
+								4'b0100: begin
+								`ifdef DEBUG
+								$display("%2x: JNC %x", ir[3:0], data_r);
+								`endif
+									if (f[CARRY] == 0) begin
+										pc <= data_r;
+									end
+								end // end of JNC xx
+								// JO xx
+								4'b0101: begin
+								`ifdef DEBUG
+								$display("%2x: JO %x", ir[3:0], data_r);
+								`endif
+									if (f[OVERFLOW] == 1) begin
+										pc <= data_r;
+									end
+								end // end of JO xx
+								// JNO xx
+								4'b0110: begin
+								`ifdef DEBUG
+								$display("%2x: JNO %x", ir[3:0], data_r);
+								`endif
+									if (f[OVERFLOW] == 0) begin
+										pc <= data_r;
+									end
+								end // end of JNO xx
+								// JP xx
+								4'b0111: begin
+								`ifdef DEBUG
+								$display("%2x: JP %x", ir[3:0], data_r);
+								`endif
+									if (f[POSITIVE] == 1) begin
+										pc <= data_r;
+									end
+								end // end of JP xx
+								// JNP xx, JS xx
+								4'b1000: begin
+								`ifdef DEBUG
+								$display("%2x: JNP %x", ir[3:0], data_r);
+								`endif
+									if (f[POSITIVE] == 0) begin
+										pc <= data_r;
+									end
+								end // end of JNP xx
+								// JG xx
+								4'b1001: begin
+								`ifdef DEBUG
+								$display("%2x: JG %x", ir[3:0], data_r);
+								`endif
+									if (f[POSITIVE] == 1 && f[ZERO] == 0) begin
+										pc <= data_r;
+									end
+								end // end of JG xx
+								// JSE xx
+								4'b1010: begin
+								`ifdef DEBUG
+								$display("%2x: JSE %x", ir[3:0], data_r);
+								`endif
+									if (f[POSITIVE] == 0 || f[ZERO] == 1) begin
+										pc <= data_r;
+									end
+								end // end of JSE xx
+								default: begin
 								end
-							end // end of JZ xx
-							// JNZ xx
-							4'b0010: begin
-							`ifdef DEBUG
-							$display("%2x: JNZ %x", ir[3:0], data_r);
-							`endif
-								if (f[ZERO] == 0) begin
-									pc <= data_r;
-								end
-							end // end of JNZ xx
-							// JC xx
-							4'b0011: begin
-							`ifdef DEBUG
-							$display("%2x: JC %x", ir[3:0], data_r);
-							`endif
-								if (f[CARRY] == 1) begin
-									pc <= data_r;
-								end
-							end // end of JC xx
-							// JNC xx
-							4'b0100: begin
-							`ifdef DEBUG
-							$display("%2x: JNC %x", ir[3:0], data_r);
-							`endif
-								if (f[CARRY] == 0) begin
-									pc <= data_r;
-								end
-							end // end of JNC xx
-							// JO xx
-							4'b0101: begin
-							`ifdef DEBUG
-							$display("%2x: JO %x", ir[3:0], data_r);
-							`endif
-								if (f[OVERFLOW] == 1) begin
-									pc <= data_r;
-								end
-							end // end of JO xx
-							// JNO xx
-							4'b0110: begin
-							`ifdef DEBUG
-							$display("%2x: JNO %x", ir[3:0], data_r);
-							`endif
-								if (f[OVERFLOW] == 0) begin
-									pc <= data_r;
-								end
-							end // end of JNO xx
-							// JP xx
-							4'b0111: begin
-							`ifdef DEBUG
-							$display("%2x: JP %x", ir[3:0], data_r);
-							`endif
-								if (f[POSITIVE] == 1) begin
-									pc <= data_r;
-								end
-							end // end of JP xx
-							// JNP xx, JS xx
-							4'b1000: begin
-							`ifdef DEBUG
-							$display("%2x: JNP %x", ir[3:0], data_r);
-							`endif
-								if (f[POSITIVE] == 0) begin
-									pc <= data_r;
-								end
-							end // end of JNP xx
-							// JG xx
-							4'b1001: begin
-							`ifdef DEBUG
-							$display("%2x: JG %x", ir[3:0], data_r);
-							`endif
-								if (f[POSITIVE] == 1 && f[ZERO] == 0) begin
-									pc <= data_r;
-								end
-							end // end of JG xx
-							// JSE xx
-							4'b1010: begin
-							`ifdef DEBUG
-							$display("%2x: JSE %x", ir[3:0], data_r);
-							`endif
-								if (f[POSITIVE] == 0 || f[ZERO] == 1) begin
-									pc <= data_r;
-								end
-							end // end of JSE xx
-							default: begin
-							end
-						endcase	
-						mc_count <= 3;
-					end
-					3: begin
-						state <= CHECK_IRQ;
-					end
-				endcase
+							endcase	
+							mc_count <= 3;
+						end
+						3: begin
+							state <= CHECK_IRQ;
+						end
+					endcase
+				end
 			end // end of GROUP 1
 			// GROUP - 2 (CALL)
 			4'b0010: begin 
@@ -1086,6 +1107,7 @@ else begin
 									3: begin
 										// step 1: we try to read memory from the regy address
 										addr <= regs[ir[15:12]] >> 1;
+										mbr_e <= regs[ir[15:12]];
 										next_state <= EXECUTE;
 										state <= READ_DATA;
 										mc_count <= 3;
@@ -1110,17 +1132,20 @@ else begin
 								state <= READ_DATA;
 							end
 							2: begin
-								if (ir[7:4] == 4)
+								if (ir[7:4] == 4) begin
 									addr <= (mbr + data_r) >> 1;
-								else
+									mbr_e <= (mbr + data_r);
+								end else begin
 									addr <= (regs[ir[15:12]] + mbr + data_r)>> 1;
+									mbr_e <= (regs[ir[15:12]] + mbr + data_r);
+								end
 								mc_count <= 3;
 								next_state <= EXECUTE;
 								state <= READ_DATA;
 							end
 							3: begin
 									// step 2: we get the memory content from the data bus and put it in the regx
-									if (regs[ir[15:12]][0] == 1) begin
+									if (mbr_e[0] == 1) begin
 										// odd address
 										regs[ir[11:8]] <= {24'd0, data_r[7:0]};
 									end
@@ -2562,17 +2587,37 @@ else begin
 		end
 	end // end of CHECK_IRQ
 	READ_DATA: begin
-		addr_o <= addr;
-		if (addr >= SDRAM_START_ADDR) begin
-			rd_enable_o <= 1'b1;
-			if (busy_i) begin
-				state <= READ_WAIT;
-			end
+		if (addr[30] == 1'b1) begin
+			// memory mapped IO
+			case (addr & 32'h3FFFFFFF)
+				PORT_MILLIS/2: begin	// milliseconds counted so far
+					data_r <= millis_counter;
+				end
+				PORT_UART_RX_BYTE/2: begin    // UART RX DATA
+					data_r <= {24'b0, rx_data_r};
+				end
+				PORT_UART_TX_BUSY/2: begin   // UART TX BUSY
+					data_r <= {31'b0, tx_busy};
+				end
+				PORT_KEYBOARD/2: begin    // keyboard data
+					data_r <= {24'b0, ps2_data_r};
+				end
+			endcase // end of case(mbr)
+			state <= next_state;
 		end
 		else begin
-			rd <= 1'b1;
-			wr <= 1'b0;
-			state <= READ_WAIT;
+			addr_o <= addr;
+			if (addr >= SDRAM_START_ADDR) begin
+				rd_enable_o <= 1'b1;
+				if (busy_i) begin
+					state <= READ_WAIT;
+				end
+			end
+			else begin
+				rd <= 1'b1;
+				wr <= 1'b0;
+				state <= READ_WAIT;
+			end
 		end
 	end
 	READ_WAIT: begin
@@ -2601,41 +2646,77 @@ else begin
 		end
 	end
 	WRITE_DATA: begin
-		addr_o <= addr;
-		if (addr >= SDRAM_START_ADDR) begin
-			wr_data_o <= data_to_write;
-			wr_enable_o <= 1'b1;
-			if (busy_i)
-				state <= WRITE_WAIT;
+		if (addr[30] == 1'b1) begin
+			// Memory mapped IO
+			case (addr & 32'h3FFFFFFF)
+				PORT_TIMER/2: begin
+					// number of milliseconds to expire to cause IRQ 0
+					timer <= data_to_write;
+				end
+				PORT_UART_TX_SEND_BYTE/2: begin  // UART TX data 
+					tx_data <= data_to_write;
+					tx_send <= 1'b1;
+				end
+				PORT_VIDEO_MODE/2: begin  // graphics mode: 0 - text; 1 - 320x240 8 colors; 2 - 640x480 two colors
+					vga_mode <= data_to_write;
+				end
+				VGA_TEXT_INVERSE/2: begin
+					// if 0 -> normal (white letters on black background)
+					// if 1 -> inverted (black letters on white background)
+					inverse <= data_to_write;
+				end
+				PORT_LED/2: begin  // LEDs
+					LED[7:0] <= data_to_write;
+				end
+				default: begin
+				end
+			endcase  // end of case (data)
+			state <= WRITE_WAIT;
 		end
 		else begin
-			`ifdef READ_ONLY
-			if (((addr < 24'h80) || (addr > 24'h1c4)) && (addr >= 4))
-			`endif
-			begin
-				rd <= 1'b0;
-				wr <= 1'b1;
-				data_to_write_o <= data_to_write;
-				state <= WRITE_WAIT;
+			addr_o <= addr;
+			if (addr >= SDRAM_START_ADDR) begin
+				wr_data_o <= data_to_write;
+				wr_enable_o <= 1'b1;
+				if (busy_i)
+					state <= WRITE_WAIT;
 			end
-			`ifdef READ_ONLY
 			else begin
-				state <= next_state;
+				`ifdef READ_ONLY
+				if (((addr < 24'h80) || (addr > 24'h1c4)) && (addr >= 4))
+				`endif
+				begin
+					rd <= 1'b0;
+					wr <= 1'b1;
+					data_to_write_o <= data_to_write;
+					state <= WRITE_WAIT;
+				end
+				`ifdef READ_ONLY
+				else begin
+					state <= next_state;
+				end
+				`endif
 			end
-			`endif
 		end
 	end
 	WRITE_WAIT: begin
-		if (addr >= SDRAM_START_ADDR) begin
-			wr_enable_o <= 1'b0;
-			if (~busy_i) begin
-				state <= next_state;
-			end
+		if (addr[30] == 1'b1) begin
+			// Memory mapped IO
+			tx_send <= 1'b0;
+			state <= next_state;
 		end
 		else begin
-			rd <= 1'b0;
-			wr <= 1'b0;
-			state <= next_state;
+			if (addr >= SDRAM_START_ADDR) begin
+				wr_enable_o <= 1'b0;
+				if (~busy_i) begin
+					state <= next_state;
+				end
+			end
+			else begin
+				rd <= 1'b0;
+				wr <= 1'b0;
+				state <= next_state;
+			end
 		end
 	end	 
 	default: begin

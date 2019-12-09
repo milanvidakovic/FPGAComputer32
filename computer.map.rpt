@@ -1,5 +1,5 @@
 Analysis & Synthesis report for computer
-Sat Oct 19 19:10:04 2019
+Mon Dec 09 20:46:32 2019
 Quartus II 64-Bit Version 13.0.0 Build 156 04/24/2013 SJ Web Edition
 
 
@@ -120,15 +120,15 @@ applicable agreement for further details.
 +---------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                    ;
 +------------------------------------+--------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Sat Oct 19 19:10:03 2019      ;
+; Analysis & Synthesis Status        ; Successful - Mon Dec 09 20:46:32 2019      ;
 ; Quartus II 64-Bit Version          ; 13.0.0 Build 156 04/24/2013 SJ Web Edition ;
 ; Revision Name                      ; computer                                   ;
 ; Top-level Entity Name              ; computer                                   ;
 ; Family                             ; Cyclone IV E                               ;
-; Total logic elements               ; 19,919                                     ;
-;     Total combinational functions  ; 16,862                                     ;
-;     Dedicated logic registers      ; 5,405                                      ;
-; Total registers                    ; 5405                                       ;
+; Total logic elements               ; 20,905                                     ;
+;     Total combinational functions  ; 17,850                                     ;
+;     Dedicated logic registers      ; 5,420                                      ;
+; Total registers                    ; 5420                                       ;
 ; Total pins                         ; 126                                        ;
 ; Total virtual pins                 ; 0                                          ;
 ; Total memory bits                  ; 365,778                                    ;
@@ -347,20 +347,20 @@ Parallel compilation was disabled, but you have multiple processors available. E
 +---------------------------------------------+-----------------------------------------------------------------------------+
 ; Resource                                    ; Usage                                                                       ;
 +---------------------------------------------+-----------------------------------------------------------------------------+
-; Estimated Total logic elements              ; 19,919                                                                      ;
+; Estimated Total logic elements              ; 20,905                                                                      ;
 ;                                             ;                                                                             ;
-; Total combinational functions               ; 16862                                                                       ;
+; Total combinational functions               ; 17850                                                                       ;
 ; Logic element usage by number of LUT inputs ;                                                                             ;
-;     -- 4 input functions                    ; 12128                                                                       ;
-;     -- 3 input functions                    ; 2989                                                                        ;
-;     -- <=2 input functions                  ; 1745                                                                        ;
+;     -- 4 input functions                    ; 13304                                                                       ;
+;     -- 3 input functions                    ; 2861                                                                        ;
+;     -- <=2 input functions                  ; 1685                                                                        ;
 ;                                             ;                                                                             ;
 ; Logic elements by mode                      ;                                                                             ;
-;     -- normal mode                          ; 15034                                                                       ;
-;     -- arithmetic mode                      ; 1828                                                                        ;
+;     -- normal mode                          ; 16027                                                                       ;
+;     -- arithmetic mode                      ; 1823                                                                        ;
 ;                                             ;                                                                             ;
-; Total registers                             ; 5405                                                                        ;
-;     -- Dedicated logic registers            ; 5405                                                                        ;
+; Total registers                             ; 5420                                                                        ;
+;     -- Dedicated logic registers            ; 5420                                                                        ;
 ;     -- I/O registers                        ; 0                                                                           ;
 ;                                             ;                                                                             ;
 ; I/O pins                                    ; 126                                                                         ;
@@ -370,9 +370,9 @@ Parallel compilation was disabled, but you have multiple processors available. E
 ;     -- PLLs                                 ; 1                                                                           ;
 ;                                             ;                                                                             ;
 ; Maximum fan-out node                        ; pll:plli|altpll:altpll_component|pll_altpll:auto_generated|wire_pll1_clk[0] ;
-; Maximum fan-out                             ; 3060                                                                        ;
-; Total fan-out                               ; 81706                                                                       ;
-; Average fan-out                             ; 3.57                                                                        ;
+; Maximum fan-out                             ; 3075                                                                        ;
+; Total fan-out                               ; 84709                                                                       ;
+; Average fan-out                             ; 3.55                                                                        ;
 +---------------------------------------------+-----------------------------------------------------------------------------+
 
 
@@ -381,17 +381,18 @@ Parallel compilation was disabled, but you have multiple processors available. E
 +----------------------------------------------------------------------------------+-------------------+--------------+-------------+--------------+---------+-----------+------+--------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+
 ; Compilation Hierarchy Node                                                       ; LC Combinationals ; LC Registers ; Memory Bits ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; Full Hierarchy Name                                                                                                                                                                                                                                                                                                                                                                     ; Library Name ;
 +----------------------------------------------------------------------------------+-------------------+--------------+-------------+--------------+---------+-----------+------+--------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+
-; |computer                                                                        ; 16862 (16)        ; 5405 (18)    ; 365778      ; 31           ; 1       ; 15        ; 126  ; 0            ; |computer                                                                                                                                                                                                                                                                                                                                                                               ;              ;
-;    |RAM:ram|                                                                     ; 35 (0)            ; 4 (0)        ; 360464      ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|RAM:ram                                                                                                                                                                                                                                                                                                                                                                       ;              ;
-;       |altsyncram:ram_rtl_0|                                                     ; 35 (0)            ; 4 (0)        ; 360464      ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|RAM:ram|altsyncram:ram_rtl_0                                                                                                                                                                                                                                                                                                                                                  ;              ;
-;          |altsyncram_rq22:auto_generated|                                        ; 35 (0)            ; 4 (4)        ; 360464      ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|RAM:ram|altsyncram:ram_rtl_0|altsyncram_rq22:auto_generated                                                                                                                                                                                                                                                                                                                   ;              ;
+; |computer                                                                        ; 17850 (16)        ; 5420 (18)    ; 365778      ; 31           ; 1       ; 15        ; 126  ; 0            ; |computer                                                                                                                                                                                                                                                                                                                                                                               ;              ;
+;    |RAM:ram|                                                                     ; 65 (0)            ; 4 (0)        ; 360464      ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|RAM:ram                                                                                                                                                                                                                                                                                                                                                                       ;              ;
+;       |altsyncram:ram_rtl_0|                                                     ; 65 (0)            ; 4 (0)        ; 360464      ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|RAM:ram|altsyncram:ram_rtl_0                                                                                                                                                                                                                                                                                                                                                  ;              ;
+;          |altsyncram_rq22:auto_generated|                                        ; 65 (0)            ; 4 (4)        ; 360464      ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|RAM:ram|altsyncram:ram_rtl_0|altsyncram_rq22:auto_generated                                                                                                                                                                                                                                                                                                                   ;              ;
 ;             |decode_lsa:decode2|                                                 ; 3 (3)             ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|RAM:ram|altsyncram:ram_rtl_0|altsyncram_rq22:auto_generated|decode_lsa:decode2                                                                                                                                                                                                                                                                                                ;              ;
+;             |mux_kob:mux4|                                                       ; 30 (30)           ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|RAM:ram|altsyncram:ram_rtl_0|altsyncram_rq22:auto_generated|mux_kob:mux4                                                                                                                                                                                                                                                                                                      ;              ;
 ;             |mux_kob:mux5|                                                       ; 32 (32)           ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|RAM:ram|altsyncram:ram_rtl_0|altsyncram_rq22:auto_generated|mux_kob:mux5                                                                                                                                                                                                                                                                                                      ;              ;
-;    |cpu:cpu0|                                                                    ; 13101 (10790)     ; 2597 (1121)  ; 5314        ; 31           ; 1       ; 15        ; 0    ; 0            ; |computer|cpu:cpu0                                                                                                                                                                                                                                                                                                                                                                      ;              ;
-;       |ALU:alu|                                                                  ; 1029 (604)        ; 234 (65)     ; 0           ; 8            ; 0       ; 4         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu                                                                                                                                                                                                                                                                                                                                                              ;              ;
-;          |add_sub:add_sub|                                                       ; 66 (0)            ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu|add_sub:add_sub                                                                                                                                                                                                                                                                                                                                              ;              ;
-;             |lpm_add_sub:LPM_ADD_SUB_component|                                  ; 66 (0)            ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu|add_sub:add_sub|lpm_add_sub:LPM_ADD_SUB_component                                                                                                                                                                                                                                                                                                            ;              ;
-;                |add_sub_msh:auto_generated|                                      ; 66 (66)           ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu|add_sub:add_sub|lpm_add_sub:LPM_ADD_SUB_component|add_sub_msh:auto_generated                                                                                                                                                                                                                                                                                 ;              ;
+;    |cpu:cpu0|                                                                    ; 14084 (11768)     ; 2612 (1136)  ; 5314        ; 31           ; 1       ; 15        ; 0    ; 0            ; |computer|cpu:cpu0                                                                                                                                                                                                                                                                                                                                                                      ;              ;
+;       |ALU:alu|                                                                  ; 1034 (608)        ; 234 (65)     ; 0           ; 8            ; 0       ; 4         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu                                                                                                                                                                                                                                                                                                                                                              ;              ;
+;          |add_sub:add_sub|                                                       ; 67 (0)            ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu|add_sub:add_sub                                                                                                                                                                                                                                                                                                                                              ;              ;
+;             |lpm_add_sub:LPM_ADD_SUB_component|                                  ; 67 (0)            ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu|add_sub:add_sub|lpm_add_sub:LPM_ADD_SUB_component                                                                                                                                                                                                                                                                                                            ;              ;
+;                |add_sub_msh:auto_generated|                                      ; 67 (67)           ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu|add_sub:add_sub|lpm_add_sub:LPM_ADD_SUB_component|add_sub_msh:auto_generated                                                                                                                                                                                                                                                                                 ;              ;
 ;          |div:div1|                                                              ; 280 (280)         ; 169 (169)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu|div:div1                                                                                                                                                                                                                                                                                                                                                     ;              ;
 ;          |lpm_mult:Mult0|                                                        ; 79 (0)            ; 0 (0)        ; 0           ; 8            ; 0       ; 4         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu|lpm_mult:Mult0                                                                                                                                                                                                                                                                                                                                               ;              ;
 ;             |mult_7dt:auto_generated|                                            ; 79 (79)           ; 0 (0)        ; 0           ; 8            ; 0       ; 4         ; 0    ; 0            ; |computer|cpu:cpu0|ALU:alu|lpm_mult:Mult0|mult_7dt:auto_generated                                                                                                                                                                                                                                                                                                                       ;              ;
@@ -494,9 +495,9 @@ Parallel compilation was disabled, but you have multiple processors available. E
 ;    |rx_serial:rsr|                                                               ; 62 (62)           ; 34 (34)      ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|rx_serial:rsr                                                                                                                                                                                                                                                                                                                                                                 ;              ;
 ;    |sdram_controller:sdram_controlleri|                                          ; 154 (154)         ; 81 (81)      ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|sdram_controller:sdram_controlleri                                                                                                                                                                                                                                                                                                                                            ;              ;
 ;    |tx_serial:tsr|                                                               ; 39 (39)           ; 25 (25)      ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|tx_serial:tsr                                                                                                                                                                                                                                                                                                                                                                 ;              ;
-;    |vga_320x240:vga1|                                                            ; 2425 (2425)       ; 2562 (2562)  ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|vga_320x240:vga1                                                                                                                                                                                                                                                                                                                                                              ;              ;
-;    |vga_module:vga0|                                                             ; 1014 (287)        ; 60 (60)      ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|vga_module:vga0                                                                                                                                                                                                                                                                                                                                                               ;              ;
-;       |chars:chars_1|                                                            ; 727 (727)         ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|vga_module:vga0|chars:chars_1                                                                                                                                                                                                                                                                                                                                                 ;              ;
+;    |vga_320x240:vga1|                                                            ; 2424 (2424)       ; 2562 (2562)  ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|vga_320x240:vga1                                                                                                                                                                                                                                                                                                                                                              ;              ;
+;    |vga_module:vga0|                                                             ; 990 (288)         ; 60 (60)      ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|vga_module:vga0                                                                                                                                                                                                                                                                                                                                                               ;              ;
+;       |chars:chars_1|                                                            ; 702 (702)         ; 0 (0)        ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |computer|vga_module:vga0|chars:chars_1                                                                                                                                                                                                                                                                                                                                                 ;              ;
 +----------------------------------------------------------------------------------+-------------------+--------------+-------------+--------------+---------+-----------+------+--------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
@@ -927,12 +928,12 @@ Encoding Type:  One-Hot
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 5405  ;
-; Number of registers using Synchronous Clear  ; 429   ;
-; Number of registers using Synchronous Load   ; 429   ;
+; Total registers                              ; 5420  ;
+; Number of registers using Synchronous Clear  ; 235   ;
+; Number of registers using Synchronous Load   ; 196   ;
 ; Number of registers using Asynchronous Clear ; 24    ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 5265  ;
+; Number of registers using Clock Enable       ; 4698  ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
@@ -1295,147 +1296,146 @@ Encoding Type:  One-Hot
 +--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 ; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output                                                                                                                                          ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; 3:1                ; 24 bits   ; 48 LEs        ; 0 LEs                ; 48 LEs                 ; Yes        ; |computer|cpu:cpu0|addr_o[13]                                                                                                                                       ;
 ; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; Yes        ; |computer|sdram_controller:sdram_controlleri|state_cnt[1]                                                                                                           ;
-; 3:1                ; 6 bits    ; 12 LEs        ; 6 LEs                ; 6 LEs                  ; Yes        ; |computer|cpu:cpu0|init_cnt[3]                                                                                                                                      ;
+; 3:1                ; 6 bits    ; 12 LEs        ; 6 LEs                ; 6 LEs                  ; Yes        ; |computer|cpu:cpu0|init_cnt[4]                                                                                                                                      ;
 ; 3:1                ; 10 bits   ; 20 LEs        ; 10 LEs               ; 10 LEs                 ; Yes        ; |computer|sdram_controller:sdram_controlleri|refresh_cnt[9]                                                                                                         ;
-; 3:1                ; 16 bits   ; 32 LEs        ; 16 LEs               ; 16 LEs                 ; Yes        ; |computer|sdram_controller:sdram_controlleri|rd_data_r[12]                                                                                                          ;
-; 3:1                ; 39 bits   ; 78 LEs        ; 39 LEs               ; 39 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|div:div1|A[0]                                                                                                                            ;
-; 3:1                ; 32 bits   ; 64 LEs        ; 32 LEs               ; 32 LEs                 ; Yes        ; |computer|cpu:cpu0|timer_counter[18]                                                                                                                                ;
-; 4:1                ; 4 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |computer|ps2_read:ps2|n_reg[2]                                                                                                                                     ;
-; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_35e:lbarrel_shift|sbit_piper1d[17] ;
-; 3:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_98g:rbarrel_shift|sbit_piper1d[2]  ;
-; 3:1                ; 32 bits   ; 64 LEs        ; 32 LEs               ; 32 LEs                 ; Yes        ; |computer|cpu:cpu0|clock_counter[25]                                                                                                                                ;
-; 3:1                ; 32 bits   ; 64 LEs        ; 32 LEs               ; 32 LEs                 ; Yes        ; |computer|cpu:cpu0|millis_counter[14]                                                                                                                               ;
-; 8:1                ; 44 bits   ; 220 LEs       ; 0 LEs                ; 220 LEs                ; Yes        ; |computer|cpu:cpu0|tfe[32]                                                                                                                                          ;
-; 4:1                ; 8 bits    ; 16 LEs        ; 8 LEs                ; 8 LEs                  ; Yes        ; |computer|rx_serial:rsr|char1[3]                                                                                                                                    ;
-; 4:1                ; 24 bits   ; 48 LEs        ; 24 LEs               ; 24 LEs                 ; Yes        ; |computer|sdram_controller:sdram_controlleri|haddr_r[22]                                                                                                            ;
-; 4:1                ; 31 bits   ; 62 LEs        ; 62 LEs               ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|ALU:alu|div:div1|Q[21]                                                                                                                           ;
+; 3:1                ; 16 bits   ; 32 LEs        ; 16 LEs               ; 16 LEs                 ; Yes        ; |computer|sdram_controller:sdram_controlleri|rd_data_r[4]                                                                                                           ;
+; 3:1                ; 39 bits   ; 78 LEs        ; 39 LEs               ; 39 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|div:div1|A[22]                                                                                                                           ;
+; 3:1                ; 32 bits   ; 64 LEs        ; 32 LEs               ; 32 LEs                 ; Yes        ; |computer|cpu:cpu0|timer_counter[25]                                                                                                                                ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |computer|ps2_read:ps2|n_reg[3]                                                                                                                                     ;
+; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_35e:lbarrel_shift|sbit_piper1d[16] ;
+; 3:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_98g:rbarrel_shift|sbit_piper1d[3]  ;
+; 3:1                ; 32 bits   ; 64 LEs        ; 32 LEs               ; 32 LEs                 ; Yes        ; |computer|cpu:cpu0|clock_counter[23]                                                                                                                                ;
+; 3:1                ; 32 bits   ; 64 LEs        ; 32 LEs               ; 32 LEs                 ; Yes        ; |computer|cpu:cpu0|millis_counter[26]                                                                                                                               ;
+; 8:1                ; 44 bits   ; 220 LEs       ; 0 LEs                ; 220 LEs                ; Yes        ; |computer|cpu:cpu0|tfe[19]                                                                                                                                          ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 8 LEs                ; 8 LEs                  ; Yes        ; |computer|rx_serial:rsr|char1[7]                                                                                                                                    ;
+; 4:1                ; 24 bits   ; 48 LEs        ; 24 LEs               ; 24 LEs                 ; Yes        ; |computer|sdram_controller:sdram_controlleri|haddr_r[2]                                                                                                             ;
+; 4:1                ; 31 bits   ; 62 LEs        ; 62 LEs               ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|ALU:alu|div:div1|Q[2]                                                                                                                            ;
 ; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_35e:lbarrel_shift|sbit_piper1d[21] ;
-; 4:1                ; 16 bits   ; 32 LEs        ; 0 LEs                ; 32 LEs                 ; Yes        ; |computer|vga_module:vga0|curr_char[4]                                                                                                                              ;
-; 4:1                ; 10 bits   ; 20 LEs        ; 10 LEs               ; 10 LEs                 ; Yes        ; |computer|vga_module:vga0|x[4]                                                                                                                                      ;
-; 4:1                ; 3 bits    ; 6 LEs         ; 3 LEs                ; 3 LEs                  ; Yes        ; |computer|sdram_controller:sdram_controlleri|command[4]                                                                                                             ;
-; 4:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; Yes        ; |computer|sdram_controller:sdram_controlleri|command[0]                                                                                                             ;
-; 8:1                ; 64 bits   ; 320 LEs       ; 0 LEs                ; 320 LEs                ; Yes        ; |computer|cpu:cpu0|mb[19]                                                                                                                                           ;
-; 5:1                ; 2 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_35e:lbarrel_shift|sbit_piper1d[22] ;
-; 5:1                ; 10 bits   ; 30 LEs        ; 10 LEs               ; 20 LEs                 ; Yes        ; |computer|vga_module:vga0|y[9]                                                                                                                                      ;
-; 5:1                ; 13 bits   ; 39 LEs        ; 13 LEs               ; 26 LEs                 ; Yes        ; |computer|tx_serial:tsr|counter[12]                                                                                                                                 ;
-; 9:1                ; 28 bits   ; 168 LEs       ; 28 LEs               ; 140 LEs                ; Yes        ; |computer|vga_320x240:vga1|line_counter[4]                                                                                                                          ;
-; 17:1               ; 32 bits   ; 352 LEs       ; 32 LEs               ; 320 LEs                ; Yes        ; |computer|cpu:cpu0|ALU:alu|high[0]                                                                                                                                  ;
-; 6:1                ; 5 bits    ; 20 LEs        ; 5 LEs                ; 15 LEs                 ; Yes        ; |computer|vga_320x240:vga1|sprite_counter[1]                                                                                                                        ;
-; 6:1                ; 2 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_35e:lbarrel_shift|sbit_piper1d[24] ;
-; 10:1               ; 2 bits    ; 12 LEs        ; 2 LEs                ; 10 LEs                 ; Yes        ; |computer|vga_320x240:vga1|line_counter[13]                                                                                                                         ;
-; 6:1                ; 3 bits    ; 12 LEs        ; 9 LEs                ; 3 LEs                  ; Yes        ; |computer|sdram_controller:sdram_controlleri|state[3]                                                                                                               ;
+; 4:1                ; 16 bits   ; 32 LEs        ; 0 LEs                ; 32 LEs                 ; Yes        ; |computer|vga_module:vga0|curr_char[15]                                                                                                                             ;
+; 4:1                ; 10 bits   ; 20 LEs        ; 10 LEs               ; 10 LEs                 ; Yes        ; |computer|vga_module:vga0|x[8]                                                                                                                                      ;
+; 4:1                ; 3 bits    ; 6 LEs         ; 3 LEs                ; 3 LEs                  ; Yes        ; |computer|sdram_controller:sdram_controlleri|state[2]                                                                                                               ;
+; 4:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; Yes        ; |computer|sdram_controller:sdram_controlleri|state[0]                                                                                                               ;
+; 8:1                ; 64 bits   ; 320 LEs       ; 0 LEs                ; 320 LEs                ; Yes        ; |computer|cpu:cpu0|mb[10]                                                                                                                                           ;
+; 5:1                ; 2 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_35e:lbarrel_shift|sbit_piper1d[23] ;
+; 5:1                ; 10 bits   ; 30 LEs        ; 10 LEs               ; 20 LEs                 ; Yes        ; |computer|vga_module:vga0|y[4]                                                                                                                                      ;
+; 5:1                ; 13 bits   ; 39 LEs        ; 13 LEs               ; 26 LEs                 ; Yes        ; |computer|tx_serial:tsr|counter[8]                                                                                                                                  ;
+; 9:1                ; 28 bits   ; 168 LEs       ; 28 LEs               ; 140 LEs                ; Yes        ; |computer|vga_320x240:vga1|word_counter[10]                                                                                                                         ;
+; 17:1               ; 32 bits   ; 352 LEs       ; 32 LEs               ; 320 LEs                ; Yes        ; |computer|cpu:cpu0|ALU:alu|high[13]                                                                                                                                 ;
+; 6:1                ; 5 bits    ; 20 LEs        ; 5 LEs                ; 15 LEs                 ; Yes        ; |computer|vga_320x240:vga1|sprite_counter[0]                                                                                                                        ;
+; 6:1                ; 2 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |computer|cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_35e:lbarrel_shift|sbit_piper1d[25] ;
+; 10:1               ; 2 bits    ; 12 LEs        ; 2 LEs                ; 10 LEs                 ; Yes        ; |computer|vga_320x240:vga1|line_counter[14]                                                                                                                         ;
+; 6:1                ; 3 bits    ; 12 LEs        ; 9 LEs                ; 3 LEs                  ; Yes        ; |computer|sdram_controller:sdram_controlleri|state[4]                                                                                                               ;
 ; 6:1                ; 4 bits    ; 16 LEs        ; 8 LEs                ; 8 LEs                  ; Yes        ; |computer|tx_serial:tsr|state[0]                                                                                                                                    ;
-; 7:1                ; 8 bits    ; 32 LEs        ; 8 LEs                ; 24 LEs                 ; Yes        ; |computer|cpu:cpu0|LED[3]                                                                                                                                           ;
-; 7:1                ; 32 bits   ; 128 LEs       ; 32 LEs               ; 96 LEs                 ; Yes        ; |computer|cpu:cpu0|timer[0]                                                                                                                                         ;
 ; 10:1               ; 4 bits    ; 24 LEs        ; 4 LEs                ; 20 LEs                 ; Yes        ; |computer|cpu:cpu0|tfe[0]                                                                                                                                           ;
-; 7:1                ; 13 bits   ; 52 LEs        ; 13 LEs               ; 39 LEs                 ; Yes        ; |computer|rx_serial:rsr|rx_counter[3]                                                                                                                               ;
-; 21:1               ; 16 bits   ; 224 LEs       ; 16 LEs               ; 208 LEs                ; Yes        ; |computer|cpu:cpu0|data_r[3]                                                                                                                                        ;
-; 14:1               ; 2 bits    ; 18 LEs        ; 10 LEs               ; 8 LEs                  ; Yes        ; |computer|vga_320x240:vga1|addr[0]                                                                                                                                  ;
+; 7:1                ; 13 bits   ; 52 LEs        ; 13 LEs               ; 39 LEs                 ; Yes        ; |computer|rx_serial:rsr|rx_counter[4]                                                                                                                               ;
+; 14:1               ; 2 bits    ; 18 LEs        ; 10 LEs               ; 8 LEs                  ; Yes        ; |computer|vga_320x240:vga1|addr[1]                                                                                                                                  ;
 ; 14:1               ; 5 bits    ; 45 LEs        ; 15 LEs               ; 30 LEs                 ; Yes        ; |computer|vga_320x240:vga1|addr[13]                                                                                                                                 ;
-; 15:1               ; 2 bits    ; 20 LEs        ; 8 LEs                ; 12 LEs                 ; Yes        ; |computer|vga_320x240:vga1|addr[2]                                                                                                                                  ;
-; 23:1               ; 16 bits   ; 240 LEs       ; 32 LEs               ; 208 LEs                ; Yes        ; |computer|cpu:cpu0|ir[14]                                                                                                                                           ;
-; 16:1               ; 4 bits    ; 40 LEs        ; 20 LEs               ; 20 LEs                 ; Yes        ; |computer|vga_320x240:vga1|addr[4]                                                                                                                                  ;
-; 25:1               ; 8 bits    ; 128 LEs       ; 64 LEs               ; 64 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[11]                                                                                                                                  ;
-; 25:1               ; 8 bits    ; 128 LEs       ; 64 LEs               ; 64 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[23]                                                                                                                                  ;
+; 15:1               ; 2 bits    ; 20 LEs        ; 8 LEs                ; 12 LEs                 ; Yes        ; |computer|vga_320x240:vga1|addr[3]                                                                                                                                  ;
+; 23:1               ; 16 bits   ; 240 LEs       ; 32 LEs               ; 208 LEs                ; Yes        ; |computer|cpu:cpu0|ir[8]                                                                                                                                            ;
+; 16:1               ; 4 bits    ; 40 LEs        ; 20 LEs               ; 20 LEs                 ; Yes        ; |computer|vga_320x240:vga1|addr[7]                                                                                                                                  ;
+; 24:1               ; 8 bits    ; 128 LEs       ; 16 LEs               ; 112 LEs                ; Yes        ; |computer|cpu:cpu0|data_r[14]                                                                                                                                       ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 8 LEs                ; 360 LEs                ; Yes        ; |computer|cpu:cpu0|tx_data[3]                                                                                                                                       ;
+; 71:1               ; 8 bits    ; 376 LEs       ; 16 LEs               ; 360 LEs                ; Yes        ; |computer|cpu:cpu0|LED[0]                                                                                                                                           ;
+; 25:1               ; 8 bits    ; 128 LEs       ; 64 LEs               ; 64 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[10]                                                                                                                                  ;
+; 25:1               ; 8 bits    ; 128 LEs       ; 64 LEs               ; 64 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[21]                                                                                                                                  ;
+; 71:1               ; 16 bits   ; 752 LEs       ; 16 LEs               ; 736 LEs                ; Yes        ; |computer|cpu:cpu0|timer[22]                                                                                                                                        ;
+; 71:1               ; 16 bits   ; 752 LEs       ; 32 LEs               ; 720 LEs                ; Yes        ; |computer|cpu:cpu0|timer[8]                                                                                                                                         ;
 ; 14:1               ; 3 bits    ; 27 LEs        ; 6 LEs                ; 21 LEs                 ; Yes        ; |computer|vga_module:vga0|addr[0]                                                                                                                                   ;
-; 14:1               ; 10 bits   ; 90 LEs        ; 40 LEs               ; 50 LEs                 ; Yes        ; |computer|vga_module:vga0|addr[10]                                                                                                                                  ;
-; 26:1               ; 4 bits    ; 68 LEs        ; 32 LEs               ; 36 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[4]                                                                                                                                   ;
-; 26:1               ; 4 bits    ; 68 LEs        ; 32 LEs               ; 36 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[25]                                                                                                                                  ;
+; 14:1               ; 10 bits   ; 90 LEs        ; 40 LEs               ; 50 LEs                 ; Yes        ; |computer|vga_module:vga0|addr[11]                                                                                                                                  ;
+; 26:1               ; 4 bits    ; 68 LEs        ; 32 LEs               ; 36 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[5]                                                                                                                                   ;
+; 26:1               ; 4 bits    ; 68 LEs        ; 32 LEs               ; 36 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[26]                                                                                                                                  ;
 ; 27:1               ; 2 bits    ; 36 LEs        ; 20 LEs               ; 16 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[2]                                                                                                                                   ;
 ; 27:1               ; 2 bits    ; 36 LEs        ; 18 LEs               ; 18 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[28]                                                                                                                                  ;
 ; 16:1               ; 2 bits    ; 20 LEs        ; 2 LEs                ; 18 LEs                 ; Yes        ; |computer|vga_module:vga0|mem_read[0]                                                                                                                               ;
-; 22:1               ; 24 bits   ; 336 LEs       ; 48 LEs               ; 288 LEs                ; Yes        ; |computer|cpu:cpu0|mbr_e[16]                                                                                                                                        ;
 ; 28:1               ; 2 bits    ; 36 LEs        ; 20 LEs               ; 16 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[1]                                                                                                                                   ;
 ; 28:1               ; 2 bits    ; 36 LEs        ; 20 LEs               ; 16 LEs                 ; Yes        ; |computer|cpu:cpu0|ALU:alu|tmp[30]                                                                                                                                  ;
+; 28:1               ; 7 bits    ; 126 LEs       ; 28 LEs               ; 98 LEs                 ; Yes        ; |computer|cpu:cpu0|data_r[4]                                                                                                                                        ;
+; 25:1               ; 31 bits   ; 496 LEs       ; 124 LEs              ; 372 LEs                ; Yes        ; |computer|cpu:cpu0|mbr_e[9]                                                                                                                                         ;
 ; 88:1               ; 2 bits    ; 116 LEs       ; 4 LEs                ; 112 LEs                ; Yes        ; |computer|cpu:cpu0|f[2]                                                                                                                                             ;
-; 93:1               ; 16 bits   ; 992 LEs       ; 80 LEs               ; 912 LEs                ; Yes        ; |computer|cpu:cpu0|mbr[0]                                                                                                                                           ;
-; 112:1              ; 16 bits   ; 1184 LEs      ; 80 LEs               ; 1104 LEs               ; Yes        ; |computer|cpu:cpu0|mbr[27]                                                                                                                                          ;
-; 66:1               ; 2 bits    ; 88 LEs        ; 6 LEs                ; 82 LEs                 ; Yes        ; |computer|cpu:cpu0|next_state[2]                                                                                                                                    ;
+; 93:1               ; 16 bits   ; 992 LEs       ; 80 LEs               ; 912 LEs                ; Yes        ; |computer|cpu:cpu0|mbr[11]                                                                                                                                          ;
+; 113:1              ; 16 bits   ; 1200 LEs      ; 80 LEs               ; 1120 LEs               ; Yes        ; |computer|cpu:cpu0|mbr[28]                                                                                                                                          ;
+; 67:1               ; 2 bits    ; 88 LEs        ; 6 LEs                ; 82 LEs                 ; Yes        ; |computer|cpu:cpu0|next_state[2]                                                                                                                                    ;
 ; 118:1              ; 4 bits    ; 312 LEs       ; 32 LEs               ; 280 LEs                ; Yes        ; |computer|cpu:cpu0|data_to_write[7]                                                                                                                                 ;
-; 118:1              ; 3 bits    ; 234 LEs       ; 24 LEs               ; 210 LEs                ; Yes        ; |computer|cpu:cpu0|data_to_write[3]                                                                                                                                 ;
-; 118:1              ; 8 bits    ; 624 LEs       ; 80 LEs               ; 544 LEs                ; Yes        ; |computer|cpu:cpu0|data_to_write[10]                                                                                                                                ;
-; 71:1               ; 3 bits    ; 141 LEs       ; 6 LEs                ; 135 LEs                ; Yes        ; |computer|cpu:cpu0|next_state[0]                                                                                                                                    ;
-; 74:1               ; 14 bits   ; 686 LEs       ; 126 LEs              ; 560 LEs                ; Yes        ; |computer|cpu:cpu0|regs[14][24]                                                                                                                                     ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[13][19]                                                                                                                                     ;
+; 118:1              ; 3 bits    ; 234 LEs       ; 24 LEs               ; 210 LEs                ; Yes        ; |computer|cpu:cpu0|data_to_write[1]                                                                                                                                 ;
+; 118:1              ; 8 bits    ; 624 LEs       ; 80 LEs               ; 544 LEs                ; Yes        ; |computer|cpu:cpu0|data_to_write[8]                                                                                                                                 ;
+; 72:1               ; 3 bits    ; 144 LEs       ; 6 LEs                ; 138 LEs                ; Yes        ; |computer|cpu:cpu0|next_state[5]                                                                                                                                    ;
+; 74:1               ; 14 bits   ; 686 LEs       ; 126 LEs              ; 560 LEs                ; Yes        ; |computer|cpu:cpu0|regs[14][27]                                                                                                                                     ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[13][16]                                                                                                                                     ;
 ; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[12][25]                                                                                                                                     ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[11][29]                                                                                                                                     ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[10][16]                                                                                                                                     ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[9][24]                                                                                                                                      ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[8][24]                                                                                                                                      ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[7][26]                                                                                                                                      ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[6][16]                                                                                                                                      ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[5][26]                                                                                                                                      ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[4][28]                                                                                                                                      ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[3][26]                                                                                                                                      ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[2][16]                                                                                                                                      ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[1][26]                                                                                                                                      ;
-; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[0][17]                                                                                                                                      ;
-; 73:1               ; 8 bits    ; 384 LEs       ; 64 LEs               ; 320 LEs                ; Yes        ; |computer|cpu:cpu0|regs[14][10]                                                                                                                                     ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[13][10]                                                                                                                                     ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[12][10]                                                                                                                                     ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[11][11]                                                                                                                                     ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[10][10]                                                                                                                                     ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[9][15]                                                                                                                                      ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[8][11]                                                                                                                                      ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[7][12]                                                                                                                                      ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[6][10]                                                                                                                                      ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[5][11]                                                                                                                                      ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[4][11]                                                                                                                                      ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[3][12]                                                                                                                                      ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[2][8]                                                                                                                                       ;
-; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[1][9]                                                                                                                                       ;
-; 70:1               ; 6 bits    ; 276 LEs       ; 48 LEs               ; 228 LEs                ; Yes        ; |computer|cpu:cpu0|regs[0][14]                                                                                                                                      ;
-; 70:1               ; 2 bits    ; 92 LEs        ; 16 LEs               ; 76 LEs                 ; Yes        ; |computer|cpu:cpu0|regs[0][9]                                                                                                                                       ;
-; 76:1               ; 7 bits    ; 350 LEs       ; 70 LEs               ; 280 LEs                ; Yes        ; |computer|cpu:cpu0|regs[14][3]                                                                                                                                      ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[11][22]                                                                                                                                     ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[10][17]                                                                                                                                     ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[9][30]                                                                                                                                      ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[8][21]                                                                                                                                      ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[7][25]                                                                                                                                      ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[6][24]                                                                                                                                      ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[5][24]                                                                                                                                      ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[4][21]                                                                                                                                      ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[3][25]                                                                                                                                      ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[2][20]                                                                                                                                      ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[1][18]                                                                                                                                      ;
+; 71:1               ; 14 bits   ; 658 LEs       ; 112 LEs              ; 546 LEs                ; Yes        ; |computer|cpu:cpu0|regs[0][22]                                                                                                                                      ;
+; 73:1               ; 8 bits    ; 384 LEs       ; 64 LEs               ; 320 LEs                ; Yes        ; |computer|cpu:cpu0|regs[14][12]                                                                                                                                     ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[13][9]                                                                                                                                      ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[12][11]                                                                                                                                     ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[11][10]                                                                                                                                     ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[10][14]                                                                                                                                     ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[9][13]                                                                                                                                      ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[8][13]                                                                                                                                      ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[7][9]                                                                                                                                       ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[6][15]                                                                                                                                      ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[5][13]                                                                                                                                      ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[4][10]                                                                                                                                      ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[3][13]                                                                                                                                      ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[2][11]                                                                                                                                      ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[1][15]                                                                                                                                      ;
+; 70:1               ; 8 bits    ; 368 LEs       ; 64 LEs               ; 304 LEs                ; Yes        ; |computer|cpu:cpu0|regs[0][10]                                                                                                                                      ;
+; 76:1               ; 7 bits    ; 350 LEs       ; 70 LEs               ; 280 LEs                ; Yes        ; |computer|cpu:cpu0|regs[14][4]                                                                                                                                      ;
 ; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[13][7]                                                                                                                                      ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[12][4]                                                                                                                                      ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[11][6]                                                                                                                                      ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[10][5]                                                                                                                                      ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[9][7]                                                                                                                                       ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[8][2]                                                                                                                                       ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[7][6]                                                                                                                                       ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[6][3]                                                                                                                                       ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[5][3]                                                                                                                                       ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[4][3]                                                                                                                                       ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[3][2]                                                                                                                                       ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[2][2]                                                                                                                                       ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[12][3]                                                                                                                                      ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[11][3]                                                                                                                                      ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[10][4]                                                                                                                                      ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[9][3]                                                                                                                                       ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[8][4]                                                                                                                                       ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[7][1]                                                                                                                                       ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[6][7]                                                                                                                                       ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[5][2]                                                                                                                                       ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[4][2]                                                                                                                                       ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[3][3]                                                                                                                                       ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[2][5]                                                                                                                                       ;
 ; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[1][2]                                                                                                                                       ;
-; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[0][5]                                                                                                                                       ;
+; 73:1               ; 7 bits    ; 336 LEs       ; 63 LEs               ; 273 LEs                ; Yes        ; |computer|cpu:cpu0|regs[0][1]                                                                                                                                       ;
 ; 152:1              ; 14 bits   ; 1414 LEs      ; 140 LEs              ; 1274 LEs               ; Yes        ; |computer|cpu:cpu0|regs[15][19]                                                                                                                                     ;
-; 154:1              ; 8 bits    ; 816 LEs       ; 80 LEs               ; 736 LEs                ; Yes        ; |computer|cpu:cpu0|regs[15][14]                                                                                                                                     ;
-; 157:1              ; 6 bits    ; 624 LEs       ; 66 LEs               ; 558 LEs                ; Yes        ; |computer|cpu:cpu0|regs[15][3]                                                                                                                                      ;
-; 134:1              ; 24 bits   ; 2136 LEs      ; 240 LEs              ; 1896 LEs               ; Yes        ; |computer|cpu:cpu0|addr[21]                                                                                                                                         ;
-; 178:1              ; 7 bits    ; 826 LEs       ; 21 LEs               ; 805 LEs                ; Yes        ; |computer|cpu:cpu0|pc[26]                                                                                                                                           ;
-; 135:1              ; 9 bits    ; 810 LEs       ; 27 LEs               ; 783 LEs                ; Yes        ; |computer|cpu:cpu0|pc[22]                                                                                                                                           ;
-; 135:1              ; 14 bits   ; 1260 LEs      ; 70 LEs               ; 1190 LEs               ; Yes        ; |computer|cpu:cpu0|pc[13]                                                                                                                                           ;
-; 3:1                ; 16 bits   ; 32 LEs        ; 32 LEs               ; 0 LEs                  ; Yes        ; |computer|sdram_controller:sdram_controlleri|wr_data_r[7]                                                                                                           ;
+; 154:1              ; 8 bits    ; 816 LEs       ; 80 LEs               ; 736 LEs                ; Yes        ; |computer|cpu:cpu0|regs[15][11]                                                                                                                                     ;
+; 157:1              ; 6 bits    ; 624 LEs       ; 66 LEs               ; 558 LEs                ; Yes        ; |computer|cpu:cpu0|regs[15][2]                                                                                                                                      ;
+; 133:1              ; 31 bits   ; 2728 LEs      ; 372 LEs              ; 2356 LEs               ; Yes        ; |computer|cpu:cpu0|addr[29]                                                                                                                                         ;
+; 136:1              ; 16 bits   ; 1440 LEs      ; 64 LEs               ; 1376 LEs               ; Yes        ; |computer|cpu:cpu0|pc[23]                                                                                                                                           ;
+; 136:1              ; 14 bits   ; 1260 LEs      ; 84 LEs               ; 1176 LEs               ; Yes        ; |computer|cpu:cpu0|pc[3]                                                                                                                                            ;
+; 3:1                ; 16 bits   ; 32 LEs        ; 32 LEs               ; 0 LEs                  ; Yes        ; |computer|sdram_controller:sdram_controlleri|wr_data_r[2]                                                                                                           ;
 ; 4:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; Yes        ; |computer|vga_module:vga0|b                                                                                                                                         ;
-; 9:1                ; 3 bits    ; 18 LEs        ; 18 LEs               ; 0 LEs                  ; Yes        ; |computer|vga_320x240:vga1|g                                                                                                                                        ;
-; 27:1               ; 9 bits    ; 162 LEs       ; 18 LEs               ; 144 LEs                ; Yes        ; |computer|cpu:cpu0|alu_a[16]                                                                                                                                        ;
-; 27:1               ; 7 bits    ; 126 LEs       ; 14 LEs               ; 112 LEs                ; Yes        ; |computer|cpu:cpu0|alu_a[31]                                                                                                                                        ;
-; 31:1               ; 16 bits   ; 320 LEs       ; 64 LEs               ; 256 LEs                ; Yes        ; |computer|cpu:cpu0|alu_b[21]                                                                                                                                        ;
-; 30:1               ; 8 bits    ; 160 LEs       ; 16 LEs               ; 144 LEs                ; Yes        ; |computer|cpu:cpu0|alu_a[4]                                                                                                                                         ;
-; 30:1               ; 7 bits    ; 140 LEs       ; 21 LEs               ; 119 LEs                ; Yes        ; |computer|cpu:cpu0|alu_a[14]                                                                                                                                        ;
-; 29:1               ; 8 bits    ; 152 LEs       ; 16 LEs               ; 136 LEs                ; Yes        ; |computer|cpu:cpu0|alu_b[2]                                                                                                                                         ;
+; 9:1                ; 3 bits    ; 18 LEs        ; 18 LEs               ; 0 LEs                  ; Yes        ; |computer|vga_320x240:vga1|b                                                                                                                                        ;
+; 27:1               ; 16 bits   ; 288 LEs       ; 32 LEs               ; 256 LEs                ; Yes        ; |computer|cpu:cpu0|alu_a[29]                                                                                                                                        ;
+; 31:1               ; 16 bits   ; 320 LEs       ; 64 LEs               ; 256 LEs                ; Yes        ; |computer|cpu:cpu0|alu_b[29]                                                                                                                                        ;
+; 30:1               ; 8 bits    ; 160 LEs       ; 16 LEs               ; 144 LEs                ; Yes        ; |computer|cpu:cpu0|alu_a[7]                                                                                                                                         ;
+; 30:1               ; 7 bits    ; 140 LEs       ; 21 LEs               ; 119 LEs                ; Yes        ; |computer|cpu:cpu0|alu_a[12]                                                                                                                                        ;
+; 29:1               ; 8 bits    ; 152 LEs       ; 16 LEs               ; 136 LEs                ; Yes        ; |computer|cpu:cpu0|alu_b[6]                                                                                                                                         ;
 ; 29:1               ; 8 bits    ; 152 LEs       ; 32 LEs               ; 120 LEs                ; Yes        ; |computer|cpu:cpu0|alu_b[12]                                                                                                                                        ;
 ; 3:1                ; 2 bits    ; 4 LEs         ; 2 LEs                ; 2 LEs                  ; No         ; |computer|sdram_controller:sdram_controlleri|addr[12]                                                                                                               ;
 ; 3:1                ; 5 bits    ; 10 LEs        ; 5 LEs                ; 5 LEs                  ; No         ; |computer|rx_serial:rsr|rx_bit_count                                                                                                                                ;
-; 4:1                ; 15 bits   ; 30 LEs        ; 30 LEs               ; 0 LEs                  ; No         ; |computer|vga_320x240:vga1|Mux13                                                                                                                                    ;
+; 4:1                ; 15 bits   ; 30 LEs        ; 30 LEs               ; 0 LEs                  ; No         ; |computer|vga_320x240:vga1|Mux14                                                                                                                                    ;
 ; 3:1                ; 10 bits   ; 20 LEs        ; 20 LEs               ; 0 LEs                  ; No         ; |computer|cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_98g:rbarrel_shift|result[1]        ;
 ; 4:1                ; 2 bits    ; 4 LEs         ; 2 LEs                ; 2 LEs                  ; No         ; |computer|sdram_controller:sdram_controlleri|bank_addr[1]                                                                                                           ;
-; 4:1                ; 7 bits    ; 14 LEs        ; 14 LEs               ; 0 LEs                  ; No         ; |computer|sdram_controller:sdram_controlleri|addr[2]                                                                                                                ;
+; 4:1                ; 7 bits    ; 14 LEs        ; 14 LEs               ; 0 LEs                  ; No         ; |computer|sdram_controller:sdram_controlleri|addr[0]                                                                                                                ;
 ; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |computer|sdram_controller:sdram_controlleri|addr[5]                                                                                                                ;
-; 16:1               ; 32 bits   ; 320 LEs       ; 320 LEs              ; 0 LEs                  ; No         ; |computer|cpu:cpu0|Mux7                                                                                                                                             ;
-; 16:1               ; 32 bits   ; 320 LEs       ; 320 LEs              ; 0 LEs                  ; No         ; |computer|cpu:cpu0|Mux37                                                                                                                                            ;
-; 10:1               ; 9 bits    ; 54 LEs        ; 9 LEs                ; 45 LEs                 ; No         ; |computer|cpu:cpu0|Add17                                                                                                                                            ;
-; 10:1               ; 41 bits   ; 246 LEs       ; 41 LEs               ; 205 LEs                ; No         ; |computer|cpu:cpu0|Add17                                                                                                                                            ;
+; 16:1               ; 32 bits   ; 320 LEs       ; 320 LEs              ; 0 LEs                  ; No         ; |computer|cpu:cpu0|Mux55                                                                                                                                            ;
+; 16:1               ; 32 bits   ; 320 LEs       ; 320 LEs              ; 0 LEs                  ; No         ; |computer|cpu:cpu0|Mux8                                                                                                                                             ;
 ; 10:1               ; 4 bits    ; 24 LEs        ; 16 LEs               ; 8 LEs                  ; No         ; |computer|rx_serial:rsr|state                                                                                                                                       ;
 ; 13:1               ; 3 bits    ; 24 LEs        ; 12 LEs               ; 12 LEs                 ; No         ; |computer|vga_module:vga0|state                                                                                                                                     ;
-; 96:1               ; 2 bits    ; 128 LEs       ; 8 LEs                ; 120 LEs                ; No         ; |computer|cpu:cpu0|mc_count                                                                                                                                         ;
-; 256:1              ; 3 bits    ; 510 LEs       ; 510 LEs              ; 0 LEs                  ; No         ; |computer|vga_320x240:vga1|Mux220                                                                                                                                   ;
-; 256:1              ; 3 bits    ; 510 LEs       ; 510 LEs              ; 0 LEs                  ; No         ; |computer|vga_320x240:vga1|Mux98                                                                                                                                    ;
-; 256:1              ; 3 bits    ; 510 LEs       ; 510 LEs              ; 0 LEs                  ; No         ; |computer|vga_320x240:vga1|Mux152                                                                                                                                   ;
+; 97:1               ; 2 bits    ; 128 LEs       ; 8 LEs                ; 120 LEs                ; No         ; |computer|cpu:cpu0|mc_count                                                                                                                                         ;
+; 256:1              ; 3 bits    ; 510 LEs       ; 510 LEs              ; 0 LEs                  ; No         ; |computer|vga_320x240:vga1|Mux186                                                                                                                                   ;
+; 256:1              ; 3 bits    ; 510 LEs       ; 510 LEs              ; 0 LEs                  ; No         ; |computer|vga_320x240:vga1|Mux115                                                                                                                                   ;
+; 256:1              ; 3 bits    ; 510 LEs       ; 510 LEs              ; 0 LEs                  ; No         ; |computer|vga_320x240:vga1|Mux169                                                                                                                                   ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
@@ -3552,7 +3552,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 +----------------+--------------+
 ; Partition Name ; Elapsed Time ;
 +----------------+--------------+
-; Top            ; 00:02:08     ;
+; Top            ; 00:02:00     ;
 +----------------+--------------+
 
 
@@ -3562,7 +3562,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit Analysis & Synthesis
     Info: Version 13.0.0 Build 156 04/24/2013 SJ Web Edition
-    Info: Processing started: Sat Oct 19 19:07:48 2019
+    Info: Processing started: Mon Dec 09 20:44:21 2019
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off computer -c computer
 Warning (20028): Parallel compilation is not licensed and has been disabled
 Info (12021): Found 1 design units, including 1 entities, in source file cpu.v
@@ -3658,392 +3658,316 @@ Info (12128): Elaborating entity "rx_serial" for hierarchy "rx_serial:rsr"
 Warning (10036): Verilog HDL or VHDL warning at rx_serial.v(24): object "rx4" assigned a value but never read
 Info (12128): Elaborating entity "tx_serial" for hierarchy "tx_serial:tsr"
 Info (12128): Elaborating entity "cpu" for hierarchy "cpu:cpu0"
-Warning (10230): Verilog HDL assignment warning at cpu.v(205): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(269): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(275): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(276): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(277): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(286): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(304): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(313): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(324): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(327): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(328): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(332): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(321): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(345): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(348): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(349): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(366): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(342): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(381): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(384): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(385): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(394): truncated value with size 32 to match size of target (8)
-Warning (10230): Verilog HDL assignment warning at cpu.v(398): truncated value with size 32 to match size of target (8)
-Warning (10230): Verilog HDL assignment warning at cpu.v(401): truncated value with size 32 to match size of target (2)
-Warning (10230): Verilog HDL assignment warning at cpu.v(410): truncated value with size 32 to match size of target (1)
-Warning (10762): Verilog HDL Case Statement warning at cpu.v(392): can't check case statement for completeness because the case expression has too many possible states
-Warning (10230): Verilog HDL assignment warning at cpu.v(419): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(378): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(433): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(439): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(440): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(443): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(449): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(216): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(280): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(287): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(288): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(297): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(315): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(324): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(338): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(339): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(343): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(332): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(359): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(360): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(377): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(353): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(395): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(396): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(405): truncated value with size 32 to match size of target (8)
+Warning (10230): Verilog HDL assignment warning at cpu.v(409): truncated value with size 32 to match size of target (8)
+Warning (10230): Verilog HDL assignment warning at cpu.v(412): truncated value with size 32 to match size of target (2)
+Warning (10230): Verilog HDL assignment warning at cpu.v(421): truncated value with size 32 to match size of target (1)
+Warning (10762): Verilog HDL Case Statement warning at cpu.v(403): can't check case statement for completeness because the case expression has too many possible states
+Warning (10230): Verilog HDL assignment warning at cpu.v(430): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(389): all case item expressions in this case statement are onehot
 Warning (10230): Verilog HDL assignment warning at cpu.v(450): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(454): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(431): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(470): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(473): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(474): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(479): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(482): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(483): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(486): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(492): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(451): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(460): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(461): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(465): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(442): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(484): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(485): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(493): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(496): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(497): truncated value with size 32 to match size of target (16)
-Warning (10230): Verilog HDL assignment warning at cpu.v(502): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(494): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(503): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(507): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(466): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(523): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(526): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(527): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(533): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(536): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(504): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(508): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(513): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(514): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(518): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(477): all case item expressions in this case statement are onehot
 Warning (10230): Verilog HDL assignment warning at cpu.v(537): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(543): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(519): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(559): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(562): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(563): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(568): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(571): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(572): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(576): truncated value with size 32 to match size of target (16)
-Warning (10230): Verilog HDL assignment warning at cpu.v(577): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(554): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(593): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(596): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(597): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(603): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(606): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(538): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(547): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(548): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(554): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(530): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(573): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(574): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(582): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(583): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(587): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(588): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(565): all case item expressions in this case statement are onehot
 Warning (10230): Verilog HDL assignment warning at cpu.v(607): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(614): truncated value with size 32 to match size of target (24)
+Warning (10230): Verilog HDL assignment warning at cpu.v(608): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(617): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(618): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(623): truncated value with size 32 to match size of target (16)
-Warning (10230): Verilog HDL assignment warning at cpu.v(624): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(588): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(637): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(649): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(652): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(653): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(657): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(660): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(661): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(665): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(645): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(628): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(629): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(634): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(635): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(599): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(648): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(663): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(664): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(671): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(672): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(676): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(688): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(691): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(692): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(696): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(684): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(710): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(713): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(714): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(718): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(721): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(722): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(726): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(706): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(736): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(751): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(754): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(755): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(759): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(761): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(656): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(687): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(702): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(703): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(707): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(695): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(724): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(725): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(732): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(733): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(737): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(717): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(747): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(762): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(870): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(745): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(880): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(883): truncated value with size 32 to match size of target (16)
-Warning (10230): Verilog HDL assignment warning at cpu.v(885): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(886): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(889): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(892): truncated value with size 32 to match size of target (16)
-Warning (10230): Verilog HDL assignment warning at cpu.v(894): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(895): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(899): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(902): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(903): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(907): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(910): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(911): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(948): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(876): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(967): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(972): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(973): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(978): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(980): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(981): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(988): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(995): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(963): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1021): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1024): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1025): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1029): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1032): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1033): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1038): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1042): truncated value with size 32 to match size of target (24)
+Warning (10230): Verilog HDL assignment warning at cpu.v(774): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(775): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(781): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(782): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(890): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(765): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(904): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(906): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(907): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(913): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(915): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(916): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(923): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(924): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(931): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(932): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(969): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(897): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(993): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(994): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1001): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1002): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1009): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1016): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(984): all case item expressions in this case statement are onehot
 Warning (10230): Verilog HDL assignment warning at cpu.v(1045): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(1046): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(1053): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1058): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1060): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1061): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1054): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1066): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(1067): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1017): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1088): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1089): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1090): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1096): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1099): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1100): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1106): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1109): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1110): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1114): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1116): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1118): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1119): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1133): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1083): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1151): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1157): truncated value with size 32 to match size of target (16)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1160): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1161): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1164): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1167): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1168): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1172): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1147): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1196): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1199): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1200): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1204): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1207): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1208): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1212): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1215): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1218): truncated value with size 32 to match size of target (16)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1226): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1227): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1230): truncated value with size 32 to match size of target (24)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1074): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1081): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1082): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1088): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1038): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1111): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1112): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1121): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1122): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1131): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1132): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1143): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1144): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1158): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1104): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1182): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1185): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1186): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1192): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1193): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1197): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1172): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1224): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1225): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1232): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(1233): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1234): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1237): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1192): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1251): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1253): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1254): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1259): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1267): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1268): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1273): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1247): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1291): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1294): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1295): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1299): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1302): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1303): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1309): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1314): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1318): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1243): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1251): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1252): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1258): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1259): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1262): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1217): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1278): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1279): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1292): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1293): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1298): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1272): all case item expressions in this case statement are onehot
 Warning (10230): Verilog HDL assignment warning at cpu.v(1319): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1324): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1332): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1333): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1337): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1287): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1379): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1381): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1382): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1409): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1411): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1375): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1445): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1447): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1448): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1484): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1487): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1495): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1497): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1441): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1533): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1536): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1537): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1541): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1544): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1545): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1549): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1551): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1552): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1560): truncated value with size 32 to match size of target (24)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1320): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1327): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1328): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1343): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1344): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1357): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1358): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1362): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1312): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1406): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1407): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1434): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1436): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1400): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1472): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1473): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1509): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1512): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1520): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1522): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1466): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1561): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(1562): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1563): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1614): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1617): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1529): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1651): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1654): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1655): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1659): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1662): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1663): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1667): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1669): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1670): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1678): truncated value with size 32 to match size of target (24)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1569): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1570): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1576): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1577): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1587): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1588): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1639): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1642): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1554): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1679): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(1680): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1681): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1739): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1741): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1747): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1748): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1647): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1782): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1783): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1784): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1809): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1810): truncated value with size 32 to match size of target (16)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1811): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1812): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1818): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1821): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1778): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(1850): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1852): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1853): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1859): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1861): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1862): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1867): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1869): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1870): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1879): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1880): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1881): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1928): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1931): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1932): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1936): truncated value with size 32 to match size of target (16)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1937): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1938): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1949): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1950): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1953): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1956): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1958): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1959): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1687): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1688): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1694): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1695): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1705): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1706): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1764): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1766): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1772): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1773): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1672): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1808): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1809): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1835): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1836): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1837): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1843): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1846): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(1803): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1877): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1878): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1886): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1887): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1894): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1895): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1905): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1906): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1956): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1957): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1961): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1962): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(1963): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1990): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1992): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(1993): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2013): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2015): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(1986): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(1974): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1975): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1978): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1983): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1984): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(1988): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2017): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2018): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(2038): truncated value with size 5 to match size of target (4)
 Warning (10230): Verilog HDL assignment warning at cpu.v(2040): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(2024): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(2059): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2062): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2063): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2067): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2070): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2071): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2075): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2081): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2082): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2087): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2089): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2090): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2129): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2135): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2141): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(2055): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(2165): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2167): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2168): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2174): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2176): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2177): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2182): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2184): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2185): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2194): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2195): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2196): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2226): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2229): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2230): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2234): truncated value with size 32 to match size of target (16)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2235): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2236): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2247): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2248): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2251): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2254): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2256): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2257): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(2011): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(2063): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2065): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(2049): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(2087): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2088): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2095): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2096): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2106): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2107): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2114): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2115): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2154): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2160): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2166): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(2080): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(2192): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2193): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2201): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2202): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2209): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2210): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2220): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2221): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2254): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2255): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2259): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2260): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(2261): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2278): truncated value with size 32 to match size of target (24)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2272): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2273): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2276): truncated value with size 5 to match size of target (4)
 Warning (10230): Verilog HDL assignment warning at cpu.v(2281): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(2282): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2293): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2295): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2296): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2338): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2341): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2349): truncated value with size 5 to match size of target (4)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2350): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(2274): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(2394): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(2371): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(2423): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(2404): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(2452): truncated value with size 32 to match size of target (6)
-Info (10264): Verilog HDL Case Statement information at cpu.v(2433): all case item expressions in this case statement are onehot
-Warning (10230): Verilog HDL assignment warning at cpu.v(2480): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2481): truncated value with size 32 to match size of target (6)
-Warning (10762): Verilog HDL Case Statement warning at cpu.v(2487): can't check case statement for completeness because the case expression has too many possible states
-Warning (10230): Verilog HDL assignment warning at cpu.v(2499): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2508): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2513): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2514): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2517): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2522): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2523): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2527): truncated value with size 32 to match size of target (24)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2532): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2533): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2555): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2561): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2569): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2575): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2583): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2590): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2609): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2286): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2306): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2307): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2320): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2321): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2363): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2366): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2374): truncated value with size 5 to match size of target (4)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2375): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(2299): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(2419): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(2396): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(2448): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(2429): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(2477): truncated value with size 32 to match size of target (6)
+Info (10264): Verilog HDL Case Statement information at cpu.v(2458): all case item expressions in this case statement are onehot
+Warning (10230): Verilog HDL assignment warning at cpu.v(2505): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2506): truncated value with size 32 to match size of target (6)
+Warning (10762): Verilog HDL Case Statement warning at cpu.v(2512): can't check case statement for completeness because the case expression has too many possible states
+Warning (10230): Verilog HDL assignment warning at cpu.v(2524): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2538): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2539): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2547): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2548): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2557): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2558): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2580): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2586): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2594): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2597): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2600): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2603): truncated value with size 32 to match size of target (16)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2609): truncated value with size 32 to match size of target (24)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2613): truncated value with size 32 to match size of target (6)
 Warning (10230): Verilog HDL assignment warning at cpu.v(2619): truncated value with size 32 to match size of target (6)
-Warning (10230): Verilog HDL assignment warning at cpu.v(2642): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2628): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2635): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2657): truncated value with size 16 to match size of target (8)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2661): truncated value with size 16 to match size of target (2)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2666): truncated value with size 16 to match size of target (1)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2669): truncated value with size 16 to match size of target (8)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2674): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2677): truncated value with size 32 to match size of target (24)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2682): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2692): truncated value with size 32 to match size of target (6)
+Warning (10230): Verilog HDL assignment warning at cpu.v(2723): truncated value with size 32 to match size of target (6)
 Info (12128): Elaborating entity "fpaddsub" for hierarchy "cpu:cpu0|fpaddsub:fpaddsub_op"
 Info (12128): Elaborating entity "fpaddsub_altfp_add_sub_0sm" for hierarchy "cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component"
 Info (12128): Elaborating entity "fpaddsub_altbarrel_shift_35e" for hierarchy "cpu:cpu0|fpaddsub:fpaddsub_op|fpaddsub_altfp_add_sub_0sm:fpaddsub_altfp_add_sub_0sm_component|fpaddsub_altbarrel_shift_35e:lbarrel_shift"
@@ -4746,19 +4670,19 @@ Warning (21074): Design contains 9 input pin(s) that do not drive logic
     Warning (15610): No output dependent on input pin "gpio0_IN[1]"
     Warning (15610): No output dependent on input pin "gpio1_IN[0]"
     Warning (15610): No output dependent on input pin "gpio1_IN[1]"
-Info (21057): Implemented 20496 device resources after synthesis - the final resource count might be different
+Info (21057): Implemented 21482 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 11 input pins
     Info (21059): Implemented 31 output pins
     Info (21060): Implemented 84 bidirectional pins
-    Info (21061): Implemented 20087 logic cells
+    Info (21061): Implemented 21073 logic cells
     Info (21064): Implemented 251 RAM segments
     Info (21065): Implemented 1 PLLs
     Info (21062): Implemented 31 DSP elements
-Info: Quartus II 64-Bit Analysis & Synthesis was successful. 0 errors, 556 warnings
-    Info: Peak virtual memory: 4808 megabytes
-    Info: Processing ended: Sat Oct 19 19:10:04 2019
-    Info: Elapsed time: 00:02:16
-    Info: Total CPU time (on all processors): 00:02:15
+Info: Quartus II 64-Bit Analysis & Synthesis was successful. 0 errors, 480 warnings
+    Info: Peak virtual memory: 4824 megabytes
+    Info: Processing ended: Mon Dec 09 20:46:32 2019
+    Info: Elapsed time: 00:02:11
+    Info: Total CPU time (on all processors): 00:02:10
 
 
 +------------------------------------------+
