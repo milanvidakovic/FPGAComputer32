@@ -12,7 +12,8 @@ module tx_serial(
 );
     
 
-localparam DIVISOR = 13'd868;
+//localparam DIVISOR = 13'd868;
+localparam DIVISOR = 13'd108;  // 921600 bauds on 100MHz
 // Divide 50 MHz by 434 to get approximately 115200 baud (divide by 5208 to get 9600 baud)
 //localparam DIVISOR = 13'd434;
 //localparam DIVISOR = 13'd217;

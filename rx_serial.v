@@ -6,7 +6,8 @@ module rx_serial(
 	output reg rx_received // goes high when received one byte
 );
 
-localparam RX_CLOCK_MUL = 13'd868;
+//localparam RX_CLOCK_MUL = 13'd868;
+localparam RX_CLOCK_MUL = 13'd108; // 921600 baud on 100MHz
 // Divide 50 MHz by 434 to get approximately 115200 baud (divide by 5208 to get 9600 baud)
 //localparam RX_CLOCK_MUL = 13'd434;
 //localparam RX_CLOCK_MUL = 13'd217;

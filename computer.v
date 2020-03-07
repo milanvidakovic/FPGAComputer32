@@ -153,7 +153,7 @@ vga_320x240 vga1 (
 	clk100,
 
 	//////////// RESET KEY //////////
-	reset,
+	~KEY[0],
 
 	//////////// GPIO //////////
 	r, 
@@ -236,6 +236,9 @@ tx_serial tsr(
 // IRQs 
 // ########################################
 
+reg cpu_reset = 1'b1;
+reg [31:0] reset_counter;
+
 // IRQ signals
 wire [15:0] irq;
 //reg [7:0] fakeLED;
@@ -243,8 +246,15 @@ wire [15:0] irq;
 always @ (posedge clk100) begin
 	if (~KEY[0]) begin
 		irq <= 0;
+		reset_counter <= 32'd0;
+		cpu_reset <= 1'b1;
 	end
-
+	if (reset_counter == 32'd200000000) begin
+		cpu_reset <= 1'b0;
+	end
+	else
+		reset_counter <= reset_counter + 1'b1;
+	
 	// ############################### IRQ2 - PS/2 keyboard #############################
 	if (ps2_received) begin
 		ps2_data_r <= ps2_data;
@@ -272,7 +282,7 @@ end
 // ####################################
 cpu cpu0 (
   .clk         (clk100),
-  .rst         (~KEY[0]),
+  .rst         (cpu_reset),
 
   .rd_enable_o (rd_enable),
   .wr_enable_o (wr_enable),

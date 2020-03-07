@@ -29,15 +29,15 @@ module vga_320x240#(parameter N = 16)(
 //=======================================================
 
 localparam VIDEO_MEM_ADDR = 1024/2;
-localparam IN_LINE                       = 0;
-localparam H_BLANK                       = 1;
-localparam V_BLANK                       = 2;
-localparam READ_SPRITES                  = 3;
-localparam READ_SPRITE_X                 = 4;
-localparam READ_SPRITE_Y                 = 5;
-localparam READ_SPRITE_TRANSPARENT_COLOR = 6;
-localparam READ_SPRITE_DATA              = 7;
-localparam SCAN_IDLE                     = 8;
+localparam IN_LINE                       = 10;
+localparam H_BLANK                       = 20;
+localparam V_BLANK                       = 30;
+localparam READ_SPRITES                  = 40;
+localparam READ_SPRITE_X                 = 50;
+localparam READ_SPRITE_Y                 = 60;
+localparam READ_SPRITE_TRANSPARENT_COLOR = 70;
+localparam READ_SPRITE_DATA              = 80;
+localparam SCAN_IDLE                     = 90;
 
 localparam SPRITE_NUM                    = 4;
 
@@ -90,7 +90,7 @@ assign rb = enable ? b : 1'bZ;
 
 reg [3:0]count_read;
 reg mem_read;
-reg[2:0] state;
+reg[7:0] state;
 
 integer i = 0;
 reg sprite_found;

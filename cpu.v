@@ -1,6 +1,7 @@
 `define READ_ONLY
-`define CLANG
+//`define CLANG
 `define FLOAT
+`define CACHE
 
 module cpu #(
   parameter     ADDR_WIDTH    = 24
@@ -97,17 +98,29 @@ reg	[15:0] rd_data_r;
 reg [15:0]   data_r, data_to_write;
 reg [31:0]   addr;
 
+`ifdef CACHE
+// ###########################################
+// CACHE
+// ###########################################
+// cache TAG
+	reg [11:0] tag[4095:0];
+// cache line
+	reg [15:0] cl[4095:0];
+// ###########################################
+`endif
+
+
 // ###########################################
 // SDRAM INIT PAUSE
 // ###########################################
 /* Counter to wait until sdram init cycle is complete.  */
-reg   [5:0]  init_cnt;
+reg   [7:0]  init_cnt;
 reg init_wait;
 
 assign init_wait = |init_cnt;
 always @ (posedge clk)
 if (rst) begin
-  init_cnt <= 6'b11_1111;
+  init_cnt <= 8'hFF; 
 end
 else if (init_wait) begin
   init_cnt <= init_cnt - 1'b1;
@@ -263,7 +276,7 @@ else begin
 
  case (state)
   INIT:
-    if (~init_wait) begin
+    if (init_wait == 0) begin
 		rd <= 1'b0;
 		wr <= 1'b0;
 		rd_enable_o <= 1'b0;
@@ -764,6 +777,7 @@ else begin
 				else begin
 					case (mc_count)
 						0: begin
+							mbr <= 0;
 							`ifdef DEBUG
 							$display("JUMP SECTION");
 							`endif
@@ -789,7 +803,7 @@ else begin
 								`ifdef DEBUG
 								$display("%2x: J %x", ir[3:0], data_r);
 								`endif
-									pc <= data_r;
+									pc <= mbr + data_r;
 								end // end of J xx
 								// JZ xx
 								4'b0001: begin
@@ -797,7 +811,7 @@ else begin
 								$display("%2x: JZ %x", ir[3:0], data_r);
 								`endif
 									if (f[ZERO] == 1) begin
-										pc <= data_r;
+										pc <= mbr + data_r;
 									end
 								end // end of JZ xx
 								// JNZ xx
@@ -806,7 +820,7 @@ else begin
 								$display("%2x: JNZ %x", ir[3:0], data_r);
 								`endif
 									if (f[ZERO] == 0) begin
-										pc <= data_r;
+										pc <= mbr + data_r;
 									end
 								end // end of JNZ xx
 								// JC xx
@@ -815,7 +829,7 @@ else begin
 								$display("%2x: JC %x", ir[3:0], data_r);
 								`endif
 									if (f[CARRY] == 1) begin
-										pc <= data_r;
+										pc <= mbr + data_r;
 									end
 								end // end of JC xx
 								// JNC xx
@@ -824,7 +838,7 @@ else begin
 								$display("%2x: JNC %x", ir[3:0], data_r);
 								`endif
 									if (f[CARRY] == 0) begin
-										pc <= data_r;
+										pc <= mbr + data_r;
 									end
 								end // end of JNC xx
 								// JO xx
@@ -833,7 +847,7 @@ else begin
 								$display("%2x: JO %x", ir[3:0], data_r);
 								`endif
 									if (f[OVERFLOW] == 1) begin
-										pc <= data_r;
+										pc <= mbr + data_r;
 									end
 								end // end of JO xx
 								// JNO xx
@@ -842,7 +856,7 @@ else begin
 								$display("%2x: JNO %x", ir[3:0], data_r);
 								`endif
 									if (f[OVERFLOW] == 0) begin
-										pc <= data_r;
+										pc <= mbr + data_r;
 									end
 								end // end of JNO xx
 								// JP xx
@@ -851,7 +865,7 @@ else begin
 								$display("%2x: JP %x", ir[3:0], data_r);
 								`endif
 									if (f[POSITIVE] == 1) begin
-										pc <= data_r;
+										pc <= mbr + data_r;
 									end
 								end // end of JP xx
 								// JNP xx, JS xx
@@ -860,7 +874,7 @@ else begin
 								$display("%2x: JNP %x", ir[3:0], data_r);
 								`endif
 									if (f[POSITIVE] == 0) begin
-										pc <= data_r;
+										pc <= mbr + data_r;
 									end
 								end // end of JNP xx
 								// JG xx
@@ -869,7 +883,7 @@ else begin
 								$display("%2x: JG %x", ir[3:0], data_r);
 								`endif
 									if (f[POSITIVE] == 1 && f[ZERO] == 0) begin
-										pc <= data_r;
+										pc <= mbr + data_r;
 									end
 								end // end of JG xx
 								// JSE xx
@@ -878,7 +892,7 @@ else begin
 								$display("%2x: JSE %x", ir[3:0], data_r);
 								`endif
 									if (f[POSITIVE] == 0 || f[ZERO] == 1) begin
-										pc <= data_r;
+										pc <= mbr + data_r;
 									end
 								end // end of JSE xx
 								default: begin
@@ -2591,7 +2605,10 @@ else begin
 			// memory mapped IO
 			case (addr & 32'h3FFFFFFF)
 				PORT_MILLIS/2: begin	// milliseconds counted so far
-					data_r <= millis_counter;
+					data_r <= millis_counter >> 16;
+				end
+				PORT_MILLIS/2 + 1: begin	// milliseconds counted so far
+					data_r <= millis_counter & 16'hFFFF;
 				end
 				PORT_UART_RX_BYTE/2: begin    // UART RX DATA
 					data_r <= {24'b0, rx_data_r};
@@ -2608,10 +2625,22 @@ else begin
 		else begin
 			addr_o <= addr;
 			if (addr >= SDRAM_START_ADDR) begin
-				rd_enable_o <= 1'b1;
-				if (busy_i) begin
+				`ifdef CACHE
+				if (tag[addr[11:0]] == addr[23:12]) begin
+					// cache hit (required data is in cache)
+					data_r <= cl[addr[11:0]];
 					state <= READ_WAIT;
 				end
+				else begin
+					// cache miss -> we need to read from SDRAM
+				`endif
+					rd_enable_o <= 1'b1;
+					if (busy_i) begin
+						state <= READ_WAIT;
+					end
+			`ifdef CACHE
+				end
+			`endif
 			end
 			else begin
 				rd <= 1'b1;
@@ -2622,11 +2651,26 @@ else begin
 	end
 	READ_WAIT: begin
 		if (addr >= SDRAM_START_ADDR) begin
-			rd_enable_o <= 1'b0;
-			if (rd_ready_i) begin
-				data_r <= rd_data_i;
+			`ifdef CACHE
+			if (tag[addr[11:0]] == addr[23:12]) begin
 				state <= READ_WAIT + 1;
 			end
+			else begin
+			`endif
+				rd_enable_o <= 1'b0;
+				if (rd_ready_i) begin
+					data_r <= rd_data_i;
+					`ifdef CACHE
+					// we store the fetched data into the cache
+					cl[addr[11:0]] <= rd_data_i;
+					// write tag
+					tag[addr[11:0]] <= addr[23:12];
+					`endif
+					state <= READ_WAIT + 1;
+				end
+			`ifdef CACHE
+			end
+			`endif
 		end
 		else begin
 			rd <= 1'b0;
@@ -2637,11 +2681,16 @@ else begin
 	end
 	READ_WAIT + 1: begin
 		if (addr >= SDRAM_START_ADDR) begin
-			data_r <= rd_data_i;
+			//data_r <= rd_data_i;
+			`ifdef CACHE
 			state <= next_state;
+			`else
+			// NO CACHE
+			state <= next_state;
+			`endif
 		end
 		else begin
-			data_r <= data_i;
+			//data_r <= data_i;
 			state <= next_state;
 		end
 	end
@@ -2676,10 +2725,16 @@ else begin
 		else begin
 			addr_o <= addr;
 			if (addr >= SDRAM_START_ADDR) begin
+				// Write through, meaning that we save data in both SDRAM and cache
 				wr_data_o <= data_to_write;
+				// now we need to store the data that had to be saved right into this cache
+				cl[addr[11:0]] <= data_to_write;
+				// write tag
+				tag[addr[11:0]] <= addr[23:12];
 				wr_enable_o <= 1'b1;
-				if (busy_i)
+				if (busy_i) begin
 					state <= WRITE_WAIT;
+				end
 			end
 			else begin
 				`ifdef READ_ONLY
@@ -2718,7 +2773,7 @@ else begin
 				state <= next_state;
 			end
 		end
-	end	 
+	end
 	default: begin
 		state <= INIT;
 	end
