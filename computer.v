@@ -89,6 +89,9 @@ output        sdram_clk_pad_o;
 localparam IRQ_TIMER = 0;
 localparam IRQ_UART  = 1;
 localparam IRQ_PS2   = 2;
+localparam IRQ_SPI   = 3;
+localparam IRQ_SPI1  = 4;
+localparam IRQ_PS2_MOUSE   = 5;
 localparam N = 6'd32;
 
 //=======================================================
@@ -127,6 +130,8 @@ vga_module #(.N(N))vga0(
 	
 	//////////// CLOCK //////////
 	clk100,
+	CLOCK_50,
+	clk25,
 
 	//////////// RESET KEY //////////
 	~KEY[0],
@@ -151,6 +156,8 @@ vga_320x240 vga1 (
 	
 	//////////// CLOCK //////////
 	clk100,
+	CLOCK_50,
+	clk25,
 
 	//////////// RESET KEY //////////
 	~KEY[0],
@@ -184,6 +191,58 @@ RAM ram(
 	rd2
 );
 
+// ####################################
+// SPI Master instance
+// ####################################
+wire 		 spi_start;
+wire [7:0] spi_in;
+reg [7:0] spi_out;
+wire spi_ready;
+wire spi_received;
+reg [7:0] spi_in_r;
+reg fake_CS;
+
+SPI_Master_With_Single_CS spi0 (
+	.i_Clk(clk100),
+	.i_Rst_L(KEY[0]),
+	.i_TX_Count(1),
+	.i_TX_DV(spi_start),
+	.o_RX_Byte(spi_in),
+	.i_TX_Byte(spi_out),
+	.o_RX_DV(spi_received),
+	.o_TX_Ready(spi_ready),
+	
+	.o_SPI_MOSI(gpio0[32]),
+	.i_SPI_MISO(gpio0[30]),
+	.o_SPI_Clk(gpio0[28]),
+	.o_SPI_CS_n(fake_CS)
+	
+);
+
+wire 		 spi_start1;
+wire [7:0] spi_in1;
+reg [7:0] spi_out1;
+wire spi_ready1;
+wire spi_received1;
+reg [7:0] spi_in_r1;
+reg fake_CS1;
+
+SPI_Master_With_Single_CS spi1 (
+	.i_Clk(clk100),
+	.i_Rst_L(KEY[0]),
+	.i_TX_Count(1),
+	.i_TX_DV(spi_start1),
+	.o_RX_Byte(spi_in1),
+	.i_TX_Byte(spi_out1),
+	.o_RX_DV(spi_received1),
+	.o_TX_Ready(spi_ready1),
+	
+	.o_SPI_MOSI(gpio0[21]),
+	.i_SPI_MISO(gpio0[23]),
+	.o_SPI_Clk(gpio0[19]),
+	.o_SPI_CS_n(fake_CS1)
+	
+);
 
 // ####################################
 // PS/2 keyboard instance
@@ -192,6 +251,7 @@ wire [7:0] ps2_data;
 wire ps2_received;
 reg [7:0] ps2_data_r;
 
+/*
 ps2_read ps2(
   clk100,
   ~KEY[0],
@@ -200,6 +260,42 @@ ps2_read ps2(
   ps2_data,  		// here we will receive a character
   ps2_received    // if something came from serial, this goes high
 );
+*/
+PS2_Controller #(.INITIALIZE_MOUSE(0)) PS2 (
+	// Inputs
+	.CLOCK_50			(CLOCK_50),
+	.reset				(~KEY[0]),
+
+	// Bidirectionals
+	.PS2_CLK			(gpio0[33]),
+ 	.PS2_DAT			(gpio0[31]),
+
+	// Outputs
+	.received_data		(ps2_data),
+	.received_data_en	(ps2_received)
+); 
+
+// ####################################
+// PS/2 mouse instance
+// ####################################
+wire [7:0] ps2_data_mouse;
+wire ps2_received_mouse;
+reg [7:0] ps2_data_r_mouse;
+
+PS2_Controller PS2_mouse (
+	// Inputs
+	.CLOCK_50			(CLOCK_50),
+	.reset				(~KEY[0]),
+
+	// Bidirectionals
+	.PS2_CLK			(gpio0[2]),
+ 	.PS2_DAT			(gpio0[4]),
+
+	// Outputs
+	.received_data		(ps2_data_mouse),
+	.received_data_en	(ps2_received_mouse)
+); 
+
 
 // ####################################
 // UART receiver instance
@@ -249,12 +345,32 @@ always @ (posedge clk100) begin
 		reset_counter <= 32'd0;
 		cpu_reset <= 1'b1;
 	end
-	if (reset_counter == 32'd200000000) begin
+	if (reset_counter == 32'd200) begin
 		cpu_reset <= 1'b0;
 	end
 	else
 		reset_counter <= reset_counter + 1'b1;
 	
+	// ############################### IRQ4 - SPI1 Master #############################
+	if (spi_received1) begin
+		spi_in_r1 <= spi_in1;
+		// if we have received a byte from the MISO1, we will trigger the IRQ#4
+		irq[IRQ_SPI1] <= 1'b1;
+	end
+	else 
+	begin
+		irq[IRQ_SPI1] <= 1'b0;
+	end
+	// ############################### IRQ3 - SPI Master #############################
+	if (spi_received) begin
+		spi_in_r <= spi_in;
+		// if we have received a byte from the MISO, we will trigger the IRQ#3
+		irq[IRQ_SPI] <= 1'b1;
+	end
+	else 
+	begin
+		irq[IRQ_SPI] <= 1'b0;
+	end
 	// ############################### IRQ2 - PS/2 keyboard #############################
 	if (ps2_received) begin
 		ps2_data_r <= ps2_data;
@@ -264,6 +380,16 @@ always @ (posedge clk100) begin
 	else 
 	begin
 		irq[IRQ_PS2] <= 1'b0;
+	end
+	// ############################### IRQ5 - PS/2 mouse #############################
+	if (ps2_received_mouse) begin
+		ps2_data_r_mouse <= ps2_data_mouse;
+		// if we have received a byte from the keyboard, we will trigger the IRQ#2
+		irq[IRQ_PS2_MOUSE] <= 1'b1;
+	end
+	else 
+	begin
+		irq[IRQ_PS2_MOUSE] <= 1'b0;
 	end
 	// ############################### IRQ1 - UART #############################
 	if (rx_received) begin
@@ -283,7 +409,8 @@ end
 cpu cpu0 (
   .clk         (clk100),
   .rst         (cpu_reset),
-
+	
+	// SDRAM interface
   .rd_enable_o (rd_enable),
   .wr_enable_o (wr_enable),
   .busy_i      (busy),
@@ -293,19 +420,41 @@ cpu cpu0 (
   .addr_o      (addr),
 
   .LED         (LED),
+	// STATIC RAM interface
   .rd          (rd),
   .wr          (wr),
   .data_i      (data),
   .data_to_write_o(data_to_write),
-  
+
+	// UART interface
   .rx_data    (rx_data_r),  // UART RX data
   .tx_send    (tx_send),    // UART TX send signal
   .tx_busy    (tx_busy),    // UART TX busy signal
   .tx_data    (tx_data),    // UART TX data
+
+	// VGA interface
   .vga_mode   (vga_mode),	 // VGA mode: 0-text; 1-320x240
   .inverse    (inverse),	 // inverse colors on VGA text mode
+	// PS/2 interface
   .ps2_data   (ps2_data_r), // keyboard data
+  .ps2_data_mouse   (ps2_data_r_mouse), // mouse data
   
+  	// SPI0 interface
+  .spi_start	(spi_start),
+  .spi_in		(spi_in_r),
+  .spi_out		(spi_out),
+  .spi_ready	(spi_ready),  
+
+  	// SPI1 interface
+  .spi_start1	(spi_start1),
+  .spi_in1		(spi_in_r1),
+  .spi_out1		(spi_out1),
+  .spi_ready1	(spi_ready1),  
+
+  .spi_cs		(gpio0[26]),
+  .spi_cs1		(gpio0[29]),
+  
+  // INTERRUPTS interface
   .irq_i      (irq)
 
 );
@@ -321,6 +470,7 @@ wire	[15:0] rd_data;
 wire         rd_enable;
 
 wire         clk100;
+wire			 clk25;
 wire         rd_ready;
 wire         busy;
 
@@ -328,7 +478,7 @@ wire         busy;
 pll plli (
   .inclk0    (CLOCK_50),
   .c0        (clk100),
-  .c1        (),
+  .c1        (clk25),
   .c2        (),
   .areset    (~KEY[0])
 );

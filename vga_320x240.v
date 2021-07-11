@@ -7,6 +7,8 @@ module vga_320x240#(parameter N = 16)(
 	input wire [1:0] vga_mode,
 	//////////// CLOCK //////////
 	input clk,
+	input clk_50,
+	input clk_25,
 
 	//////////// reset //////////
 	input reset,
@@ -39,6 +41,7 @@ localparam READ_SPRITE_TRANSPARENT_COLOR = 70;
 localparam READ_SPRITE_DATA              = 80;
 localparam SCAN_IDLE                     = 90;
 
+localparam SPRITE_DEF_ADDR					  = 128;
 localparam SPRITE_NUM                    = 4;
 
 //=======================================================
@@ -52,9 +55,6 @@ localparam SPRITE_NUM                    = 4;
 
 reg clk25; // 25MHz signal (clk divided by 2)
 reg clk50;
-
-//reg newframe;
-//reg newline;
 
 reg [9:0] x;
 reg [9:0] y;
@@ -113,8 +113,24 @@ always @(posedge clk) begin
 end
 
 always @(posedge clk50) begin
-//	newframe <= 0;
-//	newline <= 0;
+	case (state) 
+		IN_LINE, H_BLANK: begin
+			if (mem_read) begin
+				pixels <= data;
+				rd <= 1'b0;
+				wr <= 1'b0;
+				mem_read <= 1'b0;
+			end
+		end
+		V_BLANK: begin
+			pixels <= data;
+			state <= SCAN_IDLE;
+			rd <= 1'bz;
+			wr <= 1'bz;
+			mem_read <= 1'b0;
+		end
+	endcase
+			
 	if (reset) begin
 		x <= 10'b0;
 		y <= 10'b0;
@@ -123,8 +139,6 @@ always @(posedge clk50) begin
 		for (i = 0; i < SPRITE_NUM; i = i + 1) 
 			sprite_addr[i] <= 16'd0;
 		sprite_found = 1'b0;
-//		newframe <= 1;
-//		newline <= 1;
 	end 
 	else begin
 		clk25 <= ~clk25;
@@ -135,30 +149,22 @@ always @(posedge clk50) begin
 			else begin
 				x <= 10'b0;
 				state <= IN_LINE;
-//				newline <= 1;
 				if (y < 10'd524) begin
 					y <= y + 1'b1;
 				end 
 				else begin
 					y <= 10'b0;
 					sprite_found = 1'b0;
-//					newframe <= 1;
 				end
 			end
 			case (state) 
-			IN_LINE, H_BLANK: begin
-				pixels <= data;
-				rd <= 1'bz;
-				wr <= 1'bz;
-				mem_read <= 1'b0;
-			end
 			READ_SPRITES: begin
 				sprite_addr[sprite_counter] <= data;
 				state <= READ_SPRITE_X;
 				rd <= 1'b1;
 				wr <= 1'b0;
 				mem_read <= 1'b1;
-				addr <= (16'd58 + (sprite_counter << 3)) >> 1;    // read x coordinate of the first sprite
+				addr <= ((SPRITE_DEF_ADDR + 2) + (sprite_counter << 3)) >> 1;    // read x coordinate of the first sprite
 			end
 			READ_SPRITE_X: begin
 				sprite_x[sprite_counter] <= data;
@@ -166,7 +172,7 @@ always @(posedge clk50) begin
 				rd <= 1'b1;
 				wr <= 1'b0;
 				mem_read <= 1'b1;
-				addr <= (16'd60 + (sprite_counter << 3)) >> 1;    // read y coordinate of the first sprite
+				addr <= ((SPRITE_DEF_ADDR + 4) + (sprite_counter << 3)) >> 1;    // read y coordinate of the first sprite
 			end
 			READ_SPRITE_Y: begin
 				sprite_y[sprite_counter] <= data;
@@ -174,7 +180,7 @@ always @(posedge clk50) begin
 				rd <= 1'b1;
 				wr <= 1'b0;
 				mem_read <= 1'b1;
-				addr <= (16'd62 + (sprite_counter << 3)) >> 1;    // read transparent color of the first sprite
+				addr <= ((SPRITE_DEF_ADDR + 6) + (sprite_counter << 3)) >> 1;    // read transparent color of the first sprite
 			end
 			READ_SPRITE_TRANSPARENT_COLOR: begin
 				sprite_transparent_color[sprite_counter] <= data[3:0];
@@ -215,7 +221,7 @@ always @(posedge clk50) begin
 						rd <= 1'b1;
 						wr <= 1'b0;
 						mem_read <= 1'b1;
-						addr <= (16'd56 + ((sprite_counter + 1'b1) << 3)) >> 1;    // read next sprite definition address
+						addr <= (SPRITE_DEF_ADDR + ((sprite_counter + 1'b1) << 3)) >> 1;    // read next sprite definition address
 					end
 					else begin
 						sprite_counter <= 4'b0;
@@ -226,13 +232,6 @@ always @(posedge clk50) begin
 						state <= V_BLANK;
 					end
 				end
-			end
-			V_BLANK: begin
-				pixels <= data;
-				state <= SCAN_IDLE;
-				rd <= 1'bz;
-				wr <= 1'bz;
-				mem_read <= 1'b0;
 			end
 			endcase
 		end 
@@ -245,7 +244,7 @@ always @(posedge clk50) begin
 					rd <= 1'b1;
 					wr <= 1'b0;
 					mem_read <= 1'b1;
-					addr <= 16'd28;    // read first sprite definition address
+					addr <= SPRITE_DEF_ADDR >> 1;    // read the first sprite definition address
 				end
 			else if ((x == 640) && (y < 479) && (state == IN_LINE)) begin
 					// when we start the horizontal blanking, and we need to go to the next line, 
@@ -277,7 +276,7 @@ always @(posedge clk50) begin
 	end
 	
 	if (valid) begin
-		for (i = 1; i < SPRITE_NUM; i = i+1) begin
+		for (i = 0; i < SPRITE_NUM; i = i+1) begin
 			if ((sprite_addr[i] != 16'b0) && (xx >= sprite_x[i]) && (xx < (sprite_x[i] + 16)) && (yy >= sprite_y[i]) && (yy < (sprite_y[i] + 16))) begin
 				sprite_found = 1'b1;
 				if (
@@ -322,8 +321,6 @@ initial begin
 		for (i = 0; i < SPRITE_NUM; i = i + 1) 
 			sprite_addr[i] <= 16'd0;
 		sprite_found = 1'b0;
-//		newframe <= 1;
-//		newline <= 1;
 end
 
 endmodule

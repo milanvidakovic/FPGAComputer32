@@ -1,5 +1,5 @@
 Flow report for computer
-Tue Mar 03 22:38:56 2020
+Mon Jan 11 19:34:12 2021
 Quartus II 64-Bit Version 13.0.0 Build 156 04/24/2013 SJ Web Edition
 
 
@@ -40,17 +40,17 @@ applicable agreement for further details.
 +---------------------------------------------------------------------------------+
 ; Flow Summary                                                                    ;
 +------------------------------------+--------------------------------------------+
-; Flow Status                        ; Successful - Tue Mar 03 22:38:56 2020      ;
+; Flow Status                        ; Successful - Mon Jan 11 19:34:12 2021      ;
 ; Quartus II 64-Bit Version          ; 13.0.0 Build 156 04/24/2013 SJ Web Edition ;
 ; Revision Name                      ; computer                                   ;
 ; Top-level Entity Name              ; computer                                   ;
 ; Family                             ; Cyclone IV E                               ;
 ; Device                             ; EP4CE22F17C6                               ;
 ; Timing Models                      ; Final                                      ;
-; Total logic elements               ; 19,433 / 22,320 ( 87 % )                   ;
-;     Total combinational functions  ; 17,017 / 22,320 ( 76 % )                   ;
-;     Dedicated logic registers      ; 6,347 / 22,320 ( 28 % )                    ;
-; Total registers                    ; 6347                                       ;
+; Total logic elements               ; 19,233 / 22,320 ( 86 % )                   ;
+;     Total combinational functions  ; 16,279 / 22,320 ( 73 % )                   ;
+;     Dedicated logic registers      ; 7,407 / 22,320 ( 33 % )                    ;
+; Total registers                    ; 7407                                       ;
 ; Total pins                         ; 126 / 154 ( 82 % )                         ;
 ; Total virtual pins                 ; 0                                          ;
 ; Total memory bits                  ; 479,760 / 608,256 ( 79 % )                 ;
@@ -64,7 +64,7 @@ applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 03/03/2020 22:34:23 ;
+; Start date & time ; 01/11/2021 19:29:30 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; computer            ;
 +-------------------+---------------------+
@@ -75,7 +75,7 @@ applicable agreement for further details.
 +-------------------------------------+---------------------------------+---------------+-------------+----------------+
 ; Assignment Name                     ; Value                           ; Default Value ; Entity Name ; Section Id     ;
 +-------------------------------------+---------------------------------+---------------+-------------+----------------+
-; COMPILER_SIGNATURE_ID               ; 154027284138872.158327126309064 ; --            ; --          ; --             ;
+; COMPILER_SIGNATURE_ID               ; 277371183618304.161038977007288 ; --            ; --          ; --             ;
 ; EDA_OUTPUT_DATA_FORMAT              ; Systemverilog Hdl               ; --            ; --          ; eda_simulation ;
 ; EDA_SIMULATION_TOOL                 ; ModelSim-Altera (SystemVerilog) ; <None>        ; --          ; --             ;
 ; IP_TOOL_NAME                        ; ALTFP_ADD_SUB                   ; --            ; --          ; --             ;
@@ -113,12 +113,12 @@ applicable agreement for further details.
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:01:51     ; 1.0                     ; 4790 MB             ; 00:01:51                           ;
-; Fitter                    ; 00:02:01     ; 1.0                     ; 5106 MB             ; 00:02:00                           ;
-; Assembler                 ; 00:00:02     ; 1.0                     ; 4618 MB             ; 00:00:02                           ;
-; TimeQuest Timing Analyzer ; 00:00:11     ; 1.0                     ; 4856 MB             ; 00:00:11                           ;
-; EDA Netlist Writer        ; 00:00:18     ; 1.0                     ; 4734 MB             ; 00:00:19                           ;
-; Total                     ; 00:04:23     ; --                      ; --                  ; 00:04:23                           ;
+; Analysis & Synthesis      ; 00:01:42     ; 1.0                     ; 4808 MB             ; 00:01:41                           ;
+; Fitter                    ; 00:02:20     ; 1.0                     ; 5108 MB             ; 00:02:19                           ;
+; Assembler                 ; 00:00:02     ; 1.0                     ; 4606 MB             ; 00:00:02                           ;
+; TimeQuest Timing Analyzer ; 00:00:11     ; 1.0                     ; 4853 MB             ; 00:00:11                           ;
+; EDA Netlist Writer        ; 00:00:18     ; 1.0                     ; 4725 MB             ; 00:00:16                           ;
+; Total                     ; 00:04:33     ; --                      ; --                  ; 00:04:29                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
@@ -127,11 +127,11 @@ applicable agreement for further details.
 +---------------------------+------------------+-----------+------------+----------------+
 ; Module Name               ; Machine Hostname ; OS Name   ; OS Version ; Processor type ;
 +---------------------------+------------------+-----------+------------+----------------+
-; Analysis & Synthesis      ; maja2            ; Windows 7 ; 6.2        ; x86_64         ;
-; Fitter                    ; maja2            ; Windows 7 ; 6.2        ; x86_64         ;
-; Assembler                 ; maja2            ; Windows 7 ; 6.2        ; x86_64         ;
-; TimeQuest Timing Analyzer ; maja2            ; Windows 7 ; 6.2        ; x86_64         ;
-; EDA Netlist Writer        ; maja2            ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; maja             ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; maja             ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; maja             ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; maja             ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; maja             ; Windows 7 ; 6.2        ; x86_64         ;
 +---------------------------+------------------+-----------+------------+----------------+
 
 

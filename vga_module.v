@@ -9,6 +9,8 @@ module vga_module#(parameter N = 16)(
 
 	//////////// CLOCK //////////
 	input clk,
+	input clk_50,
+	input clk_25,
 
 	//////////// reset //////////
 	input reset,
@@ -94,143 +96,141 @@ reg mem_read_again;
 always @(posedge clk) begin
 	if (reset) begin
 		clk50 <= 1'b0;
-	end 
-	clk50 <= ~clk50;
-end
-
-always @(posedge clk50) begin
-		
-	if (reset) begin
-		x <= 10'b0;
-		y <= 10'b0;
 		clk25 <= 1'b0;
-		state <= IN_LINE;
+		rd <= 1'b0;
+		wr <= 1'b0;
+		mem_read <= 1'b0;
 	end 
 	else begin
-		clk25 <= ~clk25;
-		if (clk25 == 1'b1) begin
-			if (x < 10'd799) begin
-				x <= x + 1'b1;
+		clk50 <= ~clk50;
+		if (clk_50 == 1'b1) begin
+
+			if (mem_read) begin
+				curr_char <= data;
+				rd <= 1'b0;
+				wr <= 1'b0;
+				mem_read <= 1'b0;
+			end
+			
+			if (reset) begin
+				x <= 10'b0;
+				y <= 10'b0;
+				clk25 <= 1'b0;
+				state <= IN_LINE;
 			end 
 			else begin
-				x <= 10'b0;
-				state <= IN_LINE;
-				if (y < 10'd524) begin
-					y <= y + 1'b1;
+				clk25 <= ~clk25;
+				if (clk_25 == 1'b1) begin
+					if (x < 10'd799) begin
+						x <= x + 1'b1;
+					end 
+					else begin
+						x <= 10'b0;
+						state <= IN_LINE;
+						if (y < 10'd524) begin
+							y <= y + 1'b1;
+						end 
+						else begin
+							y <= 10'b0;
+						end
+					end
 				end 
 				else begin
-					y <= 10'b0;
+					if (vga_mode == 0) begin
+						if (x >= 640) begin
+							if ((x >= 640) && (y >= 480) && ((state == H_BLANK))) begin
+								// when we start the vertical blanking, we need to fetch in advance the first character (0, 0)
+								state <= V_BLANK;
+								rd <= 1'b1;
+								wr <= 1'b0;
+								addr <= VIDEO_MEM_ADDR + 0;
+								mem_read <= 1'b1;
+							end
+							else if ((x >= 640) && ((y & 7) < 7) && (state == IN_LINE)) begin
+								// when we start the horizontal blanking, and still displaying character in the current line,
+								// we need to fetch in advance the first character in the current line (0, y)
+								state <= H_BLANK;
+								rd <= 1'b1;
+								wr <= 1'b0;
+								addr <= VIDEO_MEM_ADDR + ((y >> 3)*80);
+								mem_read <= 1'b1;
+							end
+							else if ((x >= 640) && ((y & 7) == 7) && (state == IN_LINE)) begin
+								// when we start the horizontal blanking, and we need to go to the next line, 
+								// we need to fetch in advance the first character in next line (0, y+1)
+								state <= H_BLANK;
+								rd <= 1'b1;
+								wr <= 1'b0;
+								addr <= VIDEO_MEM_ADDR + (((y >> 3) + 1)*80);
+								mem_read <= 1'b1;
+							end
+						end // if (!valid)
+						// from this moment on, x and y are valid
+						else if ((x < 640) && (!mem_read)) begin
+							if ((x & 7) == 7) begin
+								// when we are finishing current character, we need to fetch in advance the next character (x+1, y)
+								// at the last pixel of the current character, let's fetch next
+								rd <= 1'b1;
+								wr <= 1'b0;
+								addr <= VIDEO_MEM_ADDR + ((x >> 3) + (y >> 3)*80 + 1);
+								mem_read <= 1'b1;
+							end
+						end 
+					end
+					else if (vga_mode == 2) begin
+						if (x >= 640) begin
+							if ((x >= 640) && (y >= 480) && ((state == IN_LINE))) begin
+								// when we start the vertical blanking, we need to fetch in advance the first character (0, 0)
+								state <= V_BLANK;
+								rd <= 1'b1;
+								wr <= 1'b0;
+								addr <= VIDEO_MEM_ADDR + 0;
+								mem_read <= 1'b1;
+							end
+							else if ((x >= 640) && (y < 480) && (state == IN_LINE)) begin
+								// when we start the horizontal blanking, and still displaying character in the current line,
+								// we need to fetch in advance the first character in the current line (0, y)
+								state <= H_BLANK;
+								rd <= 1'b1;
+								wr <= 1'b0;
+								addr <= VIDEO_MEM_ADDR + ((y + 1)*40);
+								mem_read <= 1'b1;
+							end
+						end // if (!valid)
+						// from this moment on, x and y are valid
+						else if ((x < 640) && (!mem_read)) begin
+							if ((x & 15) == 15) begin
+								// when we are finishing the last pixel in a batch of 16 pixels, we need to fetch in advance the next batch at (x+1, y)
+								// at the last pixel of the current character, let's fetch next
+								rd <= 1'b1;
+								wr <= 1'b0;
+								addr <= VIDEO_MEM_ADDR + ((x >> 4) + (y*40) + 1);
+								mem_read <= 1'b1;
+							end
+						end 
+					end
 				end
 			end
 			
-			if (mem_read) begin
-				curr_char <= data;
-				//rd <= 1'bz;
-				//wr <= 1'bz;
-				mem_read <= 1'b0;
-				mem_read_again <= 1'b1;
-			end
-		end 
-		else begin
-			if (mem_read_again)begin
-				curr_char <= data;
-				//rd <= 1'bz;
-				//wr <= 1'bz;
-				mem_read_again <= 1'b0;
-			end			// this is the other cycle when we divide 50MHz
-			if (vga_mode == 0) begin
-				if (x >= 640) begin
-					if ((x >= 640) && (y >= 480) && ((state == H_BLANK))) begin
-						// when we start the vertical blanking, we need to fetch in advance the first character (0, 0)
-						state <= V_BLANK;
-						rd <= 1'b1;
-						wr <= 1'b0;
-						addr <= VIDEO_MEM_ADDR + 0;
-						mem_read <= 1'b1;
-					end
-					else if ((x >= 640) && ((y & 7) < 7) && (state == IN_LINE)) begin
-						// when we start the horizontal blanking, and still displaying character in the current line,
-						// we need to fetch in advance the first character in the current line (0, y)
-						state <= H_BLANK;
-						rd <= 1'b1;
-						wr <= 1'b0;
-						addr <= VIDEO_MEM_ADDR + ((y >> 3)*80);
-						mem_read <= 1'b1;
-					end
-					else if ((x >= 640) && ((y & 7) == 7) && (state == IN_LINE)) begin
-						// when we start the horizontal blanking, and we need to go to the next line, 
-						// we need to fetch in advance the first character in next line (0, y+1)
-						state <= H_BLANK;
-						rd <= 1'b1;
-						wr <= 1'b0;
-						addr <= VIDEO_MEM_ADDR + (((y >> 3) + 1)*80);
-						mem_read <= 1'b1;
-					end
-				end // if (!valid)
-				// from this moment on, x and y are valid
-				else if ((x < 640) && (!mem_read)) begin
-					if ((x & 7) == 7) begin
-						// when we are finishing current character, we need to fetch in advance the next character (x+1, y)
-						// at the last pixel of the current character, let's fetch next
-						rd <= 1'b1;
-						wr <= 1'b0;
-						addr <= VIDEO_MEM_ADDR + ((x >> 3) + (y >> 3)*80 + 1);
-						mem_read <= 1'b1;
-					end
-				end 
-			end
-			else if (vga_mode == 2) begin
-				if (x >= 640) begin
-					if ((x >= 640) && (y >= 480) && ((state == IN_LINE))) begin
-						// when we start the vertical blanking, we need to fetch in advance the first character (0, 0)
-						state <= V_BLANK;
-						rd <= 1'b1;
-						wr <= 1'b0;
-						addr <= VIDEO_MEM_ADDR + 0;
-						mem_read <= 1'b1;
-					end
-					else if ((x >= 640) && (y < 480) && (state == IN_LINE)) begin
-						// when we start the horizontal blanking, and still displaying character in the current line,
-						// we need to fetch in advance the first character in the current line (0, y)
-						state <= H_BLANK;
-						rd <= 1'b1;
-						wr <= 1'b0;
-						addr <= VIDEO_MEM_ADDR + ((y + 1)*40);
-						mem_read <= 1'b1;
-					end
-				end // if (!valid)
-				// from this moment on, x and y are valid
-				else if ((x < 640) && (!mem_read)) begin
-					if ((x & 15) == 15) begin
-						// when we are finishing the last pixel in a batch of 16 pixels, we need to fetch in advance the next batch at (x+1, y)
-						// at the last pixel of the current character, let's fetch next
-						rd <= 1'b1;
-						wr <= 1'b0;
-						addr <= VIDEO_MEM_ADDR + ((x >> 4) + (y*40) + 1);
-						mem_read <= 1'b1;
-					end
-				end 
+			if (valid) begin
+				if (vga_mode == 0)  begin
+					r <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[6+8] : curr_char[2+8]);
+					g <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[5+8] : curr_char[1+8]);
+					b <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[4+8] : curr_char[0+8]);
+				end
+				else if (vga_mode == 2) begin
+					r <= inverse ^ (curr_char[15 - (x & 15)]);
+					g <= inverse ^ (curr_char[15 - (x & 15)]);
+					b <= inverse ^ (curr_char[15 - (x & 15)]);
+				end
+			end 
+			else begin
+				// blanking -> no pixels
+				r <= 1'b0;
+				g <= 1'b0;
+				b <= 1'b0;
 			end
 		end
-	end
-	
-	if (valid) begin
-		if (vga_mode == 0)  begin
-			r <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[6+8] : curr_char[2+8]);
-			g <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[5+8] : curr_char[1+8]);
-			b <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[4+8] : curr_char[0+8]);
-		end
-		else if (vga_mode == 2) begin
-			r <= inverse ^ (curr_char[15 - (x & 15)]);
-			g <= inverse ^ (curr_char[15 - (x & 15)]);
-			b <= inverse ^ (curr_char[15 - (x & 15)]);
-		end
-	end 
-	else begin
-		// blanking -> no pixels
-		r <= 1'b0;
-		g <= 1'b0;
-		b <= 1'b0;
 	end
 end
 

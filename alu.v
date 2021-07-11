@@ -70,7 +70,7 @@ assign	flags[ZERO] = ((opcode == ALU_ADD) || (opcode == ALU_SUB)) ? tmpAddSub ==
 assign	flags[CARRY] = addSubCarry;
 	
 // OVERFLOW
-assign	flags[OVERFLOW] = overflow;
+assign	flags[OVERFLOW] = addSubCarry ^ tmpAddSub[N-1];
 	
 // POSITIVE
 assign	flags[POSITIVE] = (uns == 0) ? (((opcode == ALU_ADD) || (opcode == ALU_SUB)) ? ~tmpAddSub[N-1]: ~tmp[N-1] ) : 1;

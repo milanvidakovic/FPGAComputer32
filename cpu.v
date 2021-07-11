@@ -1,4 +1,4 @@
-`define READ_ONLY
+//`define READ_ONLY
 //`define CLANG
 `define FLOAT
 `define CACHE
@@ -35,6 +35,22 @@ module cpu #(
   output [1:0] 	vga_mode,	// VGA mode: 0-text; 1-320x240
   output 			inverse,		// VGA text mode inverse or not
   input  [7:0] 	ps2_data,   // keyboard data
+  input  [7:0] 	ps2_data_mouse,   // mouse data
+  
+  // SPI0
+  output  		 	spi_start,
+  input [7:0] 		spi_in,
+  output [7:0] 	spi_out,
+  input 				spi_ready,
+
+  // SPI1
+  output  		 	spi_start1,
+  input [7:0] 		spi_in1,
+  output [7:0] 	spi_out1,
+  input 				spi_ready1,
+
+  output				spi_cs,
+  output				spi_cs1,
   
   input  [15:0] 	irq_i
 
@@ -50,14 +66,18 @@ localparam  INIT        = 1,
 				EXECUTE     = 35,
 				CHECK_IRQ   = 40;
 
+localparam SP_I = 15;
 localparam SP = 15;
 localparam H  = 14;
 
 localparam IRQ_TIMER = 0;
 localparam IRQ_UART  = 1;
 localparam IRQ_PS2   = 2;
+localparam IRQ_SPI   = 3;
+localparam IRQ_SPI1  = 4;
+localparam IRQ_PS2_MOUSE   = 5;
 
-localparam FLAGS_COUNT = 4;
+localparam FLAGS_COUNT   = 4;
 localparam GREATER_EQUAL = 4;
 localparam POSITIVE = 3;
 localparam OVERFLOW = 2;
@@ -84,7 +104,19 @@ localparam PORT_UART_TX_BUSY					= 650	; //port which has 1 when UART TX is busy
 localparam PORT_UART_TX_SEND_BYTE			= 660	; //port for sending character via UART
 localparam PORT_LED								= 670	; //port for setting eight LEDs (write)
 localparam PORT_KEYBOARD 						= 680	; //raw keyboard character read port 
+localparam PORT_MOUSE	 						= 800	; //raw mouse byte read port 
 localparam PORT_MILLIS 							= 690	; //current number of milliseconds counted so far
+
+localparam PORT_SPI_IN 							= 700	; //port which contains received byte via SPI
+localparam PORT_SPI_OUT 						= 710	; //port for sending byte via SPI
+localparam PORT_SPI_OUT_BUSY					= 720	; //port for sending byte via SPI
+
+localparam PORT_SPI1_IN 						= 750	; //port which contains received byte via SPI
+localparam PORT_SPI1_OUT 						= 760	; //port for sending byte via SPI
+localparam PORT_SPI1_OUT_BUSY					= 770	; //port for sending byte via SPI
+
+localparam PORT_SPI_CS							= 730	; //port for CS (SS).
+localparam PORT_SPI1_CS							= 740	; //port for CS1 (SS1).
 
 localparam PORT_VIDEO_MODE						= 1280	; //video mode type (0-text; 1-graphics), (write)
 localparam PORT_TIMER     						= 1290	; //timer irq port (number of milliseconds before the irq is triggered)
@@ -129,13 +161,15 @@ end
 // #####################################
 // REGISTERS
 // #####################################
-reg [31:0] regs[15:0];  
+reg [31:0] regs[16:0];  
 reg [31:0] pc, mbr, mbr_e;
 reg [15:0] ir;
 reg [15:0] mc_count, irq_state;
 reg [15:0] irq_r, irq;
 reg [15:0] do_irq;
-reg [7:0]  rx_data_r, ps2_data_r;
+reg [7:0]  rx_data_r, ps2_data_r, ps2_data_r_mouse;
+reg [7:0]  spi_in_r;
+reg [7:0]  spi_in_r1;
 
 assign irq[15:1] = irq_i[15:1]; 
 
@@ -236,6 +270,7 @@ if (rst) begin
   rd <= 0;
   wr <= 0;
   vga_mode <= 2'b00;
+  //regs[SP_I] <= 47100;
 end
 else begin
 	irq[IRQ_TIMER] <= 0;
@@ -254,22 +289,40 @@ else begin
 		end 
 	end
 
-	if ((irq & do_irq) && (~irq_state)) begin
-		if (irq[IRQ_TIMER]) begin
+	if ((irq) && (irq_state==0)) begin
+		if (irq[IRQ_TIMER] & do_irq[IRQ_TIMER]) begin
 			// timer
 			irq_r[IRQ_TIMER] <= 1;
 			irq_state <= 1;
 		end
-		else if (irq[IRQ_UART]) begin
+		if (irq[IRQ_UART] & do_irq[IRQ_UART]) begin
 			// UART byte arrived
 			rx_data_r <= rx_data;
 			irq_r[IRQ_UART] <= 1;
 			irq_state <= 1;
 		end
-		else if (irq[IRQ_PS2]) begin
+		if (irq[IRQ_PS2] & do_irq[IRQ_PS2]) begin
 			// PS/2 key pressed/released
 			ps2_data_r <= ps2_data;
 			irq_r[IRQ_PS2] <= 1;
+			irq_state <= 1;
+		end		
+		if (irq[IRQ_PS2_MOUSE] & do_irq[IRQ_PS2_MOUSE]) begin
+			// PS/2 mouse byte arrived
+			ps2_data_r_mouse <= ps2_data_mouse;
+			irq_r[IRQ_PS2_MOUSE] <= 1;
+			irq_state <= 1;
+		end		
+		if (irq[IRQ_SPI] & do_irq[IRQ_SPI]) begin
+			// SPI MISO byte arrived
+			spi_in_r <= spi_in;
+			irq_r[IRQ_SPI] <= 1;
+			irq_state <= 1;
+		end		
+		if (irq[IRQ_SPI1] & do_irq[IRQ_SPI1]) begin
+			// SPI1 MISO byte arrived
+			spi_in_r1 <= spi_in1;
+			irq_r[IRQ_SPI1] <= 1;
 			irq_state <= 1;
 		end		
 	end
@@ -352,100 +405,24 @@ else begin
 								state <= READ_DATA;
 							end
 							1: begin
-								regs[ir[11:8]] <= {{16{data_r[15]}}, data_r};
+								//regs[ir[11:8]] <= {{16{data_r[15]}}, data_r};
+								regs[ir[11:8]] <= {16'd0, data_r};
 								state <= CHECK_IRQ;
 								pc <= pc + 2;
 							end
 						endcase
 					end // end of MOV reg, xx
-					// IN reg, [xx]
+					// USED TO BE IN reg, [xx]
 					4'b0011: begin
 						`ifdef DEBUG
-						$display("%2x: IN r%-d, [%4d]",ir[3:0], (ir[11:8]), data_r);
+						$display("%2x: USED TO BE IN r%-d, [%4d]",ir[3:0], (ir[11:8]), data_r);
 						`endif
-						case (mc_count)
-							0: begin
-								// get the xx
-								addr <= (pc + 2) >> 1;
-								pc <= pc + 2;
-								mc_count <= 1;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-							end
-							1: begin
-								case (data_r)
-									PORT_UART_RX_BYTE: begin    // UART RX DATA
-										regs[ir[11:8]] <= {24'b0, rx_data_r};
-									end
-									PORT_UART_TX_BUSY: begin   // UART TX BUSY
-										regs[ir[11:8]] <= {31'b0, tx_busy};
-									end
-									PORT_KEYBOARD: begin    // keyboard data
-										regs[ir[11:8]] <= {24'b0, ps2_data_r};
-									end
-									PORT_MILLIS: begin	// milliseconds counted so far
-										regs[ir[11:8]] <= millis_counter;
-									end
-								endcase // end of case(mbr)
-								state <= CHECK_IRQ;
-								pc <= pc + 2;
-							end
-							default: begin
-							end
-						endcase  // end of case (mc_count)
 					end // end of IN reg, [xx]
-					// OUT [xx], reg
+					// USED TO BE OUT [xx], reg
 					4'b0100: begin
 						`ifdef DEBUG
-						$display("%2x: OUT [%4d], r%-d",ir[3:0], data_r, (ir[15:12]));
+						$display("%2x: USED TO BE OUT [%4d], r%-d",ir[3:0], data_r, (ir[15:12]));
 						`endif
-						case (mc_count) 
-							0: begin
-								// get the xx
-								addr <= (pc + 2) >> 1;
-								pc <= pc + 2;
-								mc_count <= 1;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-							end
-							1: begin
-								mbr <= data_r;
-								mc_count <= 2;
-							end
-							2: begin
-								case (mbr)
-									PORT_UART_TX_SEND_BYTE: begin  // UART TX data 
-										tx_data <= regs[ir[15:12]];
-										tx_send <= 1'b1;
-									end
-									PORT_LED: begin  // LEDs
-										LED[7:0] <= regs[ir[15:12]];
-									end
-									PORT_VIDEO_MODE: begin  // graphics mode: 0 - text; 1 - 320x240 8 colors; 2 - 640x480 two colors
-										vga_mode <= regs[ir[15:12]];
-									end
-									PORT_TIMER: begin
-										// number of milliseconds to expire to cause IRQ 0
-										timer <= regs[ir[15:12]];
-									end
-									VGA_TEXT_INVERSE: begin
-										// if 0 -> normal (white letters on black background)
-										// if 1 -> inverted (black letters on white background)
-										inverse <= regs[ir[15:12]];
-									end
-									default: begin
-									end
-								endcase  // end of case (data)
-								mc_count <= 3;
-							end
-							3: begin
-								tx_send <= 1'b0;
-								state <= CHECK_IRQ;
-								pc <= pc + 2;
-							end
-							default: begin
-							end
-							endcase
 					end // end of OUT [xx], reg
 					// PUSH reg
 					4'b0101: begin
@@ -613,8 +590,8 @@ else begin
 							0: begin
 								mbr <= 0;
 								// step 1: we try to pop  the flags from the stack
-								regs[SP] <= regs[SP] + 2'd2;
-								addr <= (regs[SP]) >> 1;
+								regs[SP_I] <= regs[SP_I] + 2'd2;
+								addr <= (regs[SP_I]) >> 1;
 								// move to the next step
 								mc_count <= 1;
 								next_state <= EXECUTE;
@@ -623,8 +600,8 @@ else begin
 							1: begin
 								f <= data_r[FLAGS_COUNT-1:0];
 
-								regs[SP] <= regs[SP] + 2'd2;
-								addr <= (regs[SP]) >> 1;
+								regs[SP_I] <= regs[SP_I] + 2'd2;
+								addr <= (regs[SP_I]) >> 1;
 								// move to the next step
 								mc_count <= 2;
 								next_state <= EXECUTE;
@@ -634,8 +611,8 @@ else begin
 								mbr <= data_r;
 								
 								// step 2: we try to pop the return value from the stack
-								regs[SP] <= regs[SP] + 2'd2;
-								addr <= (regs[SP]) >> 1;
+								regs[SP_I] <= regs[SP_I] + 2'd2;
+								addr <= (regs[SP_I]) >> 1;
 								// move to the next step
 								mc_count <= 3;
 								next_state <= EXECUTE;
@@ -716,7 +693,8 @@ else begin
 								state <= READ_DATA;
 							end
 							1: begin
-								regs[ir[11:8]] <= {{24{data_r[7]}}, data_r[7:0]};
+								regs[ir[11:8]] <= {24'd0, data_r[7:0]};
+//								regs[ir[11:8]] <= {{24{data_r[7]}}, data_r[7:0]};
 								state <= CHECK_IRQ;
 								pc <= pc + 2;
 							end
@@ -859,24 +837,24 @@ else begin
 										pc <= mbr + data_r;
 									end
 								end // end of JNO xx
-								// JP xx
+								// JP xx (JGE xx)
 								4'b0111: begin
 								`ifdef DEBUG
-								$display("%2x: JP %x", ir[3:0], data_r);
+								$display("%2x: JP(JGE) %x", ir[3:0], data_r);
 								`endif
 									if (f[POSITIVE] == 1) begin
 										pc <= mbr + data_r;
 									end
-								end // end of JP xx
-								// JNP xx, JS xx
+								end // end of JP xx (JGE)
+								// JNP xx (JS xx)
 								4'b1000: begin
 								`ifdef DEBUG
-								$display("%2x: JNP %x", ir[3:0], data_r);
+								$display("%2x: JNP(JS) %x", ir[3:0], data_r);
 								`endif
 									if (f[POSITIVE] == 0) begin
 										pc <= mbr + data_r;
 									end
-								end // end of JNP xx
+								end // end of JNP xx (JS xx)
 								// JG xx
 								4'b1001: begin
 								`ifdef DEBUG
@@ -895,6 +873,42 @@ else begin
 										pc <= mbr + data_r;
 									end
 								end // end of JSE xx
+								// JGS xx (JG signed)
+								4'b1011: begin
+								`ifdef DEBUG
+								$display("%2x: JGS %x", ir[3:0], data_r);
+								`endif
+									if ((!(f[CARRY] ^ f[OVERFLOW])) && (f[ZERO] == 0)) begin
+										pc <= mbr + data_r;
+									end
+								end // end of JGS xx
+								// JGES xx (JGE signed)
+								4'b1100: begin
+								`ifdef DEBUG
+								$display("%2x: JGES %x", ir[3:0], data_r);
+								`endif
+									if (!(f[CARRY] ^ f[OVERFLOW])) begin
+										pc <= mbr + data_r;
+									end
+								end // end of JGES xx
+								// JSS xx (JS signed)
+								4'b1101: begin
+								`ifdef DEBUG
+								$display("%2x: JSS %x", ir[3:0], data_r);
+								`endif
+									if (f[CARRY] ^ f[OVERFLOW]) begin
+										pc <= mbr + data_r;
+									end
+								end // end of JSS xx
+								// JSES xx (JSE signed)
+								4'b1110: begin
+								`ifdef DEBUG
+								$display("%2x: JGS %x", ir[3:0], data_r);
+								`endif
+									if (((f[CARRY] ^ f[OVERFLOW])) || (f[ZERO] == 1)) begin
+										pc <= mbr + data_r;
+									end
+								end // end of JSES xx
 								default: begin
 								end
 							endcase	
@@ -915,7 +929,12 @@ else begin
 						addr <= (regs[SP] - 2'd2) >> 1;
 						regs[SP] <= regs[SP] - 2;
 						// the return address is in the pc + 4 
-						data_to_write <= (pc + 6) & 16'hFFFF;
+						if (ir[7:4] == 4'b1111) begin
+							data_to_write <= (pc + 2) & 16'hFFFF;
+						end
+						else begin
+							data_to_write <= (pc + 6) & 16'hFFFF;
+						end
 						mc_count <= 1;
 						next_state <= EXECUTE;
 						state <= WRITE_DATA;
@@ -924,18 +943,33 @@ else begin
 						addr <= (regs[SP] - 2'd2) >> 1;
 						regs[SP] <= regs[SP] - 2;
 						// the return address is in the pc + 4 
-						data_to_write <= (pc + 6) >> 16;
+						if (ir[7:4] == 4'b1111) begin
+							data_to_write <= (pc + 2) >> 16;
+						end
+						else begin
+							data_to_write <= (pc + 6) >> 16;
+						end
 						mc_count <= 2;
 						next_state <= EXECUTE;
 						state <= WRITE_DATA;
 					end
 					2: begin
-						// obtain xx
-						addr <= (pc + 2) >> 1;
-						pc <= pc + 2;
-						mc_count <= 3;
-						next_state <= EXECUTE;
-						state <= READ_DATA;
+						if (ir[7:4] == 4'b1111) begin
+							// Jump to the registar content address
+							`ifdef DEBUG
+							$display("%2x: CALLR r%-d", ir[3:0], ir[15:12]);
+							`endif
+							pc <= regs[ir[15:12]];
+							state <= CHECK_IRQ;
+						end // end of CALLR
+						else begin
+							// obtain xx
+							addr <= (pc + 2) >> 1;
+							pc <= pc + 2;
+							mc_count <= 3;
+							next_state <= EXECUTE;
+							state <= READ_DATA;
+						end
 					end
 					3: begin
 						mbr[31:16] <= data_r;
@@ -1384,29 +1418,29 @@ else begin
 					end
 				endcase
 			end // end of GROUP 3
-			// GROUP - 4, 5, 6, 7, 8 (ADD.S, SUB.S, AND.S, OR.S, XOR.S, NEG.S, SHL.S, SHR.S, MUL.S, DIV.S)
+			// GROUP - 4, 5, 6, 7, 8 (ADD.W, SUB.W, AND.W, OR.W, XOR.W, NEG.W, SHL.W, SHR.W, MUL.W, DIV.W)
 			4'b0100, 4'b0101, 4'b0110, 4'b0111, 4'b1000: begin
 				case (ir[7:4]) 
-					// ADD.S/AND.S/XOR.S/SHL.S/MUL.S regx, regy; ADD.S/AND.S/XOR.S/SHL.S/MUL.S regx, xx
+					// ADD.W/AND.W/XOR.W/SHL.W/MUL.W regx, regy; ADD.S/AND.S/XOR.S/SHL.S/MUL.S regx, xx
 					4'b0000, 4'b0001: begin
 						`ifdef DEBUG
 							if (ir[4] == 0) begin
 								case (ir[3:0])
-								4: $display("%2x: ADD r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
-								5: $display("%2x: AND r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
-								6: $display("%2x: XOR r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
-								7: $display("%2x: SHL r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
-								8: $display("%2x: MUL r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+								4: $display("%2x: ADD.W r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+								5: $display("%2x: AND.W r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+								6: $display("%2x: XOR.W r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+								7: $display("%2x: SHL.W r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+								8: $display("%2x: MUL.W r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
 								default: $display("WRONG OPCODE: %02d, %02x", ir[3:0], ir[3:0]);
 								endcase
 							end
 							else begin
 								case (ir[3:0])
-								4: $display("%2x: ADD r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
-								5: $display("%2x: AND r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
-								6: $display("%2x: XOR r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
-								7: $display("%2x: SHL r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
-								8: $display("%2x: MUL r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+								4: $display("%2x: ADD.S r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+								5: $display("%2x: AND.S r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+								6: $display("%2x: XOR.S r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+								7: $display("%2x: SHL.S r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+								8: $display("%2x: MUL.S r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
 								default: $display("WRONG OPCODE: %02d, %02x", ir[3:0], ir[3:0]);
 								endcase
 							end
@@ -1453,26 +1487,26 @@ else begin
 							default: begin
 							end
 						endcase
-					end // end of ADD.S/AND.S/XOR.S/SHL.S/MUL.S regx, regy
-					// SUB.S/OR.S/NEG.S/SHR.S/DIV.S regx, regy; SUB.S/OR.S/NEG.S/SHR.S/DIV.S regx, xx
+					end // end of ADD.W/AND.W/XOR.W/SHL.W/MUL.W regx, regy
+					// SUB.W/OR.W/NEG.W/SHR.W/DIV.W regx, regy; SUB.S/OR.S/NEG.S/SHR.S/DIV.S regx, xx
 					4'b1000, 4'b1001: begin
 						`ifdef DEBUG
 							if (ir[4] == 0) begin
 								case (ir[3:0])
-									4: $display("%2x: SUB r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
-									5: $display("%2x: OR r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
-									6: $display("%2x: NEG r%-d", ir[3:0], (ir[15:12]));
-									7: $display("%2x: SHR r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
-									8: $display("%2x: DIV r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+									4: $display("%2x: SUB.S r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+									5: $display("%2x: OR.S r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+									6: $display("%2x: NEG.S r%-d", ir[3:0], (ir[15:12]));
+									7: $display("%2x: SHR.S r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+									8: $display("%2x: DIV.S r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
 									default: $display("WRONG OPCODE: %02d, %02x", ir[3:0], ir[3:0]);
 								endcase
 							end
 							else begin
 								case (ir[3:0])
-									4: $display("%2x: SUB r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
-									5: $display("%2x: OR r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
-									7: $display("%2x: SHR r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
-									8: $display("%2x: DIV r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+									4: $display("%2x: SUB.W r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+									5: $display("%2x: OR.W r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+									7: $display("%2x: SHR.W r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+									8: $display("%2x: DIV.W r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
 									default: $display("WRONG OPCODE: %02d, %02x", ir[3:0], ir[3:0]);
 								endcase
 							end
@@ -1540,259 +1574,6 @@ else begin
 							end
 						endcase
 					end // end of SUB.S/OR.S/NEG.S/SHR.S/DIV.S regx, regx
-`ifdef CLANG
-					// <U>ADD/AND/XOR/SHL/MUL regx, [regy + xx]
-					4'b0010, 4'b0011, 4'b0100, 4'b0101, 4'b0110, 4'b0111: begin
-						`ifdef DEBUG
-							if (ir[7:4] < 5) begin
-								case (ir[3:0])
-									4: $display("%2x: ADD r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									5: $display("%2x: AND r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									6: $display("%2x: XOR r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									7: $display("%2x: SHL r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									8: $display("%2x: MUL r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									default: $display("WRONG OPCODE: %02d, %02x", ir[3:0], ir[3:0]);
-								endcase
-							end
-							else begin
-								case (ir[3:0])
-									4: $display("%2x: UADD r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									5: $display("%2x: UAND r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									6: $display("%2x: UXOR r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									7: $display("%2x: USHL r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									8: $display("%2x: UMUL r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									default: $display("WRONG OPCODE: %02d, %02x", ir[3:0], ir[3:0]);
-								endcase
-							end
-						`endif
-						case (mc_count)
-							0: begin
-								mbr <= 0;
-								// read the xx 
-								addr <= (pc + 2)>> 1;
-								pc <= pc + 2;
-								mc_count <= 1;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-							end
-							1: begin
-								mbr[31:16] <= data_r;
-								addr <= (pc + 2)>> 1;
-								pc <= pc + 2;
-								mc_count <= 2;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-							end
-							2: begin
-								// read the [regy + xx]
-								addr <= (regs[ir[15:12]] + mbr + data_r) >> 1;
-								mbr_e <= (regs[ir[15:12]] + mbr + data_r); 
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								if ((ir[7:4] == 2) || (ir[7:4] == 5))
-									mc_count <= 3;
-								else
-									mc_count <= 4;
-								mbr <= 0;
-							end
-							3: begin
-								addr <= addr + 1;
-								mbr[31:16] <= data_r;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								mc_count <= 4;
-							end
-							4: begin
-								case (ir[3:0])
-									4: alu_op <= ALU_ADD;
-									5: alu_op <= ALU_AND;
-									6: alu_op <= ALU_XOR;
-									7: alu_op <= ALU_SHL;
-									8: alu_op <= ALU_MUL;
-									default: alu_op <= 0;
-								endcase
-								alu_a <= regs[ir[11:8]];
-								
-								if ((ir[7:4] == 2) || (ir[7:4] == 5)) begin
-									alu_b <= (mbr + data_r);
-								end
-								else if ((ir[7:4] == 3) || (ir[7:4] == 6)) begin
-									if (ir[7:4] < 5) 
-										alu_b <= {{16{data_r[15]}}, data_r};
-									else
-										alu_b <= {16'd0, data_r};
-								end
-								else begin
-									if (mbr_e[0] == 1) begin
-										// odd address
-										if (ir[7:4] < 5) 
-											alu_b <= {{24{data_r[7]}}, data_r[7:0]};
-										else
-											alu_b <= {24'd0, data_r[7:0]};
-									end
-									else begin
-										if (ir[7:4] < 5) 
-											alu_b <= {{24{data_r[15]}}, data_r[15:8]};
-										else
-											alu_b <= {24'd0, data_r[15:8]};
-									end
-								end
-
-								if ((ir[7:4] >= 5) && (ir[7:4] <= 7))
-									alu_uns <= 1;
-								
-								alu_start <= 1;
-								mc_count <= 5;
-							end
-							5: begin
-								alu_start <= 0;
-								mc_count <= 6;
-							end
-							6: begin
-								regs[ir[11:8]] <= alu_res;
-								f[FLAGS_COUNT-1:0] <= f_from_alu;
-								regs[H] <= alu_high;
-								pc <= pc + 2;
-								state <= CHECK_IRQ;
-							end
-							default: begin
-							end
-						endcase
-					end // end of ADD/AND/XOR/SHL/MUL regx, regy
-					// <U>SUB/OR/NEG/SHR/DIV regx, [regy + xx]
-					4'b1010, 4'b1011, 4'b1100, 4'b1101, 4'b1110, 4'b1101: begin
-						`ifdef DEBUG
-							if (ir[7:4] <= 12) begin
-								case (ir[3:0])
-									4: $display("%2x: SUB r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									5: $display("%2x: OR r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									6: $display("%2x: NEG [r%-d + %-d]", ir[3:0], (ir[15:12]), data_r);
-									7: $display("%2x: SHR r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									8: $display("%2x: DIV r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									default: $display("WRONG OPCODE: %02d, %02x", ir[3:0], ir[3:0]);
-								endcase
-							end
-							else begin
-								case (ir[3:0])
-									4: $display("%2x: USUB r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									5: $display("%2x: UOR r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									6: $display("%2x: UNEG [r%-d + %-d]", ir[3:0], (ir[15:12]), data_r);
-									7: $display("%2x: USHR r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									8: $display("%2x: UDIV r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-									default: $display("WRONG OPCODE: %02d, %02x", ir[3:0], ir[3:0]);
-								endcase
-							end
-						`endif
-						case (mc_count)
-							0: begin
-								mbr <= 0;
-								// read the xx 
-								addr <= (pc + 2)>> 1;
-								pc <= pc + 2;
-								mc_count <= 1;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-							end
-							1: begin
-								mbr[31:16] <= data_r;
-								addr <= (pc + 2)>> 1;
-								pc <= pc + 2;
-								mc_count <= 2;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-							end
-							2: begin
-								// read the [regy + xx]
-								addr <= (regs[ir[15:12]] + mbr + data_r) >> 1;
-								mbr_e <= (regs[ir[15:12]] + mbr + data_r); 
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								if ((ir[7:4] == 10) || (ir[7:4] == 13))
-									mc_count <= 3;
-								else
-									mc_count <= 4;
-								mbr <= 0;
-							end
-							3: begin
-								addr <= addr + 1;
-								mbr[31:16] <= data_r;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								mc_count <= 4;
-							end
-							4: begin
-								case (ir[3:0])
-									4: alu_op <= ALU_SUB;
-									5: alu_op <= ALU_OR;
-									6: alu_op <= ALU_NEG;
-									7: alu_op <= ALU_SHR;
-									8: alu_op <= ALU_DIV;
-									default: alu_op <= 0;
-								endcase
-								alu_a <= regs[ir[11:8]];
-
-								if ((ir[7:4] == 10) || (ir[7:4] == 13)) 
-									alu_b <= (mbr + data_r);
-								else if ((ir[7:4] == 11) || (ir[7:4] == 14)) begin
-									if (ir[7:4] < 13) 
-										alu_b <= {{16{data_r[15]}}, data_r};
-									else
-										alu_b <= {16'd0, data_r};
-								end
-								else begin
-									if (mbr_e[0] == 1) begin
-										// odd address
-										if (ir[7:4] < 13) 
-											alu_b <= {{24{data_r[7]}}, data_r[7:0]};
-										else
-											alu_b <= {24'd0, data_r[7:0]};
-									end
-									else begin
-										if (ir[7:4] < 13) 
-											alu_b <= {{24{data_r[15]}}, data_r[15:8]};
-										else
-											alu_b <= {24'd0, data_r[15:8]};
-									end
-								end
-
-								if ((ir[7:4] >= 13) && (ir[7:4] <= 15))
-									alu_uns <= 1;
-
-								if (ir[3:0] == 8'd8) begin
-									// DIV only
-									start_div <= 1'b1;
-								end
-								alu_start <= 1;
-								mc_count <= 5;
-							end
-							5: begin
-								alu_start <= 0;
-								start_div <= 1'b0;
-								mc_count <= 6;
-							end
-							6: begin
-								if (ir[3:0] == 8'd8) begin
-									// DIV only
-									if (div_finished) begin
-										regs[ir[11:8]] <= alu_res;
-										f[FLAGS_COUNT-1:0] <= f_from_alu;
-										regs[H] <= alu_high;
-										state <= CHECK_IRQ;
-										pc <= pc + 2;
-									end
-								end
-								else begin
-									regs[ir[11:8]] <= alu_res;
-									f[FLAGS_COUNT-1:0] <= f_from_alu;
-									state <= CHECK_IRQ;
-									pc <= pc + 2;
-							end
-							end
-							default: begin
-							end
-						endcase
-					end // end of SUB/OR/NEG/SHR/DIV regx, regx
-`endif
 				endcase
 			end
 			// GROUP - 9 (INC, DEC)
@@ -1864,149 +1645,6 @@ else begin
 							end
 						endcase
 					end // end of INC/DEC reg
-`ifdef CLANG
-					// INC/DEC [reg + XX]
-					4'b0010, 4'b0011, 4'b0100, 4'b0101, 4'b0110, 4'b0111,
-					4'b1010, 4'b1011, 4'b1100, 4'b1101, 4'b1110, 4'b1111: begin
-						`ifdef DEBUG
-							if (ir[7:4] < 8) begin
-								if (ir[7:4] < 5)
-									$display("%2x: INC [r%-d + %d]", ir[3:0], ir[11:8], data_r);
-								else
-									$display("%2x: UINC [r%-d + %d]", ir[3:0], ir[11:8], data_r);
-							end
-							else begin
-								if (ir[7:4] < 13)
-									$display("%2x: DEC [r%-d + %d]", ir[3:0], ir[11:8], data_r);
-								else
-									$display("%2x: UDEC [r%-d + %d]", ir[3:0], ir[11:8], data_r);
-							end
-						`endif
-						case (mc_count)
-							0: begin
-								mbr <= 0;
-								// read the xx 
-								addr <= pc + 2 >> 1;
-								pc <= pc + 2;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								mc_count <= 1;
-							end
-							1: begin
-								mbr[31:16] <= data_r;
-								// read the xx 
-								addr <= pc + 2 >> 1;
-								pc <= pc + 2;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								mc_count <= 2;
-							end
-							2: begin
-								// step 1: we try to read memory from the xx address
-								addr <= (mbr + data_r + regs[ir[11:8]]) >> 1;
-								mbr_e <= (mbr + data_r + regs[ir[11:8]]);	// store xx into mbr
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								if ((ir[7:4] == 2) || (ir[7:4] == 5) || (ir[7:4] == 10) || (ir[7:4] == 13))
-									mc_count <= 3;
-								else
-									mc_count <= 4;
-								mbr <= 0;
-							end
-							3: begin
-								mbr[31:16] <= data_r;
-								addr <= addr + 1;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								mc_count <= 4;
-							end
-							4: begin
-								if (ir[7] == 0)
-									alu_op <= ALU_ADD;
-								else
-									alu_op <= ALU_SUB;
-								
-								if ((ir[7:4] == 2) || (ir[7:4] == 10)) 
-									alu_a <= (mbr + data_r);
-								else if ((ir[7:4] == 3) || (ir[7:4] == 11))
-										alu_a <= {{16{data_r[15]}}, data_r};
-								else if ((ir[7:4] == 6) || (ir[7:4] == 14)) begin
-										alu_a <= {16'd0, data_r};
-								end
-								else begin
-									if (mbr_e[0] == 1) begin
-										// odd address
-										if ((ir[7:4] == 4) || (ir[7:4] == 12)) 
-											alu_a <= {{24{data_r[7]}}, data_r[7:0]};
-										else
-											alu_a <= {24'd0, data_r[7:0]};
-									end
-									else begin
-										if ((ir[7:4] == 4) || (ir[7:4] == 12)) 
-											alu_a <= {{24{data_r[15]}}, data_r[15:8]};
-										else
-											alu_a <= {24'd0, data_r[15:8]};
-									end
-								end
-								alu_b <= 1;
-								
-								if (((ir[7:4] >= 5) && (ir[7:4] <= 7)) ||
-										((ir[7:4] >= 13) && (ir[7:4] <= 15)))
-									alu_uns <= 1;
-								
-								alu_start <= 1;
-								mc_count <= 5;
-							end
-							5: begin
-								alu_start <= 0;
-								mc_count <= 6;
-							end
-							6: begin
-								// step 3: we try to write ALU_RES into the memory defined by the XX
-								// put xx to the addr
-								addr <= mbr_e >> 1;
-								if ((ir[7:4] == 2) || (ir[7:4] == 5) || (ir[7:4] == 10) || (ir[7:4] == 13)) begin
-									data_to_write <= alu_res[31:16];
-									next_state <= EXECUTE;
-									state <= WRITE_DATA;
-									mc_count <= 7;
-								end
-								else if ((ir[7:4] == 3) || (ir[7:4] == 6) || (ir[7:4] == 11) || (ir[7:4] == 14)) begin
-									data_to_write <= alu_res;
-									next_state <= EXECUTE;
-									state <= WRITE_DATA;
-									mc_count <= 8;
-								end
-								else begin
-									if (mbr_e[0] == 1) begin
-										// odd address
-										data_to_write <= {data_r[15:8], alu_res[7:0]};
-									end
-									else begin
-										data_to_write <= {alu_res[7:0], data_r[7:0]};
-									end
-									next_state <= EXECUTE;
-									state <= WRITE_DATA;
-									mc_count <= 8;
-								end
-								f[FLAGS_COUNT-1:0] <= f_from_alu;
-							end
-							7: begin
-								addr <= addr + 1;
-								data_to_write <= alu_res[15:0];
-								next_state <= EXECUTE;
-								state <= WRITE_DATA;
-								mc_count <= 8;
-							end
-							8: begin
-								state <= CHECK_IRQ;
-								pc <= pc + 2;
-							end
-							default: begin
-							end
-						endcase
-					end // end of INC/DEC [XX]					
-`endif
 				endcase
 			end
 			// GROUP - 10 (CMP/INV)
@@ -2082,229 +1720,6 @@ else begin
 							end
 						endcase
 					end // end of INV reg
-`ifdef CLANG
-					// CMP regx, [regy + xx]
-					4'b0010, 4'b0011, 4'b0100, 4'b0101, 4'b0110, 4'b0111: begin
-						`ifdef DEBUG
-							if (ir[7:4] < 5)
-								$display("%2x: CMP r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-							else	
-								$display("%2x: UCMP r%-d, [r%-d + %-d]", ir[3:0], (ir[11:8]), (ir[15:12]), data_r);
-						`endif
-						case (mc_count)
-							0: begin
-								mbr <= 0;
-								// read the xx 
-								addr <= (pc  + 2) >> 1;
-								pc <= pc + 2;
-								mc_count <= 1;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-							end
-							1: begin
-								mbr[31:16] <= data_r;
-								addr <= (pc  + 2) >> 1;
-								pc <= pc + 2;
-								mc_count <= 2;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-							end
-							2: begin
-								// step 1: we try to read memory from the xx address
-								addr <= (regs[ir[15:12]] + mbr + data_r) >> 1;
-								mbr_e<= regs[ir[15:12]] + mbr + data_r;
-								if ((ir[7:4] == 2) || (ir[7:4] == 5))
-									mc_count <= 3;
-								else
-									mc_count <= 4;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								mbr <= 0;
-							end
-							3: begin
-								mbr[31:16] <= data_r;
-								addr <= addr + 1;
-								mc_count <= 4;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-							end
-							4: begin
-								alu_op <= ALU_SUB;
-								alu_a <= regs[ir[11:8]];
-								if ((ir[7:4] == 2) || (ir[7:4] == 5))
-									alu_b <= mbr + data_r;
-								else if ((ir[7:4] == 3) || (ir[7:4] == 6))
-									if (ir[7:4] < 5) 
-										alu_b <= {16'd0, data_r};
-									else
-										alu_b <= {{16{data_r[15]}}, data_r};
-								else begin
-									if (mbr_e[0] == 1) begin
-										// odd address
-										if (ir[7:4] < 5) 
-											alu_b <= {{24{data_r[7]}}, data_r[7:0]};
-										else
-											alu_b <= {24'd0, data_r[7:0]};
-									end
-									else begin
-										if (ir[7:4] < 5) 
-											alu_b <= {{24{data_r[15]}}, data_r[15:8]};
-										else
-											alu_b <= {24'd0, data_r[15:8]};
-									end									
-								end
-								if (ir[7:4] >= 5) begin
-									alu_uns <= 1;
-								end
-								
-								alu_start <= 1;
-								mc_count <= 5;
-							end
-							5: begin
-								alu_start <= 0;
-								mc_count <= 6;
-							end
-							6: begin
-								f[FLAGS_COUNT-1:0] <= f_from_alu;
-								if (ir[7:4] >= 5) begin
-									// UCMP
-									mc_count <= 7;
-								end
-								else begin
-									state <= CHECK_IRQ;
-									pc <= pc + 2;
-								end
-							end
-							7: begin
-								f[POSITIVE] = f_from_alu[GREATER_EQUAL];
-								state <= CHECK_IRQ;
-								pc <= pc + 2;
-							end
-						endcase
-					end // end of CMP regx, [XX]
-					// INV [reg + XX]
-					4'b1010, 4'b1011, 4'b1100: begin
-						`ifdef DEBUG
-							case (ir[7:4])
-								10: begin
-									$display("%2x: INV.W [r%-d + %d]", ir[3:0], ir[11:8], data_r);
-								end
-								11: begin
-									$display("%2x: INV [r%-d + %d]", ir[3:0], ir[11:8], data_r);
-								end
-								12: begin
-									$display("%2x: INV.B [r%-d + %d]", ir[3:0], ir[11:8], data_r);
-								end
-							endcase
-						`endif
-						case (mc_count)
-							0: begin
-								mbr <= 0;
-								// read the xx 
-								addr <= pc + 2 >> 1;
-								pc <= pc + 2;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								mc_count <= 1;
-							end
-							1: begin
-								mbr[31:16] <= data_r;
-								// read the xx 
-								addr <= pc + 2 >> 1;
-								pc <= pc + 2;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								mc_count <= 2;
-							end
-							2: begin
-								// step 1: we try to read memory from the xx address
-								addr <= (mbr + data_r + regs[ir[11:8]]) >> 1;
-								mbr_e <= (mbr + data_r + regs[ir[11:8]]);	// store xx into mbr
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								if ((ir[7:4] == 11) || (ir[7:4] == 12))
-									mc_count <= 4;
-								else
-									mc_count <= 3;
-								mbr <= 0;
-							end
-							3: begin
-								mbr[31:16] <= data_r;
-								addr <= addr + 1;
-								next_state <= EXECUTE;
-								state <= READ_DATA;
-								mc_count <= 4;
-							end
-							4: begin
-								alu_op <= ALU_INV;
-								if (ir[7:4] == 10) 
-									alu_a <= (mbr + data_r);
-								else if (ir[7:4] == 11) begin
-									alu_a <= {{16{data_r[15]}}, data_r};
-								end
-								else begin
-									if (mbr_e[0] == 1) begin
-										// odd address
-										alu_a <= {{24{data_r[7]}}, data_r[7:0]};
-									end
-									else begin
-										alu_a <= {{24{data_r[15]}}, data_r[15:8]};
-									end
-								end
-								alu_b <= 1;
-								alu_start <= 1;
-								mc_count <= 5;
-							end
-							5: begin
-								alu_start <= 0;
-								mc_count <= 6;
-							end
-							6: begin
-								// step 3: we try to write ALU_RES into the memory defined by the XX
-								// put xx to the addr
-								addr <= mbr_e >> 1;
-								if (ir[7:4] == 10) begin
-									data_to_write <= alu_res[31:16];
-									next_state <= EXECUTE;
-									state <= WRITE_DATA;
-									mc_count <= 7;
-								end
-								else if (ir[7:4] == 11) begin
-									data_to_write <= alu_res;
-									next_state <= EXECUTE;
-									state <= WRITE_DATA;
-									mc_count <= 8;
-								end
-								else begin
-									if (mbr_e[0] == 1) begin
-										// odd address
-										data_to_write <= {data_r[15:8], alu_res[7:0]};
-									end
-									else begin
-										data_to_write <= {alu_res[7:0], data_r[7:0]};
-									end
-									next_state <= EXECUTE;
-									state <= WRITE_DATA;
-									mc_count <= 8;
-								end
-								f[FLAGS_COUNT-1:0] <= f_from_alu;
-							end
-							7: begin
-								addr <= addr + 1;
-								data_to_write <= alu_res[15:0];
-								next_state <= EXECUTE;
-								state <= WRITE_DATA;
-								mc_count <= 8;
-							end
-							8: begin
-								state <= CHECK_IRQ;
-								pc <= pc + 2;
-							end
-							default: begin
-							end
-						endcase
-					end // end of INV [reg + xx]
-`endif
 				endcase
 			end // end of GROUP 10
 			
@@ -2393,12 +1808,12 @@ else begin
 				endcase
 			end // end of GROUP 13, 14
 			
-`ifdef FLOAT
-				// GROUP - 11 (0x0b) (FLOATING POINT GROUP)
+				// GROUP - 11 (0x0b) (FLOATING POINT GROUP , SEX, BLIT, INT GROUP)
 				// 32 bits: SIGN, EXPONENT-8bit, MANTISSA-23bit
 				// BIAS: 127
 				4'b1011: begin 
 					case (ir[7:4])
+`ifdef FLOAT
 						// FADD/FSUB regx, regy
 						4'b0010, 4'b0011: begin
 							`ifdef DEBUG
@@ -2493,22 +1908,121 @@ else begin
 								end
 							endcase
 						end   // end of FDIV regx, regy							
+`endif					
+						// SEX.B regx, regy
+						4'b0110: begin
+							// SEX.B regx, regy
+							`ifdef DEBUG
+							$display("%2x: SEX.B r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+							`endif
+							regs[ir[11:8]] <= {{24{regs[ir[15:12]][7]}}, regs[ir[15:12]][7:0]};
+							state <= CHECK_IRQ;
+							pc <= pc + 2;
+						end // END OF SEX.B regx, regy
+						// SEX.S regx, regy
+						4'b0111: begin
+							// SEX.S regx, regy
+							`ifdef DEBUG
+							$display("%2x: SEX.S r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+							`endif
+							regs[ir[11:8]] <= {{16{regs[ir[15:12]][15]}}, regs[ir[15:12]][15:0]};
+							state <= CHECK_IRQ;
+							pc <= pc + 2;
+						end // END OF SEX.S regx, regy
+						4'b1000: begin
+							// BLIT (r1, r2, r3) - r1 - dst; r2 - src; r3 - count
+							case (mc_count)
+								0: begin
+									addr <= regs[2] >> 1;
+									regs[2] <= regs[2] + 2;
+									regs[3] <= regs[3] - 2;
+									mc_count <= 1;
+									next_state <= EXECUTE;
+									state <= READ_DATA;
+								end
+								1: begin
+									addr <= regs[1] >> 1;
+									data_to_write <= data_r;
+									regs[1] <= regs[1] + 2;
+									next_state <= EXECUTE;
+									state <= WRITE_DATA;
+									if (regs[3] <= 0) begin
+										mc_count <= 2;
+									end
+									else 
+										mc_count <= 0;
+								end
+								2: begin
+									state <= CHECK_IRQ;
+									pc <= pc + 2;
+								end
+							endcase
+						end
+						// INT xx, SOFTWARE INTERRUPT
+						4'b1111: begin
+							`ifdef DEBUG
+							$display("%2x: INT %d", ir[3:0], data_r);
+							`endif
+							case (mc_count)
+								0: begin
+									// get the lower 16 bits of xx
+									addr <= (pc + 2) >> 1;
+									pc <= pc + 2;
+									mc_count <= 1;
+									mbr_e <= pc + 6;  // remember the address of the next instruction (the return point from the interrupt)
+									next_state <= EXECUTE;
+									state <= READ_DATA;
+								end
+								1: begin
+									mbr <= data_r;
+									// push to the stack the return value
+									addr <= (regs[SP_I]  - 2'd2) >> 1;
+									regs[SP] <= regs[SP_I] - 2'd2;
+									// the return value is in the mbr_e and it is already pointing to the next instruction
+									data_to_write <= mbr_e[15:0];
+									mc_count <= 2;
+									next_state <= EXECUTE;
+									state <= WRITE_DATA;
+								end
+								2: begin
+									addr <= (regs[SP_I] - 2'd2) >> 1;
+									regs[SP] <= regs[SP_I] - 2'd2;
+									// the return value is in the mbr_e and it is already pointing to the next instruction
+									data_to_write <= mbr_e[31:16];
+									mc_count <= 3;
+									next_state <= EXECUTE;
+									state <= WRITE_DATA;
+								end
+								3: begin
+									// push to the stack flags
+									addr <= (regs[SP] - 2'd2) >> 1;
+									regs[SP] <= regs[SP] - 2'd2;
+									// back up the flags register
+									data_to_write <= f;
+									mc_count <= 4;
+									next_state <= EXECUTE;
+									state <= WRITE_DATA;
+								end
+								4: begin
+									pc <= mbr;
+									addr <= mbr >> 1;
+									mc_count <= 0;
+									state <= FETCH;
+									ir <= 0;
+								end
+							endcase
+						end   // end of INT xx
 					endcase // end of case (ir[7:4])					
-				end // end of FLOATING POINT GROUP
-`endif						
+				end // end of FLOATING POINT GROUP & INT GROUP
 			
 		endcase
 	end // EXECUTE state
 	CHECK_IRQ: begin
-		if (irq_state) begin
-			case (irq_state)
+		if (irq_state) begin 
+			case (irq_state) 
 				1: begin
 					// first we try to read memory at the interrupt routine
-					if (irq_r[IRQ_TIMER]) begin
-						addr <= 16'd4;
-						mbr <= 0;
-					end
-					else if (irq_r[IRQ_UART]) begin
+					if (irq_r[IRQ_UART]) begin
 						addr <= 16'd8;
 						mbr <= 1;
 					end
@@ -2516,9 +2030,25 @@ else begin
 						addr <= 16'd12;
 						mbr <= 2;
 					end
+					else if (irq_r[IRQ_SPI]) begin
+						addr <= 16'd28;
+						mbr <= 3;
+					end
+					else if (irq_r[IRQ_SPI1]) begin
+						addr <= 16'd32;
+						mbr <= 4;
+					end
+					else if (irq_r[IRQ_TIMER]) begin
+						addr <= 16'd4;
+						mbr <= 0;
+					end
+					else if (irq_r[IRQ_PS2_MOUSE]) begin
+						addr <= 16'd36;
+						mbr <= 5;
+					end
 					next_state <= CHECK_IRQ;
-					state <= READ_DATA;
-					irq_state <= 2;
+					state <= READ_DATA;		
+					irq_state <= 2;			
 				end
 				2: begin
 					if (data_r == 0) begin
@@ -2533,6 +2063,15 @@ else begin
 							2: begin
 								irq_r[IRQ_PS2] <= 1'b0;
 							end
+							3: begin
+								irq_r[IRQ_SPI] <= 1'b0;
+							end
+							4: begin
+								irq_r[IRQ_SPI1] <= 1'b0;
+							end
+							5: begin
+								irq_r[IRQ_PS2_MOUSE] <= 1'b0;
+							end
 						endcase
 						irq_state <= 0;
 						state <= FETCH;
@@ -2544,8 +2083,8 @@ else begin
 				end
 				3: begin
 					// push to the stack the return value
-					addr <= (regs[SP]  - 2'd2) >> 1;
-					regs[SP] <= regs[SP] - 2'd2;
+					addr <= (regs[SP_I]  - 2'd2) >> 1;
+					regs[SP_I] <= regs[SP_I] - 2'd2;
 					// the return value is in the pc and it is already pointing to the next instruction
 					data_to_write <= pc[15:0];
 					irq_state <= 4;
@@ -2553,8 +2092,8 @@ else begin
 					state <= WRITE_DATA;
 				end
 				4: begin
-					addr <= (regs[SP] - 2'd2) >> 1;
-					regs[SP] <= regs[SP] - 2'd2;
+					addr <= (regs[SP_I] - 2'd2) >> 1;
+					regs[SP_I] <= regs[SP_I] - 2'd2;
 					// the return value is in the pc and it is already pointing to the next instruction
 					data_to_write <= pc[31:16];
 					irq_state <= 5;
@@ -2563,8 +2102,8 @@ else begin
 				end
 				5: begin
 					// push to the stack flags
-					addr <= (regs[SP] - 2'd2) >> 1;
-					regs[SP] <= regs[SP] - 2'd2;
+					addr <= (regs[SP_I] - 2'd2) >> 1;
+					regs[SP_I] <= regs[SP_I] - 2'd2;
 					// back up the flags register
 					data_to_write <= f;
 					irq_state <= 6;
@@ -2589,6 +2128,24 @@ else begin
 						pc <= 16'd24;
 						addr <= 16'd12;
 						irq_r[IRQ_PS2] <= 0;
+					end
+					else if (irq_r[IRQ_PS2_MOUSE]) begin
+						// PS/2 mouse byte arrived
+						pc <= 16'd72;
+						addr <= 16'd36;
+						irq_r[IRQ_PS2_MOUSE] <= 0;
+					end
+					else if (irq_r[IRQ_SPI]) begin
+						// SPI byte received
+						pc <= 16'd56;
+						addr <= 16'd28;
+						irq_r[IRQ_SPI] <= 0;
+					end
+					else if (irq_r[IRQ_SPI1]) begin
+						// SPI1 byte received
+						pc <= 16'd64;
+						addr <= 16'd32;
+						irq_r[IRQ_SPI1] <= 0;
 					end
 					irq_state <= 0;
 					state <= FETCH;
@@ -2618,6 +2175,21 @@ else begin
 				end
 				PORT_KEYBOARD/2: begin    // keyboard data
 					data_r <= {24'b0, ps2_data_r};
+				end
+				PORT_MOUSE/2: begin    // mouse data
+					data_r <= {24'b0, ps2_data_r_mouse};
+				end
+				PORT_SPI_IN/2: begin
+					data_r <= {24'b0, spi_in_r};
+				end
+				PORT_SPI_OUT_BUSY/2: begin
+					data_r <= {31'b0, ~spi_ready};
+				end
+				PORT_SPI1_IN/2: begin
+					data_r <= {24'b0, spi_in_r1};
+				end
+				PORT_SPI1_OUT_BUSY/2: begin
+					data_r <= {31'b0, ~spi_ready1};
 				end
 			endcase // end of case(mbr)
 			state <= next_state;
@@ -2717,6 +2289,20 @@ else begin
 				PORT_LED/2: begin  // LEDs
 					LED[7:0] <= data_to_write;
 				end
+				PORT_SPI_OUT/2: begin
+					spi_out <= data_to_write;
+					spi_start <= 1'b1;
+				end
+				PORT_SPI1_OUT/2: begin
+					spi_out1 <= data_to_write;
+					spi_start1 <= 1'b1;
+				end
+				PORT_SPI_CS/2: begin
+					spi_cs <= data_to_write[0];
+				end
+				PORT_SPI1_CS/2: begin
+					spi_cs1 <= data_to_write[0];
+				end
 				default: begin
 				end
 			endcase  // end of case (data)
@@ -2727,10 +2313,12 @@ else begin
 			if (addr >= SDRAM_START_ADDR) begin
 				// Write through, meaning that we save data in both SDRAM and cache
 				wr_data_o <= data_to_write;
+				`ifdef CACHE
 				// now we need to store the data that had to be saved right into this cache
 				cl[addr[11:0]] <= data_to_write;
 				// write tag
 				tag[addr[11:0]] <= addr[23:12];
+				`endif
 				wr_enable_o <= 1'b1;
 				if (busy_i) begin
 					state <= WRITE_WAIT;
@@ -2758,6 +2346,8 @@ else begin
 		if (addr[30] == 1'b1) begin
 			// Memory mapped IO
 			tx_send <= 1'b0;
+			spi_start <= 1'b0;
+			spi_start1 <= 1'b0;
 			state <= next_state;
 		end
 		else begin
