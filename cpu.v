@@ -1,5 +1,4 @@
 //`define READ_ONLY
-//`define CLANG
 `define FLOAT
 `define CACHE
 
@@ -76,6 +75,8 @@ localparam IRQ_PS2   = 2;
 localparam IRQ_SPI   = 3;
 localparam IRQ_SPI1  = 4;
 localparam IRQ_PS2_MOUSE   = 5;
+localparam IRQ_DMA_1 = 14;
+localparam IRQ_DMA_2 = 15; 
 
 localparam FLAGS_COUNT   = 4;
 localparam GREATER_EQUAL = 4;
@@ -101,10 +102,11 @@ localparam SDRAM_START_ADDR = 32'hB000/2;
 
 localparam PORT_UART_RX_BYTE					= 640	; //port which contains received byte via UART
 localparam PORT_UART_TX_BUSY					= 650	; //port which has 1 when UART TX is busy
-localparam PORT_UART_TX_SEND_BYTE			= 660	; //port for sending character via UART
+localparam PORT_UART_TX_SEND_BYTE				= 660	; //port for sending character via UART
 localparam PORT_LED								= 670	; //port for setting eight LEDs (write)
 localparam PORT_KEYBOARD 						= 680	; //raw keyboard character read port 
 localparam PORT_MOUSE	 						= 800	; //raw mouse byte read port 
+localparam PORT_MOUSE_STRUCT_ADDR				= 810	; //mouse struct address
 localparam PORT_MILLIS 							= 690	; //current number of milliseconds counted so far
 
 localparam PORT_SPI_IN 							= 700	; //port which contains received byte via SPI
@@ -120,8 +122,16 @@ localparam PORT_SPI1_CS							= 740	; //port for CS1 (SS1).
 
 localparam PORT_VIDEO_MODE						= 1280	; //video mode type (0-text; 1-graphics), (write)
 localparam PORT_TIMER     						= 1290	; //timer irq port (number of milliseconds before the irq is triggered)
-localparam VGA_TEXT_INVERSE					= 1300	; //if 1, then the screen is inversed (black letters on white background)
+localparam VGA_TEXT_INVERSE						= 1300	; //if 1, then the screen is inversed (black letters on white background)
 
+localparam PORT_DMA_ADDR_1						= 1400	; // DMA channel 1, transfer start address
+localparam PORT_DMA_COUNT_1						= 1420	; // DMA channel 1, number of bytes to be transferred
+localparam PORT_DMA_START_RCV_1					= 1470	; // DMA channel 1, start receiving
+
+localparam PORT_DMA_ADDR_2						= 1430	; // DMA channel 2, transfer start address
+localparam PORT_DMA_COUNT_2						= 1450	; // DMA channel 2, number of bytes to be transferred
+localparam PORT_DMA_START_RCV_2					= 1480	; // DMA channel 2, start receiving
+ 
 
 reg	[5:0]  next_state;
 reg	[5:0]  state;
@@ -171,7 +181,7 @@ reg [7:0]  rx_data_r, ps2_data_r, ps2_data_r_mouse;
 reg [7:0]  spi_in_r;
 reg [7:0]  spi_in_r1;
 
-assign irq[15:1] = irq_i[15:1]; 
+assign irq[13:1] = irq_i[13:1]; 
 
 // #####################################
 // TIMERS & COUNTERS
@@ -180,6 +190,30 @@ reg [31:0] millis_counter;
 reg [31:0] clock_counter;
 reg [31:0] timer_counter, timer;
 
+
+// ################
+// MOUSE REGISTERS
+// ################
+reg [31:0] mouse_struct_addr; // pointer to mouse struct in memory (holds x, y coord, mouse key and status (1-changed, 0-not changed)
+
+// #####################################
+// DMA REGISTERS
+// #####################################
+reg[31:0] dma_addr_1;	// start address of a memory location where data should be received/transmitted
+reg[31:0] dma_count_1;  // number of bytes that needs to be received/transmitted
+reg[31:0] dma_current_1;// current number of bytes received/transmitted
+reg[7:0] dma_byte_1; 	// backup of a received byte, since we need to receive two bytes in order to place them in 16-bit memory
+reg dma_start_rcv_1; 	// start receiving data
+reg spi_sent_ff_1;
+reg dma_spi_received_1;
+
+reg [31:0]not_received_counter;
+
+reg[31:0] dma_addr_2;
+reg[31:0] dma_count_2;
+reg[31:0] dma_current_2;
+reg[7:0] dma_byte_2;
+reg dma_start_rcv_2;
 
 // #####################################
 // ALU stuff
@@ -271,9 +305,19 @@ if (rst) begin
   wr <= 0;
   vga_mode <= 2'b00;
   //regs[SP_I] <= 47100;
+  dma_addr_1 <= 0;
+  dma_count_1 <= 0;
+  dma_current_1 <= 0;
+  dma_start_rcv_1 <= 0;
+  dma_addr_2 <= 0;
+  dma_count_2 <= 0;
+  dma_current_2 <= 0;
+  dma_start_rcv_2 <= 0;
+  spi_sent_ff_1 <= 0;
+  dma_spi_received_1 <= 1;
+  not_received_counter <= 0;
 end
 else begin
-	irq[IRQ_TIMER] <= 0;
 	if (clock_counter < 100000) begin
 		clock_counter <= clock_counter + 1'b1;
 	end
@@ -288,10 +332,21 @@ else begin
 			timer_counter <= 0;
 		end 
 	end
+	
+	// check if the DMA byte counter 1 (dma_current_1) has reached the given value (dma_count_1), 
+	// and if it has reached, then fire the DMA interrupt 1
+	if (dma_count_1 && (dma_current_1 == dma_count_1)) begin
+			irq[IRQ_DMA_1] <= 1;
+			dma_current_1 <= 0;
+			dma_count_1 <= 0;
+			dma_start_rcv_1 <= 0;
+	end 
+
 
 	if ((irq) && (irq_state==0)) begin
 		if (irq[IRQ_TIMER] & do_irq[IRQ_TIMER]) begin
 			// timer
+			irq[IRQ_TIMER] <= 0;
 			irq_r[IRQ_TIMER] <= 1;
 			irq_state <= 1;
 		end
@@ -325,6 +380,12 @@ else begin
 			irq_r[IRQ_SPI1] <= 1;
 			irq_state <= 1;
 		end		
+		if (irq[IRQ_DMA_1] & do_irq[IRQ_DMA_1]) begin
+			// DMA channel 1 transfer finished -> DMA IRQ 1 triggered
+			irq[IRQ_DMA_1] <= 0;
+			irq_r[IRQ_DMA_1] <= 1;
+			irq_state <= 1;
+		end	 
 	end
 
  case (state)
@@ -354,6 +415,29 @@ else begin
 		state <= READ_DATA;
 		ir <= 0;
 		alu_uns <= 1'b0;
+
+		if ((irq_state == 0) && (irq_r)) begin
+			irq_state <= 1;
+		end
+		
+		if (dma_start_rcv_1 && spi_ready && !spi_sent_ff_1 && dma_spi_received_1) begin
+			spi_out <= 255; // send FF to initiate spi read
+			spi_start <= 1;
+			spi_sent_ff_1 <= 1;
+			dma_spi_received_1 <= 0;
+		end 
+		// if (dma_start_rcv_1 && !dma_spi_received_1) begin
+		// 	not_received_counter <= not_received_counter + 1;
+		// 	if (not_received_counter == 50000) begin
+		// 		spi_out <= 255; // send FF to initiate spi read
+		// 		spi_start <= 1;
+		// 		spi_sent_ff_1 <= 1;
+		// 		dma_spi_received_1 <= 0;
+		// 		// restart whole block
+		// 		//dma_current_1 <= 0;
+		// 	end
+		// end
+
 	end
 	DECODE: begin
 		`ifdef DEBUG
@@ -1021,7 +1105,7 @@ else begin
 			// GROUP - 3 (LOAD, STORE)
 			4'b0011, 4'b1100: begin
 				case (ir[7:4]) 
-					// LD regx, [regy]
+					// LD.W regx, [regy]; LD.S regx, [regy]
 					4'b0000: begin
 						`ifdef DEBUG
 							if (ir[3] == 1) 
@@ -1035,13 +1119,16 @@ else begin
 								// step 1: we try to read memory from the regy address
 								addr <= regs[ir[15:12]] >> 1;
 								if (ir[3] == 1)
+									// LD.W regx, [regy]
 									mc_count <= 1;
 								else	
+									// LD.S regx, [regy]
 									mc_count <= 3;
 								next_state <= EXECUTE;
 								state <= READ_DATA;
 							end
 							1: begin
+								// LD.W regx, [regy]
 								mbr[31:16] <= data_r;
 								// step 1: we try to read memory from the regy address
 								addr <= addr + 1;
@@ -1050,6 +1137,7 @@ else begin
 								state <= READ_DATA;
 							end
 							2: begin
+								// LD.W regx, [regy]
 								// step 2: we get the memory content from the data bus and put it in the regx
 								regs[ir[11:8]] <= (mbr + data_r);
 								// pc already points to the next instruction
@@ -1057,6 +1145,7 @@ else begin
 								state <= CHECK_IRQ;
 							end
 							3: begin
+								// LD.S regx, [regy]
 								// step 2: we get the memory content from the data bus and put it in the regx
 								regs[ir[11:8]] <= data_r; //{{16{data_r[15]}}, data_r};
 								// pc already points to the next instruction
@@ -1067,7 +1156,7 @@ else begin
 							end
 						endcase // mc_count
 					end	// end of LD regx, [regy]
-					// LD reg, [xx]; LD regx, [regy + xx]
+					// LD.W reg, [xx]; LD.W regx, [regy + xx], LD.S reg, [xx]; LD.S regx, [regy + xx]
 					4'b0001, 4'b0010: begin
 						`ifdef DEBUG
 							if (ir[4] == 1) begin
@@ -1103,10 +1192,12 @@ else begin
 							end
 							2: begin
 								if (ir[4] == 1) begin
+									// LD.W reg, [xx]; LD.S reg, [xx]
 									// step 1: we try to read memory from the xx address
 									addr <= (mbr + data_r) >> 1;
 								end
 								else begin
+									// LD.W regx, [regy + xx];  LD.S regx, [regy + xx]
 									// step 1: we try to read memory from the (regy + xx) address
 									addr <= (regs[ir[15:12]] + (mbr + data_r)) >> 1;
 								end
@@ -1117,12 +1208,14 @@ else begin
 							3: begin
 								// step 2: we get the memory content from the data bus and put it in the regx
 								if (ir[3] == 0) begin
+									// LD.S regx, [xx], LD.S regx, [regy + xx]
 									regs[ir[11:8]] <=  data_r; 
 									// pc points to the next instruction
 									state <= CHECK_IRQ;
 									pc <= pc + 2;
 								end 
 								else begin
+									// LD.W regx, [xx], LD.W regx, [regy + xx]
 									regs[ir[11:8]][31:16] <=  data_r; 
 									addr <= addr + 1;
 									mc_count <= 4;
@@ -1131,6 +1224,7 @@ else begin
 								end
 							end
 							4: begin
+								// LD.W regx, [xx], LD.W regx, [regy + xx]
 								regs[ir[11:8]][15:0] <=  data_r; 
 								// pc points to the next instruction
 								state <= CHECK_IRQ;
@@ -1161,6 +1255,7 @@ else begin
 										mc_count <= 3;
 									end
 									4, 5: begin
+										// LD.B regx, [xx], LD.B regx, [regy + xx]
 										mbr <= 0;
 										// step 0: obtain the xx
 										addr <= (pc + 2)>> 1;
@@ -1181,9 +1276,11 @@ else begin
 							end
 							2: begin
 								if (ir[7:4] == 4) begin
+									// LD.B regx, [xx]
 									addr <= (mbr + data_r) >> 1;
 									mbr_e <= (mbr + data_r);
 								end else begin
+									// LD.B regx, [regy + xx]
 									addr <= (regs[ir[15:12]] + mbr + data_r)>> 1;
 									mbr_e <= (regs[ir[15:12]] + mbr + data_r);
 								end
@@ -1209,7 +1306,7 @@ else begin
 							end
 						endcase // mc_count
 					end	// end of LD.B regx, [regy]
-					// ST [regy], regx
+					// ST.W [regy], regx; ST.S [regy], regx
 					4'b1000: begin
 						`ifdef DEBUG
 						if (ir[3] == 1)
@@ -1223,10 +1320,12 @@ else begin
 								// put regy to the addr
 								addr <= regs[ir[11:8]] >> 1;
 								if (ir[3] == 1) begin
+									// ST.W [regy], regx
 									data_to_write <= regs[ir[15:12]][31:16];
 									mc_count <= 1;
 								end
 								else begin
+									// ST.S [regy], regx
 									data_to_write <= regs[ir[15:12]];
 									mc_count <= 2;
 								end
@@ -1234,6 +1333,7 @@ else begin
 								state <= WRITE_DATA;
 							end
 							1: begin
+								// // ST.W [regy], regx
 								addr <= addr + 1;
 								data_to_write <= regs[ir[15:12]][15:0];
 								mc_count <= 2;
@@ -1246,7 +1346,7 @@ else begin
 							end
 						endcase
 					end	 // end of ST [regy], regx		
-					// ST [xx], reg; ST [regx + xx], regy
+					// ST.W [xx], reg; ST.W [regx + xx], regy; ST.S [xx], reg; ST.S [regx + xx], regy
 					4'b1001, 4'b1010: begin
 						`ifdef DEBUG
 							if (ir[4] == 1) begin 
@@ -1282,17 +1382,20 @@ else begin
 							end
 							2: begin
 								if (ir[4] == 1) begin
+									// ST.W [xx], reg; ST.S [xx], reg
 									addr <= (mbr + data_r) >> 1;
 								end
 								else begin
+									// ST.W [regx + xx], regy; ST.S [regx + xx], regy
 									addr <= (mbr + regs[ir[11:8]] + data_r) >> 1;
 								end
 								if (ir[3] == 0) begin
+									// ST.S [xx], reg; ST.S [regx + xx], regy
 									data_to_write <= regs[ir[15:12]];
 									mc_count <= 4;
 								end
 								else begin
-									// ST.W
+									// ST.W [xx], reg; ST.W [regx + xx], regy
 									data_to_write <= regs[ir[15:12]][31:16];
 									mc_count <= 3;
 								end
@@ -1300,6 +1403,7 @@ else begin
 								state <= WRITE_DATA;
 							end
 							3: begin
+								// ST.W [xx], reg; ST.W [regx + xx], regy
 								addr <= addr + 1;
 								data_to_write <= regs[ir[15:12]][15:0];
 								mc_count <= 4;
@@ -1378,11 +1482,13 @@ else begin
 							2: begin
 								// step 1: we read the destination memory content
 								if (ir[4] == 0) begin
+									// ST.B [xx], reg
 									// put xx to the addr
 									addr <= (mbr + data_r) >> 1;
 									mbr_e <= mbr + data_r;
 								end
 								else begin
+									// ST.B [regx + xx], regy
 									// put regy to the addr
 									addr <= (mbr + data_r + regs[ir[11:8]]) >> 1;
 									mbr_e <= mbr + data_r + regs[ir[11:8]];
@@ -1448,6 +1554,7 @@ else begin
 						case (mc_count)
 							0: begin
 								if (ir[4] == 1) begin
+									// ALU.X regx, xx
 									// read the xx 
 									addr <= (pc + 2) >> 1;
 									pc <= pc + 2;
@@ -1467,8 +1574,10 @@ else begin
 								endcase
 								alu_a <= regs[ir[11:8]];
 								if (ir[4] == 0)
+									// ALU.X regx, regy
 									alu_b <= regs[ir[15:12]];
 								else
+									// ALU.S regx, xx
 									alu_b <= data_r;
 								alu_start <= 1;
 								mc_count <= 2;
@@ -1493,20 +1602,20 @@ else begin
 						`ifdef DEBUG
 							if (ir[4] == 0) begin
 								case (ir[3:0])
-									4: $display("%2x: SUB.S r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
-									5: $display("%2x: OR.S r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
-									6: $display("%2x: NEG.S r%-d", ir[3:0], (ir[15:12]));
-									7: $display("%2x: SHR.S r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
-									8: $display("%2x: DIV.S r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+									4: $display("%2x: SUB.W r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+									5: $display("%2x: OR.W r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+									6: $display("%2x: NEG.W r%-d", ir[3:0], (ir[15:12]));
+									7: $display("%2x: SHR.W r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
+									8: $display("%2x: DIV.W r%-d, r%-d", ir[3:0], (ir[11:8]), (ir[15:12]));
 									default: $display("WRONG OPCODE: %02d, %02x", ir[3:0], ir[3:0]);
 								endcase
 							end
 							else begin
 								case (ir[3:0])
-									4: $display("%2x: SUB.W r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
-									5: $display("%2x: OR.W r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
-									7: $display("%2x: SHR.W r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
-									8: $display("%2x: DIV.W r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+									4: $display("%2x: SUB.S r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+									5: $display("%2x: OR.S r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+									7: $display("%2x: SHR.S r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
+									8: $display("%2x: DIV.S r%-d, %-d", ir[3:0], (ir[11:8]), data_r);
 									default: $display("WRONG OPCODE: %02d, %02x", ir[3:0], ir[3:0]);
 								endcase
 							end
@@ -1514,6 +1623,7 @@ else begin
 						case (mc_count)
 							0: begin
 								if (ir[4] == 1) begin
+									// ALU.W regx, xx
 									// read the xx 
 									addr <= (pc + 2) >> 1;
 									pc <= pc + 2;
@@ -1533,8 +1643,10 @@ else begin
 								endcase
 								alu_a <= regs[ir[11:8]];
 								if (ir[4] == 0)
+									// ALU.W regx, regy
 									alu_b <= regs[ir[15:12]];
 								else
+									// ALU.S regx, xx
 									alu_b <= data_r;
 									
 								if (ir[3:0] == 8'd8) begin
@@ -1766,10 +1878,11 @@ else begin
 					endcase
 					alu_a <= regs[ir[11:8]];
 					if (ir[3:0] == 13) begin
+						// ALU.W regx, xx
 						alu_b <= mbr + data_r;
 					end
 					else begin
-						// ALU.B
+						// ALU.B regx, xx
 						alu_b <= {{24{data_r[7]}}, data_r[7:0]};
 					end
 					alu_start <= 1;
@@ -1958,6 +2071,32 @@ else begin
 								end
 							endcase
 						end
+						4'b1001: begin
+							// PIX (r0, r1, r2, r3, r4, r5) - r0 - x; r1 - y; r2 - color; r3 - framebuffer address (1024 is for the real video mem); r4 - line width in bytes; r5 - buffer height
+							// if(x < 0 || y < 0 || x >= bufferW * bufferPPS || y >= bufferH)
+							if ((regs[0] >= 0) && (regs[1] >= 0) && (regs[0] < (regs[4] << 1)) && regs[1] < regs[5]) begin
+								case (mc_count)
+									0: begin
+										addr <= (regs[3] + ((regs[0] >> 2) << 1) + (regs[1] * regs[4])) >> 1; // location = (x >> 2)*2 + y * bufferW; p = backbuffer + location;
+										mbr <= (regs[2] << (12-((regs[0] & 32'd3) << 2))) & (16'hF000 >> ((regs[0] & 32'd3) << 2));// xOffset = (x % 4) * 4; xOffsetMask = 0xF000 >> xOffset; pColor = (color<<(12-xOffset)) & xOffsetMask;
+										mbr_e <= (16'hF000 >> ((regs[0] & 32'd3) << 2)); // xOffsetMask = 0xF000 >> xOffset; 
+										mc_count <= 1;
+										next_state <= EXECUTE;
+										state <= READ_DATA;
+									end
+									1: begin
+										data_to_write <= (data_r & (~mbr_e)) | mbr;  // bgColor = (~xOffsetMask) & *p; *p = pColor | bgColor;
+										mc_count <= 2;
+										next_state <= EXECUTE;
+										state <= WRITE_DATA;
+									end
+									2: begin
+										state <= CHECK_IRQ;
+										pc <= pc + 2;
+									end
+								endcase
+							end
+						end
 						// INT xx, SOFTWARE INTERRUPT
 						4'b1111: begin
 							`ifdef DEBUG
@@ -2025,30 +2164,58 @@ else begin
 					if (irq_r[IRQ_UART]) begin
 						addr <= 16'd8;
 						mbr <= 1;
+						next_state <= CHECK_IRQ;
+						state <= READ_DATA;		
+						irq_state <= 2;			
 					end
 					else if (irq_r[IRQ_PS2]) begin
 						addr <= 16'd12;
 						mbr <= 2;
+						next_state <= CHECK_IRQ;
+						state <= READ_DATA;		
+						irq_state <= 2;			
 					end
 					else if (irq_r[IRQ_SPI]) begin
-						addr <= 16'd28;
-						mbr <= 3;
+						if (dma_count_1 && dma_start_rcv_1) begin
+							// SPI byte arrived, but we are reading it using DMA, not using interrupts
+							irq_state <= 6;
+						end
+						else begin
+							addr <= 16'd28;
+							mbr <= 3;
+							next_state <= CHECK_IRQ;
+							state <= READ_DATA;		
+							irq_state <= 2;			
+						end
 					end
 					else if (irq_r[IRQ_SPI1]) begin
 						addr <= 16'd32;
 						mbr <= 4;
+						next_state <= CHECK_IRQ;
+						state <= READ_DATA;		
+						irq_state <= 2;			
 					end
 					else if (irq_r[IRQ_TIMER]) begin
 						addr <= 16'd4;
 						mbr <= 0;
+						next_state <= CHECK_IRQ;
+						state <= READ_DATA;		
+						irq_state <= 2;			
 					end
 					else if (irq_r[IRQ_PS2_MOUSE]) begin
 						addr <= 16'd36;
 						mbr <= 5;
+						next_state <= CHECK_IRQ;
+						state <= READ_DATA;		
+						irq_state <= 2;			
 					end
-					next_state <= CHECK_IRQ;
-					state <= READ_DATA;		
-					irq_state <= 2;			
+					else if (irq_r[IRQ_DMA_1]) begin
+						addr <= 16'd40;
+						mbr <= 14;
+						next_state <= CHECK_IRQ;
+						state <= READ_DATA;		
+						irq_state <= 2;			
+					end
 				end
 				2: begin
 					if (data_r == 0) begin
@@ -2071,6 +2238,9 @@ else begin
 							end
 							5: begin
 								irq_r[IRQ_PS2_MOUSE] <= 1'b0;
+							end
+							14: begin
+								irq_r[IRQ_DMA_1] <= 1'b0;
 							end
 						endcase
 						irq_state <= 0;
@@ -2116,41 +2286,98 @@ else begin
 						pc <= 16'd8;
 						addr <= 16'd4;
 						irq_r[IRQ_TIMER] <= 0;
+						irq_state <= 0;
+						state <= FETCH;
+						ir <= 0;
 					end 
 					else if (irq_r[IRQ_UART]) begin
 						// UART byte arrived
 						pc <= 16'd16;
 						addr <= 16'd8;
 						irq_r[IRQ_UART] <= 0;
+						irq_state <= 0;
+						state <= FETCH;
+						ir <= 0;
 					end
 					else if (irq_r[IRQ_PS2]) begin
 						// PS/2 key pressed/released
 						pc <= 16'd24;
 						addr <= 16'd12;
 						irq_r[IRQ_PS2] <= 0;
+						irq_state <= 0;
+						state <= FETCH;
+						ir <= 0;
 					end
 					else if (irq_r[IRQ_PS2_MOUSE]) begin
 						// PS/2 mouse byte arrived
 						pc <= 16'd72;
 						addr <= 16'd36;
 						irq_r[IRQ_PS2_MOUSE] <= 0;
+						irq_state <= 0;
+						state <= FETCH;
+						ir <= 0;
 					end
 					else if (irq_r[IRQ_SPI]) begin
-						// SPI byte received
-						pc <= 16'd56;
-						addr <= 16'd28;
-						irq_r[IRQ_SPI] <= 0;
+						if (dma_count_1 && dma_start_rcv_1) begin
+							if (dma_current_1[0] == 0) begin
+								// even address
+								dma_byte_1 <= spi_in_r;
+								//dma_addr_1 <= dma_addr_1 + 1;
+								dma_current_1 <= dma_current_1 + 1;
+
+								irq_state <= 7;
+							end
+							else begin
+								// odd address
+								addr <= (dma_addr_1 + dma_current_1) >> 1;
+								data_to_write <= (dma_byte_1 << 8) | spi_in_r;
+								next_state <= CHECK_IRQ;
+								state <= WRITE_DATA;
+								
+								//dma_addr_1 <= dma_addr_1 + 1;
+								dma_current_1 <= dma_current_1 + 1;
+								
+								irq_state <= 7;
+							end
+						end
+						else begin
+							irq_r[IRQ_SPI] <= 0; 
+							pc <= 16'd56;
+							addr <= 16'd28;
+							irq_state <= 0;
+							state <= FETCH;
+							ir <= 0;
+						end
 					end
 					else if (irq_r[IRQ_SPI1]) begin
 						// SPI1 byte received
 						pc <= 16'd64;
 						addr <= 16'd32;
 						irq_r[IRQ_SPI1] <= 0;
+						irq_state <= 0;
+						state <= FETCH;
+						ir <= 0;
 					end
+					else if (irq_r[IRQ_DMA_1]) begin
+						// DMA channel 1 transfer finished
+						pc <= 16'd80;
+						addr <= 16'd40;
+						irq_r[IRQ_DMA_1] <= 0;
+
+						irq_state <= 0;
+						state <= FETCH;
+						ir <= 0;
+					end					
+				end
+				7: begin
+					// special case for DMA transfer
+					irq_r[IRQ_SPI] <= 0; 
+					dma_spi_received_1 <= 1;
+					not_received_counter <= 0;
 					irq_state <= 0;
 					state <= FETCH;
 					ir <= 0;
-				end
+				end 
 			endcase
 		end
 		else begin
@@ -2158,6 +2385,11 @@ else begin
 		end
 	end // end of CHECK_IRQ
 	READ_DATA: begin
+		if (dma_start_rcv_1 && spi_sent_ff_1) begin
+			spi_start <= 0;
+			spi_sent_ff_1 <= 0;
+		end 
+	
 		if (addr[30] == 1'b1) begin
 			// memory mapped IO
 			case (addr & 32'h3FFFFFFF)
@@ -2191,6 +2423,24 @@ else begin
 				PORT_SPI1_OUT_BUSY/2: begin
 					data_r <= {31'b0, ~spi_ready1};
 				end
+				PORT_DMA_ADDR_1/2: begin
+					data_r <= dma_addr_1[31:16];
+				end
+				(PORT_DMA_ADDR_1/2) + 1: begin
+					data_r <= dma_addr_1[15:0];
+				end
+				PORT_DMA_COUNT_1/2: begin
+					data_r <= dma_count_1[31:16];
+				end
+				(PORT_DMA_COUNT_1/2) + 1: begin
+					data_r <= dma_count_1[15:0];
+				end 	
+				PORT_MOUSE_STRUCT_ADDR/2: begin
+					data_r <= mouse_struct_addr[31:16];
+				end
+				(PORT_MOUSE_STRUCT_ADDR/2) + 1: begin
+					data_r <= mouse_struct_addr[15:0];
+				end 				
 			endcase // end of case(mbr)
 			state <= next_state;
 		end
@@ -2201,7 +2451,7 @@ else begin
 				if (tag[addr[11:0]] == addr[23:12]) begin
 					// cache hit (required data is in cache)
 					data_r <= cl[addr[11:0]];
-					state <= READ_WAIT;
+					state <= READ_WAIT + 1;
 				end
 				else begin
 					// cache miss -> we need to read from SDRAM
@@ -2303,6 +2553,33 @@ else begin
 				PORT_SPI1_CS/2: begin
 					spi_cs1 <= data_to_write[0];
 				end
+				PORT_DMA_ADDR_1/2: begin
+					dma_addr_1[31:16] <= data_to_write;
+				end
+				(PORT_DMA_ADDR_1/2) + 1: begin
+					dma_addr_1[15:0] <= data_to_write;
+				end
+				PORT_DMA_COUNT_1/2: begin
+					dma_count_1[31:16] <= data_to_write;
+					dma_current_1 <= 0;
+				end
+				(PORT_DMA_COUNT_1/2) + 1: begin
+					dma_count_1[15:0] <= data_to_write;
+					dma_current_1 <= 0;
+				end
+				PORT_DMA_START_RCV_1/2: begin
+					dma_start_rcv_1 <= data_to_write[0];
+					spi_sent_ff_1 <= 0;
+					dma_spi_received_1 <= 1;
+					not_received_counter <= 0;
+				end 
+				PORT_MOUSE_STRUCT_ADDR/2: begin
+					mouse_struct_addr[31:16] <= data_to_write;
+				end
+				(PORT_MOUSE_STRUCT_ADDR/2) + 1: begin
+					mouse_struct_addr[15:0] <= data_to_write;
+				end
+
 				default: begin
 				end
 			endcase  // end of case (data)

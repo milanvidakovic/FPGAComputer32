@@ -92,6 +92,9 @@ localparam IRQ_PS2   = 2;
 localparam IRQ_SPI   = 3;
 localparam IRQ_SPI1  = 4;
 localparam IRQ_PS2_MOUSE   = 5;
+localparam IRQ_DMA_1 = 14;
+localparam IRQ_DMA_2 = 15;
+
 localparam N = 6'd32;
 
 //=======================================================
@@ -351,7 +354,7 @@ always @ (posedge clk100) begin
 	else
 		reset_counter <= reset_counter + 1'b1;
 	
-	// ############################### IRQ4 - SPI1 Master #############################
+	// ############################### IRQ4 - SPI1 Master (ethernet) #############################
 	if (spi_received1) begin
 		spi_in_r1 <= spi_in1;
 		// if we have received a byte from the MISO1, we will trigger the IRQ#4
@@ -361,7 +364,7 @@ always @ (posedge clk100) begin
 	begin
 		irq[IRQ_SPI1] <= 1'b0;
 	end
-	// ############################### IRQ3 - SPI Master #############################
+	// ############################### IRQ3 - SPI Master (SD card) #############################
 	if (spi_received) begin
 		spi_in_r <= spi_in;
 		// if we have received a byte from the MISO, we will trigger the IRQ#3

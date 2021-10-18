@@ -3,43 +3,43 @@ TimeQuest Timing Analyzer Summary
 ------------------------------------------------------------
 
 Type  : Slow 1200mV 85C Model Setup 'plli|altpll_component|auto_generated|pll1|clk[0]'
-Slack : -1.128
-TNS   : -70.892
+Slack : -2.300
+TNS   : -589.137
 
 Type  : Slow 1200mV 85C Model Setup 'CLOCK_50'
-Slack : 15.561
-TNS   : 0.000
+Slack : -0.075
+TNS   : -0.141
 
 Type  : Slow 1200mV 85C Model Hold 'plli|altpll_component|auto_generated|pll1|clk[0]'
-Slack : -0.238
-TNS   : -0.472
+Slack : -0.334
+TNS   : -0.637
 
 Type  : Slow 1200mV 85C Model Hold 'CLOCK_50'
 Slack : 0.357
 TNS   : 0.000
 
 Type  : Slow 1200mV 85C Model Minimum Pulse Width 'plli|altpll_component|auto_generated|pll1|clk[0]'
-Slack : 4.658
+Slack : 4.660
 TNS   : 0.000
 
 Type  : Slow 1200mV 85C Model Minimum Pulse Width 'CLOCK_50'
-Slack : 9.596
+Slack : 9.570
 TNS   : 0.000
 
 Type  : Slow 1200mV 0C Model Setup 'plli|altpll_component|auto_generated|pll1|clk[0]'
-Slack : -0.281
-TNS   : -0.382
+Slack : -1.017
+TNS   : -86.999
 
 Type  : Slow 1200mV 0C Model Setup 'CLOCK_50'
-Slack : 16.022
+Slack : 0.413
 TNS   : 0.000
 
 Type  : Slow 1200mV 0C Model Hold 'plli|altpll_component|auto_generated|pll1|clk[0]'
-Slack : -0.240
-TNS   : -0.476
+Slack : -0.324
+TNS   : -0.618
 
 Type  : Slow 1200mV 0C Model Hold 'CLOCK_50'
-Slack : 0.311
+Slack : 0.310
 TNS   : 0.000
 
 Type  : Slow 1200mV 0C Model Minimum Pulse Width 'plli|altpll_component|auto_generated|pll1|clk[0]'
@@ -47,31 +47,31 @@ Slack : 4.686
 TNS   : 0.000
 
 Type  : Slow 1200mV 0C Model Minimum Pulse Width 'CLOCK_50'
-Slack : 9.595
+Slack : 9.576
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Setup 'plli|altpll_component|auto_generated|pll1|clk[0]'
-Slack : 1.857
+Slack : 1.268
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Setup 'CLOCK_50'
-Slack : 17.305
+Slack : 2.191
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Hold 'plli|altpll_component|auto_generated|pll1|clk[0]'
-Slack : -0.189
-TNS   : -0.373
+Slack : -0.242
+TNS   : -0.460
 
 Type  : Fast 1200mV 0C Model Hold 'CLOCK_50'
 Slack : 0.186
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Minimum Pulse Width 'plli|altpll_component|auto_generated|pll1|clk[0]'
-Slack : 4.749
+Slack : 4.748
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Minimum Pulse Width 'CLOCK_50'
-Slack : 9.272
+Slack : 9.237
 TNS   : 0.000
 
 ------------------------------------------------------------

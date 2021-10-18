@@ -1,6 +1,6 @@
 Flow report for computer
-Mon Jan 11 19:34:12 2021
-Quartus II 64-Bit Version 13.0.0 Build 156 04/24/2013 SJ Web Edition
+Sun Oct 17 19:06:57 2021
+Quartus II 32-bit Version 13.0.0 Build 156 04/24/2013 SJ Web Edition
 
 
 ---------------------
@@ -40,21 +40,21 @@ applicable agreement for further details.
 +---------------------------------------------------------------------------------+
 ; Flow Summary                                                                    ;
 +------------------------------------+--------------------------------------------+
-; Flow Status                        ; Successful - Mon Jan 11 19:34:12 2021      ;
-; Quartus II 64-Bit Version          ; 13.0.0 Build 156 04/24/2013 SJ Web Edition ;
+; Flow Status                        ; Successful - Sun Oct 17 19:06:56 2021      ;
+; Quartus II 32-bit Version          ; 13.0.0 Build 156 04/24/2013 SJ Web Edition ;
 ; Revision Name                      ; computer                                   ;
 ; Top-level Entity Name              ; computer                                   ;
 ; Family                             ; Cyclone IV E                               ;
 ; Device                             ; EP4CE22F17C6                               ;
 ; Timing Models                      ; Final                                      ;
-; Total logic elements               ; 19,233 / 22,320 ( 86 % )                   ;
-;     Total combinational functions  ; 16,279 / 22,320 ( 73 % )                   ;
-;     Dedicated logic registers      ; 7,407 / 22,320 ( 33 % )                    ;
-; Total registers                    ; 7407                                       ;
+; Total logic elements               ; 19,716 / 22,320 ( 88 % )                   ;
+;     Total combinational functions  ; 16,734 / 22,320 ( 75 % )                   ;
+;     Dedicated logic registers      ; 7,548 / 22,320 ( 34 % )                    ;
+; Total registers                    ; 7548                                       ;
 ; Total pins                         ; 126 / 154 ( 82 % )                         ;
 ; Total virtual pins                 ; 0                                          ;
 ; Total memory bits                  ; 479,760 / 608,256 ( 79 % )                 ;
-; Embedded Multiplier 9-bit elements ; 31 / 132 ( 23 % )                          ;
+; Embedded Multiplier 9-bit elements ; 37 / 132 ( 28 % )                          ;
 ; Total PLLs                         ; 1 / 4 ( 25 % )                             ;
 +------------------------------------+--------------------------------------------+
 
@@ -64,7 +64,7 @@ applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 01/11/2021 19:29:30 ;
+; Start date & time ; 10/17/2021 19:00:51 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; computer            ;
 +-------------------+---------------------+
@@ -75,7 +75,7 @@ applicable agreement for further details.
 +-------------------------------------+---------------------------------+---------------+-------------+----------------+
 ; Assignment Name                     ; Value                           ; Default Value ; Entity Name ; Section Id     ;
 +-------------------------------------+---------------------------------+---------------+-------------+----------------+
-; COMPILER_SIGNATURE_ID               ; 277371183618304.161038977007288 ; --            ; --          ; --             ;
+; COMPILER_SIGNATURE_ID               ; 277371183618304.163449005004392 ; --            ; --          ; --             ;
 ; EDA_OUTPUT_DATA_FORMAT              ; Systemverilog Hdl               ; --            ; --          ; eda_simulation ;
 ; EDA_SIMULATION_TOOL                 ; ModelSim-Altera (SystemVerilog) ; <None>        ; --          ; --             ;
 ; IP_TOOL_NAME                        ; ALTFP_ADD_SUB                   ; --            ; --          ; --             ;
@@ -113,12 +113,12 @@ applicable agreement for further details.
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:01:42     ; 1.0                     ; 4808 MB             ; 00:01:41                           ;
-; Fitter                    ; 00:02:20     ; 1.0                     ; 5108 MB             ; 00:02:19                           ;
-; Assembler                 ; 00:00:02     ; 1.0                     ; 4606 MB             ; 00:00:02                           ;
-; TimeQuest Timing Analyzer ; 00:00:11     ; 1.0                     ; 4853 MB             ; 00:00:11                           ;
-; EDA Netlist Writer        ; 00:00:18     ; 1.0                     ; 4725 MB             ; 00:00:16                           ;
-; Total                     ; 00:04:33     ; --                      ; --                  ; 00:04:29                           ;
+; Analysis & Synthesis      ; 00:02:01     ; 1.0                     ; 531 MB              ; 00:02:00                           ;
+; Fitter                    ; 00:03:10     ; 1.0                     ; 764 MB              ; 00:03:08                           ;
+; Assembler                 ; 00:00:04     ; 1.0                     ; 393 MB              ; 00:00:03                           ;
+; TimeQuest Timing Analyzer ; 00:00:16     ; 1.0                     ; 586 MB              ; 00:00:16                           ;
+; EDA Netlist Writer        ; 00:00:26     ; 1.0                     ; 481 MB              ; 00:00:26                           ;
+; Total                     ; 00:05:57     ; --                      ; --                  ; 00:05:53                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

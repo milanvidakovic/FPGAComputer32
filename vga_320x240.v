@@ -112,7 +112,7 @@ always @(posedge clk) begin
 	clk50 <= ~clk50;
 end
 
-always @(posedge clk50) begin
+always @(posedge clk_50) begin
 	case (state) 
 		IN_LINE, H_BLANK: begin
 			if (mem_read) begin

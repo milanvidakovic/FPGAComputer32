@@ -75,28 +75,28 @@ callse {value}               -> 8'0x00 @ 4'0xa @ 4'0x2 @ value[31:16] @ value[15
 ld.b {dest: reg}, [{src: reg}]            -> src[3:0] @ dest[3:0] @ 4'0x3 @ 4'0x3
 ld.s {dest: reg}, [{src: reg}]            -> src[3:0] @ dest[3:0] @ 4'0x0 @ 4'0x3
 ld.w {dest: reg}, [{src: reg}]            -> src[3:0] @ dest[3:0] @ 4'0x0 @ 4'0xc
-ld.b {dest: reg}, [{value}]               ->    4'0x0 @ dest[3:0] @ 4'0x4 @ 4'0x3 @ value[15:0]
+ld.b {dest: reg}, [{value}]               ->    4'0x0 @ dest[3:0] @ 4'0x4 @ 4'0x3 @ value[31:16] @ value[15:0]
 ld.s {dest: reg}, [{value}]               ->    4'0x0 @ dest[3:0] @ 4'0x1 @ 4'0x3 @ value[31:16] @ value[15:0]
 ld.w {dest: reg}, [{value}]               ->    4'0x0 @ dest[3:0] @ 4'0x1 @ 4'0xc @ value[31:16] @ value[15:0]
 ld.s {dest: reg}, [{src: reg} + {value}]  -> src[3:0] @ dest[3:0] @ 4'0x2 @ 4'0x3 @ value[31:16] @ value[15:0]
 ld.s {dest: reg}, [{src: reg} - {value}]  -> src[3:0] @ dest[3:0] @ 4'0x2 @ 4'0x3 @ -value[31:16] @ -value[15:0]
 ld.w {dest: reg}, [{src: reg} + {value}]  -> src[3:0] @ dest[3:0] @ 4'0x2 @ 4'0xc @ value[31:16] @ value[15:0]
 ld.w {dest: reg}, [{src: reg} - {value}]  -> src[3:0] @ dest[3:0] @ 4'0x2 @ 4'0xc @ -value[31:16] @ -value[15:0]
-ld.b {dest: reg}, [{src: reg} + {value}]  -> src[3:0] @ dest[3:0] @ 4'0x5 @ 4'0x3 @ value[15:0]
-ld.b {dest: reg}, [{src: reg} - {value}]  -> src[3:0] @ dest[3:0] @ 4'0x5 @ 4'0x3 @ -value[15:0]
+ld.b {dest: reg}, [{src: reg} + {value}]  -> src[3:0] @ dest[3:0] @ 4'0x5 @ 4'0x3 @ value[31:16] @ value[15:0]
+ld.b {dest: reg}, [{src: reg} - {value}]  -> src[3:0] @ dest[3:0] @ 4'0x5 @ 4'0x3 @ -value[31:16] @ -value[15:0]
                                          
 st.b [{dest: reg}], {src: reg}            -> src[3:0] @ dest[3:0] @ 4'0xb @ 4'0x3
 st.s [{dest: reg}], {src: reg}            -> src[3:0] @ dest[3:0] @ 4'0x8 @ 4'0x3
 st.w [{dest: reg}], {src: reg}            -> src[3:0] @ dest[3:0] @ 4'0x8 @ 4'0xc
-st.b [{value}], {src: reg}                -> src[3:0] @ 4'0x0     @ 4'0xc @ 4'0x3 @ value[15:0]
+st.b [{value}], {src: reg}                -> src[3:0] @ 4'0x0     @ 4'0xc @ 4'0x3 @ value[31:16] @ value[15:0]
 st.s [{value}], {src: reg}                -> src[3:0] @ 4'0x0     @ 4'0x9 @ 4'0x3 @ value[31:16] @ value[15:0]
 st.w [{value}], {src: reg}                -> src[3:0] @ 4'0x0     @ 4'0x9 @ 4'0xc @ value[31:16] @ value[15:0]
 st.s [{dest: reg} + {value}], {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0xa @ 4'0x3 @ value[31:16] @ value[15:0]
 st.s [{dest: reg} - {value}], {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0xa @ 4'0x3 @ -value[31:16] @ -value[15:0]
 st.w [{dest: reg} + {value}], {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0xa @ 4'0xc @ value[31:16] @ value[15:0]
 st.w [{dest: reg} - {value}], {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0xa @ 4'0xc @ -value[31:16] @ -value[15:0]
-st.b [{dest: reg} + {value}], {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0xd @ 4'0x3 @ value[15:0]
-st.b [{dest: reg} - {value}], {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0xd @ 4'0x3 @ -value[15:0]
+st.b [{dest: reg} + {value}], {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0xd @ 4'0x3 @ value[31:16] @ value[15:0]
+st.b [{dest: reg} - {value}], {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0xd @ 4'0x3 @ -value[31:16] @ -value[15:0]
 
 add.w {dest: reg}, {src: reg}               -> src[3:0] @ dest[3:0] @ 4'0x0 @ 4'0x4
 add.b {dest: reg}, {value}                  ->    4'0x0 @ dest[3:0] @ 4'0x0 @ 4'0xe @ 8'0x00 @ value[7:0]
@@ -167,7 +167,8 @@ fdiv {dest: reg}, {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0x5 @ 4'0xb
 sex.b {dest: reg}, {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0x6 @ 4'0xb
 sex.s {dest: reg}, {src: reg}  -> src[3:0] @ dest[3:0] @ 4'0x7 @ 4'0xb
 
-blit -> 8'0xb @ 4'0x8 @ 4'0xb
+blit -> 8'0xb @ 4'0x8 @ 4'0xb  ; r1 - dst; r2 - src; r3 - count
+pix ->  8'0xb @ 4'0x9 @ 4'0xb  ; r0 - x; r1 - y; r2 - color; r3 - destination address (1024 for the framebuffer); r4 - width of line in bytes; r5 - height of the frame buffer
 
 int {value}										-> 8'0x00               @ 4'0xf @ 4'0xb @ value[15:0]
 

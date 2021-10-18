@@ -1,0 +1,44 @@
+VERSION.TXT
+-----------------------
+18.10.2021.
+* added localparam PORT_MOUSE_STRUCT_ADDR = 810 which can be used to maintain the address of a mouse structure that mouse driver should set (x, y, key, status).
+* introduced DMA for reading SD card (SPI port). Introduce a whole lot of ports for that (DMA start address, DMA count, DMA start). Added a new interrupt: DMA interrupt to notify the CPU that the transfer is done.
+* vga module timing tuning.
+
+4.12.2020.
+* replaced ps2 module with the altera-based one. Created two instances of that controller: one for the keyboard and one for the mouse.
+* changed sprites definition address from 72 to 128. Used 72 for the IRQ#5 (PS2 mouse) interrupt handling routine.
+* changed interrupt condition at line 292 from:
+if ((irq & do_irq) && (~irq_state)) begin
+to:
+if ((irq) && (irq_state == 0)) begin
+and added separate condition to every irq on lines below; for example:
+if (irq[IRQ_UART] && do_irq[IRQ_UART]) begin...
+
+2.12.2020
+* added separate stack for interrupts (SP_I register, starting with 47100 at reset)
+* speed up SPI to 5Mbps
+* changed interrupts at line 289 to allow multiple interrupt flags to go on (instead of elseif, we now have else).
+* used pll to produce 25MHz clock so both VGA modules now receive all three clocks: 100MHz, 50MHz and 25MHz).
+* added an instruction: BLIT (uses implicitely r1-dest, r2-src, r3-count) copies r3 bytes from r2 to r1 
+
+computer33.wt-v06
+* four sprites in 320x240x8 mode 
+
+computer33.wt-v05
+* have two ram.hex files:
+	1. ram-SD.hex - ram that loads bios from SD and then loads the BOOT.BIN program from the SD
+	2. ram.UART.hex - ram that loads BOOT program from UART. UART Raspbootin protocol now supports 32-bit BOOT program length
+* mov.b now fills upper three bytes with zeros
+* added additional CS (SS) GPIO pin ad the PORT_SPI_CS 740, just for another SPI device (ethernet EN28J60 module, perhaps?)
+
+computer33.wt-v04
+* added support for booting from SD card. 
+ram.hex file now contains BIOS code that loads bootloader from the SD card, from the hardcoded location: sector 15564764. 
+It loads the bootloader into the address 400000 and then executes it.
+The bootloader then lists root directory and tries to find BOOT.BIN file, and loads it into the 0xB000 address and executes it
+
+* added support for the SPI. The SD card adapter is wired to this SPI port with the PORT_SPI_CS2 as CS (SS) at the port 730.
+The SPI MISO triggers the IRQ#3 interrupt (SPI interrupt), and the MOSI does the transmission of a given byte to the slave device at 
+2500000 BPS (2.5M BPS).
+
