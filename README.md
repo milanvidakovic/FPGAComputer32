@@ -9,25 +9,33 @@ The address bus is 24 bits wide, addressing 32MB. Data bus is 16 bits wide, but 
 
 Video output is VGA, 640x480. Text mode has 80x60 characters, each character being 8x8  pixels in dimensions. Video frame buffer in text mode has 4800 16-bit words (80x60 characters), starting at 1024 decimal. The lower byte has the ASCII character, while the upper byte has the attributes (3 bits for the background color, 3 bits for the foreground color, inverted, and the two bits unused). 
 
-In graphics mode 1, the resolution is 320x240 pixels. Each pixel is 4 bits long, having two pixels per byte in the frame buffer. Frame buffer starts at 1024 decimal. Each pixel's color is defined by those four bits by: xrgb.
+In graphics mode 1, the resolution is 320x240 pixels with 8 colors. Each pixel is 4 bits long, having two pixels per byte in the frame buffer. Frame buffer starts at 1024 decimal. Each pixel's color is defined by those four bits by: xrgb.
 
-In graphics mode 2, the resolution is 640x480 pixels. Each pixel is 1 bit long, having value 1 (white) or 0 (black). Therefore, one byte of the frame buffer holds 8 pixels. Frame buffer starts at 1024 decimal. 
+In graphics mode 2, the resolution is 640x480 pixels with two colors. Each pixel is 1 bit long, having value 1 (white) or 0 (black). Therefore, one byte of the frame buffer holds 8 pixels. Frame buffer starts at 1024 decimal. 
 
-This computer has three interrupts: IRQ0, IRQ1 and IRQ2. IRQ0 is connected to the internal timer, which is incremented every millisecond. The IRQ1 is connected to the UART, while IRQ2 is connected to the PS/2 keyboard. Whenever a byte comes to the UART, it generates an IRQ1. Whenever a PS/2 key is pressed, couple of bytes are received (make and break codes), in a sequence, each causing the IRQ2 to fire.
+This computer has the folowing interrupts: IRQ_TIMER (internal timer, incremented each millisecond), IRQ_UART (UART), IRQ_PS2 (PS/2 keyboard), IRQ_SPI (SPI connected to the SD card), IRQ_SPI1 (SPI connected to the Ethernet card), IRQ_PS2_MOUSE (PS/2 mouse), and IRQ_DMA_1 (DMA controller causes this interrupt when finishes DMA transfer). 
 
-The interrupt causes the CPU to push flags to the stack, then to push PC to the stack and then to jump to the location designated for the CPU:
-* for the IRQ0, it is 0x0008,
-* for the IRQ1, it is 0x0010, and
-* for the IRQ2, it is 0x0018.
+The interrupt causes the CPU to push PC to the stack and then flags. It then jumps to the location designated for the CPU:
+* IRQ_TIMER:      8,
+* IRQ_UART:       16,
+* IRQ_PS2:        24,
+* IRQ_SPI:        56,
+* IRQ_SPI1:       64,
+* IRQ_PS2_MOUSE:  72, and
+* IRQ_DMA_1:      80.
 
-It is up to the programmer to put the code in those locations. Usually, it is a JUMP instruction. To return from the interrupt routine, it is necessary to put the IRET instruction. It pops the return address, and then pops the flags register, and then goes back into the interrupted program.
+It is up to the programmer to put the code in those locations. Usually, it is a JUMP instruction. To return from the interrupt routine, it is necessary to use the IRET instruction. It pops the flags register, and then pops the return address. It then goes back into the interrupted program.
 
 KEY0 of the DE0-NANO is used as the reset key. When pressed, it forces CPU to go to the 0x0000 address. Usually there is a JUMP instruction to go to the main program.
 
 # VGA text mode
-Text mode is 80x60 characters, occupying 4800 words. Lower byte is the ASCII code of a character, while the upper byte is the attributes. Video frame buffer starts at the address 1024 (decimal).
+Text mode is 80x60 characters, occupying 4800 words. Lower byte is the ASCII code of a character, while the upper byte is the attribute of that character. Video frame buffer starts at the address 1024 (decimal). Attribute byte looks like this:
 
-The foreground color is inverted so zero values (default) would mean white color. That way, you don't need to set the foreground color to white, and by default (0, 0, 0), it is white. The default background color is black (0, 0, 0). This means that if the upper (Attribute) byte is zero (0x00), the background color is black, and the foreground color is white.
+```
+xrgbxrgb
+```
+
+The first nibble is for the foreground color, while the second nibble is for the background color. The foreground color is inverted so zero values (default) would mean white color. That way, you don't need to set the foreground color to white, and by default (0, 0, 0), it is white. The default background color is black (0, 0, 0). This means that if the upper (Attribute) byte is zero (0x00), the background color is black, and the foreground color is white.
 
 VGA female connector is connected via resistors to the GPIO-0 expansion header of the DE0-NANO board:
 
@@ -41,15 +49,17 @@ VGA female connector is connected via resistors to the GPIO-0 expansion header o
 This graphics mode is 320x240 pixels. Since the text mode is the default mode, to switch to this graphics mode, you need to type in the assembler code following:
 
 ```
-mov.w r0, 1
-out [128], r0
+mov.w r0, 0x80000500  ; PORT_VIDEO_MODE
+mov.w r1, 1           ; mode 1 - 320x240x8
+st.s [r0], r1         ; we write 16-bit varue to this port!
 ```
 
 To switch back to the text mode, you need to enter:
 
 ```
-mov.w r0, 0
-out [128], r0
+mov.w r0, 0x80000500  ; PORT_VIDEO_MODE
+mov.w r1, 0           ; mode 0 - text
+st.s [r0], r1         ; we write 16-bit varue to this port!
 ```
 
 Video memory starts from address 1024. One byte of the video memory is organised like this:
@@ -67,15 +77,17 @@ st.s [1024], r0
 This graphics mode is 640x480 pixels. Since the text mode is the default mode, to switch to this graphics mode, you need to type in the assembler code following:
 
 ```
-mov.w r0, 2
-out [128], r0
+mov.w r0, 0x80000500  ; PORT_VIDEO_MODE
+mov.w r1, 1           ; mode 2 - 640x480x2
+st.s [r0], r1         ; we write 16-bit varue to this port!
 ```
 
 To switch back to the text mode, you need to enter:
 
 ```
-mov.w r0, 0
-out [128], r0
+mov.w r0, 0x80000500  ; PORT_VIDEO_MODE
+mov.w r1, 0           ; mode 0 - text
+st.s [r0], r1         ; we write 16-bit varue to this port!
 ```
 
 Video memory starts from address 1024. One byte of the video memory holds 8 pixels, each being 1 or 0. If you want to put four white and four black pixels at the top left corner of the screen (from the (0,0) to the (7,0) coordinates), you need to type:
@@ -92,7 +104,7 @@ The computer supports up to 16 hardware sprites, each being 16x16 pixels, in gra
 * y coordinate (2 bytes)
 * transparent color (2 bytes).
 
-The sprite structure for the first sprite starts at 64 decimal. Each next sprite structure starts 8 bytes later. 
+The sprite structure for the first sprite starts at 128 decimal. Each next sprite structure starts 8 bytes later. There are four hardware sprites supported currently. 
 
 Sprite definition consists of 16 lines, each line described by 16 pixels, each pixel defined by 4 bits: xrgb.
 This means that one sprite line consists of 8 bytes (two pixels per byte), so total bytes needed for the sprite definition is 8x16 bytes.
@@ -101,7 +113,7 @@ Here is the example of showing one sprite at (25, 25):
 
 ```
   mov.w r0, sprite_def
-  mov.w r1, 64
+  mov.w r1, 128
   st.s [r1], r0  ; sprite definition is at sprite_def address
   mov.w r0, 25
   st.s [r1 + 2], r0  ; x = 25  at addr 66
@@ -138,34 +150,37 @@ UART is connected to the GPIO-0 expansion header of the DE0-NANO board:
 * TX (pin 32, GPIO_025, PIN_D9) should be connected to the RX pin of the PC,
 * RX (pin 34, GPIO_027, PIN_E10) should be connected to the TX pin of the PC.
 
-UART is used within the CPU via IN, and OUT instructions. RX also triggers the IRQ1, which means that whenever a byte is received via UART, the IRQ1 will be triggered, forcing CPU to jump to the 0x0008 address. There you should place the JUMP instruction to your UART interrupt routine.
+UART is used within the CPU using PORT_UART_RX_BYTE, PORT_UART_TX_BUSY, and PORT_UART_TX_SEND_BYTE ports. Received byte triggers the IRQ_UART, forcing CPU to jump to the 0x0008 address. There you should place the JUMP instruction to your UART interrupt routine.
 
-Inside the UART interrupt routine, you can get the received byte by using the IN instruction:
-
-```
-in r1, [64]; r1 holds now received byte from the UART
-```
-
-To send a byte, first you need to check if the UART TX is free. You can do it by using the in instruction:
+Inside the UART interrupt routine, you can get the received byte by using the PORT_UART_RX_BYTE port:
 
 ```
+mov.w r0, 0x80000280    ; PORT_UART_RX_BYTE
+ld.s r1, [r0]; r1 holds now received byte from the UART
+```
+
+To send a byte, first you need to check if the UART TX is free. You can do it by using the following code:
+
+```
+      mov.w r1, 0x8000028A    ; PORT_UART_TX_BUSY
+      mov.w r2, 0x80000294    ; PORT_UART_TX_SEND_BYTE
 loop:
-      in r5, [65]   ; tx busy in r5
+      ld.s r5, [r1]   ; tx busy in r5
       cmp.w r5, 0    
       jz not_busy   ; if not busy, send back the received character
       j loop
 not_busy:
-      out [66], r1  ; send the character to the UART
+      st.s [r2], r0  ; send the character to the UART (the character is in the r0 register)
 ```
 
 Addresses used by the UART are in the following list:
-* 64 -> Received byte from the RX part of the UART (use the IN instruction).
-* 65 -> 0 if the TX part of the UART is free to send a byte, 1 if TX part is busy.
-* 66 -> Byte to be sent must be placed here using the OUT instruction.
+* PORT_UART_RX_BYTE -> Received byte from the RX part of the UART.
+* PORT_UART_TX_BUSY -> 0 if the TX part of the UART is free to send a byte, 1 if TX part is busy.
+* PORT_UART_TX_SEND_BYTE -> Byte to be sent must be placed here.
 
 # PS/2 interface
 
-PS/2 interface works with PS/2 keyboards. Just connect the keyboard to the PS/2 connector, and the IRQ2 will be fired for each byte of the make/break sequence. 
+PS/2 interface works with PS/2 keyboards. Just connect the keyboard to the PS/2 connector, and the IRQ_PS2 will be fired for each byte of the make/break sequence. 
 
 PS/2 connector is connected to the GPIO ports of the DE0-NANO board:
 * Data is connected to the GPIO31 (PIN_D11) port
@@ -174,7 +189,10 @@ PS/2 connector is connected to the GPIO ports of the DE0-NANO board:
 To read the received make/break code, you need to use the IN instruction:
 
 ```
-in r1, [68]; r1 holds the received byte from the PS/2 keyboard
+mov.w r0, 0x800002A8  ; PORT_KEYBOARD
+ld.s r1, [r0]; r1 holds the received byte from the PS/2 keyboard
 ```
 You need to make additional code to parse make/break code. 
+
+# SPI interface connected to the SD and Ethernet cards
 

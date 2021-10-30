@@ -1,5 +1,8 @@
 VERSION.TXT
 -----------------------
+30.10.2021.
+* modified pix instruction to work under 640x480x2 mode, too.
+
 18.10.2021.
 * added localparam PORT_MOUSE_STRUCT_ADDR = 810 which can be used to maintain the address of a mouse structure that mouse driver should set (x, y, key, status).
 * introduced DMA for reading SD card (SPI port). Introduce a whole lot of ports for that (DMA start address, DMA count, DMA start). Added a new interrupt: DMA interrupt to notify the CPU that the transfer is done.

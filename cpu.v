@@ -120,7 +120,7 @@ localparam PORT_SPI1_OUT_BUSY					= 770	; //port for sending byte via SPI
 localparam PORT_SPI_CS							= 730	; //port for CS (SS).
 localparam PORT_SPI1_CS							= 740	; //port for CS1 (SS1).
 
-localparam PORT_VIDEO_MODE						= 1280	; //video mode type (0-text; 1-graphics), (write)
+localparam PORT_VIDEO_MODE						= 1280	; //video mode type (0-text; 1-graphics 1, 2-graphics2), (write)
 localparam PORT_TIMER     						= 1290	; //timer irq port (number of milliseconds before the irq is triggered)
 localparam VGA_TEXT_INVERSE						= 1300	; //if 1, then the screen is inversed (black letters on white background)
 
@@ -2072,20 +2072,25 @@ else begin
 							endcase
 						end
 						4'b1001: begin
-							// PIX (r0, r1, r2, r3, r4, r5) - r0 - x; r1 - y; r2 - color; r3 - framebuffer address (1024 is for the real video mem); r4 - line width in bytes; r5 - buffer height
+							// PIX (r0, r1, r2, r3, r4, r5) - r0 - x; r1 - y; r2 - color; r3 - framebuffer address (1024 is for the real video mem); 
+							// r4 - line width in bytes; r5 - buffer height
 							// if(x < 0 || y < 0 || x >= bufferW * bufferPPS || y >= bufferH)
-							if ((regs[0] >= 0) && (regs[1] >= 0) && (regs[0] < (regs[4] << 1)) && regs[1] < regs[5]) begin
+							//if ((regs[0] >= 0) && (regs[1] >= 0) && (regs[0] < (regs[4] << (vga_mode==1?1:3))) && regs[1] < regs[5]) begin
 								case (mc_count)
 									0: begin
-										addr <= (regs[3] + ((regs[0] >> 2) << 1) + (regs[1] * regs[4])) >> 1; // location = (x >> 2)*2 + y * bufferW; p = backbuffer + location;
-										mbr <= (regs[2] << (12-((regs[0] & 32'd3) << 2))) & (16'hF000 >> ((regs[0] & 32'd3) << 2));// xOffset = (x % 4) * 4; xOffsetMask = 0xF000 >> xOffset; pColor = (color<<(12-xOffset)) & xOffsetMask;
-										mbr_e <= (16'hF000 >> ((regs[0] & 32'd3) << 2)); // xOffsetMask = 0xF000 >> xOffset; 
+										// location = (x >> 2)*2 + y * bufferW; p = backbuffer + location;
+										addr <= (regs[3] + ((regs[0] >> (vga_mode == 1?2:4)) << 1) + (regs[1] * regs[4])) >> 1; 
+										// xOffset = (x % 4) * 4; xOffsetMask = 0xF000 >> xOffset; pColor = (color<<(12-xOffset)) & xOffsetMask;
+										mbr <= (regs[2] << ((vga_mode == 1?12:15)-((regs[0] & (vga_mode == 1?32'd3:32'd15)) << (vga_mode == 1?2:0)))) & ((vga_mode == 1?16'hF000:16'h8000) >> ((regs[0] & (vga_mode == 1?32'd3:32'd15)) << (vga_mode == 1?2:0)));
+										// xOffsetMask = 0xF000 >> xOffset; 
+										mbr_e <= ((vga_mode == 1?16'hF000:16'h8000) >> ((regs[0] & (vga_mode == 1?32'd3:32'd15)) << (vga_mode == 1?2:0))); 
 										mc_count <= 1;
 										next_state <= EXECUTE;
 										state <= READ_DATA;
 									end
 									1: begin
-										data_to_write <= (data_r & (~mbr_e)) | mbr;  // bgColor = (~xOffsetMask) & *p; *p = pColor | bgColor;
+										// bgColor = (~xOffsetMask) & *p; *p = pColor | bgColor;
+										data_to_write <= (data_r & (~mbr_e)) | mbr;  
 										mc_count <= 2;
 										next_state <= EXECUTE;
 										state <= WRITE_DATA;
@@ -2095,7 +2100,7 @@ else begin
 										pc <= pc + 2;
 									end
 								endcase
-							end
+							//end
 						end
 						// INT xx, SOFTWARE INTERRUPT
 						4'b1111: begin
