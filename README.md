@@ -28,6 +28,9 @@ It is up to the programmer to put the code in those locations. Usually, it is a 
 
 KEY0 of the DE0-NANO is used as the reset key. When pressed, it forces CPU to go to the 0x0000 address. Usually there is a JUMP instruction to go to the main program.
 
+# Schematics
+![schema](img/Schema.png)
+
 # VGA text mode
 Text mode is 80x60 characters, occupying 4800 words. Lower byte is the ASCII code of a character, while the upper byte is the attribute of that character. Video frame buffer starts at the address 1024 (decimal). Attribute byte looks like this:
 

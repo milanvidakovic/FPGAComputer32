@@ -125,8 +125,8 @@ always @(posedge clk_50) begin
 		V_BLANK: begin
 			pixels <= data;
 			state <= SCAN_IDLE;
-			rd <= 1'bz;
-			wr <= 1'bz;
+			rd <= 1'b0;
+			wr <= 1'b0;
 			mem_read <= 1'b0;
 		end
 	endcase

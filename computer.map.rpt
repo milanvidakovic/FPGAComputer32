@@ -1,5 +1,5 @@
 Analysis & Synthesis report for computer
-Sat Oct 30 12:47:58 2021
+Sat Nov 06 19:32:58 2021
 Quartus II 32-bit Version 13.0.0 Build 156 04/24/2013 SJ Web Edition
 
 
@@ -136,7 +136,7 @@ applicable agreement for further details.
 +---------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                    ;
 +------------------------------------+--------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Sat Oct 30 12:47:57 2021      ;
+; Analysis & Synthesis Status        ; Successful - Sat Nov 06 19:32:57 2021      ;
 ; Quartus II 32-bit Version          ; 13.0.0 Build 156 04/24/2013 SJ Web Edition ;
 ; Revision Name                      ; computer                                   ;
 ; Top-level Entity Name              ; computer                                   ;
@@ -749,7 +749,6 @@ Encoding Type:  One-Hot
 ; RAM:ram|data[14]~en                                                                                                                                                       ; Lost fanout                                                                                                                                    ;
 ; RAM:ram|data[15]~en                                                                                                                                                       ; Lost fanout                                                                                                                                    ;
 ; vga_320x240:vga1|rd                                                                                                                                                       ; Lost fanout                                                                                                                                    ;
-; vga_320x240:vga1|rd~en                                                                                                                                                    ; Lost fanout                                                                                                                                    ;
 ; vga_module:vga0|rd                                                                                                                                                        ; Lost fanout                                                                                                                                    ;
 ; irq[6..13]                                                                                                                                                                ; Stuck at GND due to stuck port data_in                                                                                                         ;
 ; cpu:cpu0|alu_uns                                                                                                                                                          ; Stuck at GND due to stuck port data_in                                                                                                         ;
@@ -993,7 +992,7 @@ Encoding Type:  One-Hot
 ; SPI_Master_With_Single_CS:spi1|r_CS_Inactive_Count[-1]                                                                                                                    ; Stuck at GND due to stuck port data_in                                                                                                         ;
 ; SPI_Master_With_Single_CS:spi0|r_CS_Inactive_Count[-1]                                                                                                                    ; Stuck at GND due to stuck port data_in                                                                                                         ;
 ; vga_320x240:vga1|sprite_counter[3,4]                                                                                                                                      ; Stuck at GND due to stuck port data_in                                                                                                         ;
-; Total Number of Removed Registers = 387                                                                                                                                   ;                                                                                                                                                ;
+; Total Number of Removed Registers = 386                                                                                                                                   ;                                                                                                                                                ;
 +---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
@@ -1111,7 +1110,7 @@ Encoding Type:  One-Hot
 ;                                                                                                                                         ;                           ; cpu:cpu0|fpdiv:fpdiv_op|fpdiv_altfp_div_nqj:fpdiv_altfp_div_nqj_component|fpdiv_altfp_div_pst_fhg:altfp_div_pst1|remainder_j_dffe_perf_1[36], ;
 ;                                                                                                                                         ;                           ; cpu:cpu0|fpdiv:fpdiv_op|fpdiv_altfp_div_nqj:fpdiv_altfp_div_nqj_component|fpdiv_altfp_div_pst_fhg:altfp_div_pst1|remainder_j_dffe_perf_0[36], ;
 ;                                                                                                                                         ;                           ; cpu:cpu0|fpdiv:fpdiv_op|fpdiv_altfp_div_nqj:fpdiv_altfp_div_nqj_component|fpdiv_altfp_div_pst_fhg:altfp_div_pst1|remainder_j_dffe_0[36]       ;
-; RAM:ram|data2[0]~en                                                                                                                     ; Lost Fanouts              ; vga_320x240:vga1|rd, vga_320x240:vga1|rd~en, vga_module:vga0|rd                                                                               ;
+; RAM:ram|data2[0]~en                                                                                                                     ; Lost Fanouts              ; vga_320x240:vga1|rd, vga_module:vga0|rd                                                                                                       ;
 ; irq[6]                                                                                                                                  ; Stuck at GND              ; cpu:cpu0|irq_state[10]                                                                                                                        ;
 ;                                                                                                                                         ; due to stuck port data_in ;                                                                                                                                               ;
 ; PS2_Controller:PS2|s_ps2_transceiver.PS2_STATE_3_END_TRANSFER                                                                           ; Stuck at GND              ; PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In|s_ps2_receiver.PS2_STATE_1_WAIT_FOR_DATA                                                 ;
@@ -3815,7 +3814,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 +----------------+--------------+
 ; Partition Name ; Elapsed Time ;
 +----------------+--------------+
-; Top            ; 00:01:48     ;
+; Top            ; 00:01:50     ;
 +----------------+--------------+
 
 
@@ -3825,7 +3824,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus II 32-bit Analysis & Synthesis
     Info: Version 13.0.0 Build 156 04/24/2013 SJ Web Edition
-    Info: Processing started: Sat Oct 30 12:45:57 2021
+    Info: Processing started: Sat Nov 06 19:30:53 2021
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off computer -c computer
 Warning (20028): Parallel compilation is not licensed and has been disabled
 Info (12021): Found 1 design units, including 1 entities, in source file ps2_controller.v
@@ -4683,6 +4682,7 @@ Warning (13046): Tri-state node(s) do not directly drive top-level pin(s)
     Warning (13048): Converted tri-state node "addr2[2]" into a selector
     Warning (13048): Converted tri-state node "addr2[1]" into a selector
     Warning (13048): Converted tri-state node "addr2[0]" into a selector
+    Warning (13048): Converted tri-state node "rd2" into a selector
     Warning (13049): Converted tri-state buffer "rx_serial:rsr|rx_data[0]" feeding internal logic into a wire
     Warning (13049): Converted tri-state buffer "rx_serial:rsr|rx_data[1]" feeding internal logic into a wire
     Warning (13049): Converted tri-state buffer "rx_serial:rsr|rx_data[2]" feeding internal logic into a wire
@@ -4954,7 +4954,7 @@ Warning (13024): Output pins are stuck at VCC or GND
     Warning (13410): Pin "sdram_cs_n_pad_o" is stuck at GND
     Warning (13410): Pin "sdram_cke_pad_o" is stuck at VCC
 Info (286030): Timing-Driven Synthesis is running
-Info (17049): 192 registers lost all their fanouts during netlist optimizations.
+Info (17049): 191 registers lost all their fanouts during netlist optimizations.
 Info (144001): Generated suppressed messages file C:/Prj/Altera/computer33.0/computer.map.smsg
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 1 node(s), including 0 DDIO, 1 PLL, 0 transceiver and 0 LCELL
@@ -4977,11 +4977,11 @@ Info (21057): Implemented 22202 device resources after synthesis - the final res
     Info (21064): Implemented 85 RAM segments
     Info (21065): Implemented 1 PLLs
     Info (21062): Implemented 37 DSP elements
-Info: Quartus II 32-bit Analysis & Synthesis was successful. 0 errors, 514 warnings
-    Info: Peak virtual memory: 523 megabytes
-    Info: Processing ended: Sat Oct 30 12:47:58 2021
-    Info: Elapsed time: 00:02:01
-    Info: Total CPU time (on all processors): 00:02:00
+Info: Quartus II 32-bit Analysis & Synthesis was successful. 0 errors, 515 warnings
+    Info: Peak virtual memory: 518 megabytes
+    Info: Processing ended: Sat Nov 06 19:32:58 2021
+    Info: Elapsed time: 00:02:05
+    Info: Total CPU time (on all processors): 00:01:59
 
 
 +------------------------------------------+
