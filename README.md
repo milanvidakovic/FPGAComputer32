@@ -42,11 +42,11 @@ The first nibble is for the foreground color, while the second nibble is for the
 
 VGA female connector is connected via resistors to the GPIO-0 expansion header of the DE0-NANO board:
 
-* GPIO_R (pin 2, GPIO_00, PIN_A3) -> 68Ohm -> VGA_R,
-* GPIO_G (pin 4, GPIO_01, PIN_C3) -> 68Ohm -> VGA_G,
-* GPIO_B (pin 6, GPIO_03, PIN_D3) -> 68Ohm -> VGA_B,
-* GPIO_HS (pin 8, GPIO_05, PIN_B4) -> 470Ohm -> VGA_HORIZONTAL_SYNC,
-* GPIO_VS (pin 10, GPIO_07, PIN_B5) -> 470Ohm -> VGA_VERTICAL_SYNC.
+* GPIO_R (pin 2, GPIO_00, PIN_A3) -> 470Ohm -> VGA_R,
+* GPIO_G (pin 4, GPIO_01, PIN_C3) -> 470Ohm -> VGA_G,
+* GPIO_B (pin 6, GPIO_03, PIN_D3) -> 470Ohm -> VGA_B,
+* GPIO_HS (pin 8, GPIO_05, PIN_B4) -> 68Ohm -> VGA_HORIZONTAL_SYNC,
+* GPIO_VS (pin 10, GPIO_07, PIN_B5) -> 68Ohm -> VGA_VERTICAL_SYNC.
 
 # VGA graphics mode 8 colors
 This graphics mode is 320x240 pixels. Since the text mode is the default mode, to switch to this graphics mode, you need to type in the assembler code following:
