@@ -116,9 +116,9 @@ reg wr, wr2;
 wire r, g, b, hs, vs;
 wire vgaoe = 1'b1;
 
-assign gpio0[3] = vgaoe ? r  : 1'bZ ;
+assign gpio0[3] = vgaoe ? b  : 1'bZ ;
 assign gpio0[1] = vgaoe ? g  : 1'bZ ;
-assign gpio0[0] = vgaoe ? b  : 1'bZ ;
+assign gpio0[0] = vgaoe ? r  : 1'bZ ;
 assign gpio0[5] = vgaoe ? hs : 1'bZ ;
 assign gpio0[7] = vgaoe ? vs : 1'bZ ;
 

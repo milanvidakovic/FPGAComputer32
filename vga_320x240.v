@@ -284,21 +284,21 @@ always @(posedge clk_50) begin
 					sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 1] != sprite_transparent_color[i][1] ||
 					sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 2] != sprite_transparent_color[i][2]
 				) begin
-					r <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 0] == 1'b1;
+					b <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 0] == 1'b1;
 					g <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 1] == 1'b1;
-					b <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 2] == 1'b1;
+					r <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 2] == 1'b1;
 				end 
 				else begin
-					r <= pixels[12 - ((xx & 3) << 2) + 0] == 1'b1;
+					b <= pixels[12 - ((xx & 3) << 2) + 0] == 1'b1;
 					g <= pixels[12 - ((xx & 3) << 2) + 1] == 1'b1;
-					b <= pixels[12 - ((xx & 3) << 2) + 2] == 1'b1;
+					r <= pixels[12 - ((xx & 3) << 2) + 2] == 1'b1;
 				end
 			end 
 		end
 		if (!sprite_found) begin
-			r <= pixels[12 - ((xx & 3) << 2) + 0] == 1'b1;
+			b <= pixels[12 - ((xx & 3) << 2) + 0] == 1'b1;
 			g <= pixels[12 - ((xx & 3) << 2) + 1] == 1'b1;
-			b <= pixels[12 - ((xx & 3) << 2) + 2] == 1'b1;
+			r <= pixels[12 - ((xx & 3) << 2) + 2] == 1'b1;
 		end
 		else begin
 			sprite_found = 1'b0;
