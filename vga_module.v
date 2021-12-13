@@ -22,6 +22,10 @@ module vga_module#(parameter N = 16)(
 	output wire hs, 
 	output wire vs,
 
+	output reg rrs, 
+	output reg rgs, 
+	output reg rbs, 
+
 	input [N-1:0] data,
 	output [N-1:0] raddr,
 	output rrd, 
@@ -50,7 +54,7 @@ localparam V_BLANK = 2;
 reg clk25; // 25MHz signal (clk divided by 2)
 reg clk50;
 
-reg r, g, b;
+reg r, g, b, rs, gs, bs;
 reg [N-1:0] addr;
 reg rd; 
 reg wr;
@@ -83,6 +87,11 @@ assign vs = enable ? y < (480 + 10) || y >= (480 + 10 + 2)  : 1'bZ;
 assign rr = enable ? r : 1'bZ;
 assign rg = enable ? g : 1'bZ;
 assign rb = enable ? b : 1'bZ;
+
+assign rrs = enable ? rs : 1'bZ;
+assign rgs = enable ? gs : 1'bZ;
+assign rbs = enable ? bs : 1'bZ;
+
 assign raddr = enable ? addr : {N{1'bZ}};
 assign rrd = enable ? rd : 1'bZ;
 assign rwr = enable ? wr : 1'bZ;
@@ -217,11 +226,20 @@ always @(posedge clk) begin
 					r <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[6+8] : curr_char[2+8]);
 					g <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[5+8] : curr_char[1+8]);
 					b <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[4+8] : curr_char[0+8]);
+					
+					rs <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[7+8] : curr_char[3+8]);
+					gs <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[7+8] : curr_char[3+8]);
+					bs <= inverse ^ (pixels[7 - (x & 7)] ? !curr_char[7+8] : curr_char[3+8]);
 				end
 				else if (vga_mode == 2) begin
 					r <= inverse ^ (curr_char[15 - (x & 15)]);
 					g <= inverse ^ (curr_char[15 - (x & 15)]);
 					b <= inverse ^ (curr_char[15 - (x & 15)]);
+
+					rs <= inverse ^ (curr_char[15 - (x & 15)]);
+					gs <= inverse ^ (curr_char[15 - (x & 15)]);
+					bs <= inverse ^ (curr_char[15 - (x & 15)]);
+
 				end
 			end 
 			else begin
@@ -229,6 +247,9 @@ always @(posedge clk) begin
 				r <= 1'b0;
 				g <= 1'b0;
 				b <= 1'b0;
+				rs <= 1'b0;
+				gs <= 1'b0;
+				bs <= 1'b0;
 			end
 		end
 	end

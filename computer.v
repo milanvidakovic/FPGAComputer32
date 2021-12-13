@@ -113,7 +113,7 @@ reg wr, wr2;
 // Video VGA text instance 
 // ###################
 
-wire r, g, b, hs, vs;
+wire r, g, b, hs, vs, rs, gs, bs;
 wire vgaoe = 1'b1;
 
 assign gpio0[3] = vgaoe ? b  : 1'bZ ;
@@ -121,6 +121,10 @@ assign gpio0[1] = vgaoe ? g  : 1'bZ ;
 assign gpio0[0] = vgaoe ? r  : 1'bZ ;
 assign gpio0[5] = vgaoe ? hs : 1'bZ ;
 assign gpio0[7] = vgaoe ? vs : 1'bZ ;
+
+assign gpio0[13] = vgaoe ? bs  : 1'bZ ;
+assign gpio0[11] = vgaoe ? gs  : 1'bZ ;
+assign gpio0[9] = vgaoe ? rs  : 1'bZ ;
 
 reg [1:0]vga_mode;
 reg  inverse;
@@ -145,6 +149,9 @@ vga_module #(.N(N))vga0(
 	b, 
 	hs, 
 	vs,
+	rs,
+	gs,
+	bs,
 	
 	data2,
 	addr2,
@@ -171,7 +178,11 @@ vga_320x240 vga1 (
 	b, 
 	hs, 
 	vs,
-	
+
+	rs,
+	gs,
+	bs,
+
 	data2,
 	addr2,
 	rd2, 

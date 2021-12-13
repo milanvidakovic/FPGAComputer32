@@ -20,6 +20,10 @@ module vga_320x240#(parameter N = 16)(
 	output wire hs, 
 	output wire vs,
 
+	output wire rrs, 
+	output wire rgs, 
+	output wire rbs, 
+
 	input [N-1:0] data,
 	output [N-1:0] raddr,
 	output rrd, 
@@ -70,7 +74,7 @@ assign valid = (x < 640) && (y < 480);
 assign xx = x >> 1;
 assign yy = y >> 1;
 
-reg r, g, b;
+reg r, g, b, rs, gs, bs;
 reg [N-1:0] addr;
 reg rd; 
 reg wr;
@@ -87,6 +91,10 @@ assign vs = enable ? y < (480 + 10) || y >= (480 + 10 + 2)  : 1'bZ;
 assign rr = enable ? r : 1'bZ;
 assign rg = enable ? g : 1'bZ;
 assign rb = enable ? b : 1'bZ;
+
+assign rrs = enable ? rs : 1'bZ;
+assign rgs = enable ? gs : 1'bZ;
+assign rbs = enable ? bs : 1'bZ;
 
 reg [3:0]count_read;
 reg mem_read;
@@ -287,11 +295,19 @@ always @(posedge clk_50) begin
 					b <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 0] == 1'b1;
 					g <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 1] == 1'b1;
 					r <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 2] == 1'b1;
+
+					bs <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 3] == 1'b1;
+					gs <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 3] == 1'b1;
+					rs <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 3] == 1'b1;
 				end 
 				else begin
 					b <= pixels[12 - ((xx & 3) << 2) + 0] == 1'b1;
 					g <= pixels[12 - ((xx & 3) << 2) + 1] == 1'b1;
 					r <= pixels[12 - ((xx & 3) << 2) + 2] == 1'b1;
+
+					bs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+					gs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+					rs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
 				end
 			end 
 		end
@@ -299,6 +315,10 @@ always @(posedge clk_50) begin
 			b <= pixels[12 - ((xx & 3) << 2) + 0] == 1'b1;
 			g <= pixels[12 - ((xx & 3) << 2) + 1] == 1'b1;
 			r <= pixels[12 - ((xx & 3) << 2) + 2] == 1'b1;
+
+			bs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+			gs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+			rs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
 		end
 		else begin
 			sprite_found = 1'b0;
@@ -309,6 +329,10 @@ always @(posedge clk_50) begin
 		r <= 1'b0;
 		g <= 1'b0;
 		b <= 1'b0;
+
+		rs <= 1'b0;
+		gs <= 1'b0;
+		bs <= 1'b0;
 	end
 end
 

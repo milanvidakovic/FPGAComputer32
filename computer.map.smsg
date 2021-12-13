@@ -1,7 +1,7 @@
 Info (10281): Verilog HDL Declaration information at cpu.v(84): object "OVERFLOW" differs only in case from object "overflow" in the same scope
 Warning (10273): Verilog HDL warning at sdram_controller.v(166): extended using "x" or "z"
 Warning (10273): Verilog HDL warning at ps2_read.v(10): extended using "x" or "z"
-Warning (10268): Verilog HDL information at vga_320x240.v(115): always construct contains both blocking and non-blocking assignments
+Warning (10268): Verilog HDL information at vga_320x240.v(123): always construct contains both blocking and non-blocking assignments
 Warning (10273): Verilog HDL warning at rx_serial.v(27): extended using "x" or "z"
 Warning (10268): Verilog HDL information at chars.v(18): always construct contains both blocking and non-blocking assignments
 Warning (10268): Verilog HDL information at div.v(19): always construct contains both blocking and non-blocking assignments
