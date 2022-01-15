@@ -45,8 +45,8 @@ localparam READ_SPRITE_TRANSPARENT_COLOR = 70;
 localparam READ_SPRITE_DATA              = 80;
 localparam SCAN_IDLE                     = 90;
 
-localparam SPRITE_DEF_ADDR					  = 128;
-localparam SPRITE_NUM                    = 4;
+localparam SPRITE_DEF_ADDR				 = 128;
+localparam SPRITE_NUM                    = 5;
 
 //=======================================================
 //  PORT declarations
@@ -105,11 +105,11 @@ reg sprite_found;
 reg [4:0] sprite_counter;
 
 // Declare the sprite local memory
-reg [63:0] sprite_pixels[0:SPRITE_NUM-1][0:15]; // 64x16 bits == 16x16 pixels for each sprite (SPRITE_NUM sprites supported)
-reg [15:0] sprite_addr [0:SPRITE_NUM-1]; // addresses of all sprites
-reg [15:0] sprite_x [0:SPRITE_NUM-1]; // x coordinate of all sprites
-reg [15:0] sprite_y [0:SPRITE_NUM-1]; // y coordinate of all sprites
-reg [3:0] sprite_transparent_color[0:SPRITE_NUM-1]; // transparent color for a sprite
+reg [63:0] sprite_pixels[0:SPRITE_NUM][0:15]; // 64x16 bits == 16x16 pixels for each sprite (SPRITE_NUM sprites supported)
+reg [15:0] sprite_addr [0:SPRITE_NUM]; // addresses of all sprites
+reg [15:0] sprite_x [0:SPRITE_NUM]; // x coordinate of all sprites
+reg [15:0] sprite_y [0:SPRITE_NUM]; // y coordinate of all sprites
+reg [3:0] sprite_transparent_color[0:SPRITE_NUM]; // transparent color for a sprite
 reg [15:0] line_counter; // counter of lines of bytes to be fetched from the main memory into the sprite_pixels
 reg [15:0] word_counter;  // counter of words within one row of sprite_pixels
 
@@ -284,7 +284,7 @@ always @(posedge clk_50) begin
 	end
 	
 	if (valid) begin
-		for (i = 0; i < SPRITE_NUM; i = i+1) begin
+		for (i = (SPRITE_NUM - 1); i >= 0; i = i-1) begin
 			if ((sprite_addr[i] != 16'b0) && (xx >= sprite_x[i]) && (xx < (sprite_x[i] + 16)) && (yy >= sprite_y[i]) && (yy < (sprite_y[i] + 16))) begin
 				sprite_found = 1'b1;
 				if (
@@ -292,6 +292,7 @@ always @(posedge clk_50) begin
 					sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 1] != sprite_transparent_color[i][1] ||
 					sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 2] != sprite_transparent_color[i][2]
 				) begin
+					// sprite pixels that are not transparent are being drawn over the background (framebuffer)
 					b <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 0] == 1'b1;
 					g <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 1] == 1'b1;
 					r <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 2] == 1'b1;
@@ -301,13 +302,45 @@ always @(posedge clk_50) begin
 					rs <= sprite_pixels[i][yy - sprite_y[i]][60-(((xx - sprite_x[i]) << 2) ) + 3] == 1'b1;
 				end 
 				else begin
-					b <= pixels[12 - ((xx & 3) << 2) + 0] == 1'b1;
-					g <= pixels[12 - ((xx & 3) << 2) + 1] == 1'b1;
-					r <= pixels[12 - ((xx & 3) << 2) + 2] == 1'b1;
+					// if we are at the transparent pixels of the current sprite,
+					// we look at the next sprite
+					if ((sprite_addr[i+1] != 16'b0) && (xx >= sprite_x[i+1]) && (xx < (sprite_x[i+1] + 16)) && (yy >= sprite_y[i+1]) && (yy < (sprite_y[i+1] + 16))) begin
+						if (
+							sprite_pixels[i+1][yy - sprite_y[i+1]][60-(((xx - sprite_x[i+1]) << 2) ) + 0] != sprite_transparent_color[i+1][0] ||
+							sprite_pixels[i+1][yy - sprite_y[i+1]][60-(((xx - sprite_x[i+1]) << 2) ) + 1] != sprite_transparent_color[i+1][1] ||
+							sprite_pixels[i+1][yy - sprite_y[i+1]][60-(((xx - sprite_x[i+1]) << 2) ) + 2] != sprite_transparent_color[i+1][2]
+						) begin
+							// sprite pixels that are not transparent are being drawn over the background (framebuffer)
+							b <= sprite_pixels[i+1][yy - sprite_y[i+1]][60-(((xx - sprite_x[i+1]) << 2) ) + 0] == 1'b1;
+							g <= sprite_pixels[i+1][yy - sprite_y[i+1]][60-(((xx - sprite_x[i+1]) << 2) ) + 1] == 1'b1;
+							r <= sprite_pixels[i+1][yy - sprite_y[i+1]][60-(((xx - sprite_x[i+1]) << 2) ) + 2] == 1'b1;
 
-					bs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
-					gs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
-					rs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+							bs <= sprite_pixels[i+1][yy - sprite_y[i+1]][60-(((xx - sprite_x[i+1]) << 2) ) + 3] == 1'b1;
+							gs <= sprite_pixels[i+1][yy - sprite_y[i+1]][60-(((xx - sprite_x[i+1]) << 2) ) + 3] == 1'b1;
+							rs <= sprite_pixels[i+1][yy - sprite_y[i+1]][60-(((xx - sprite_x[i+1]) << 2) ) + 3] == 1'b1;
+						end 
+						else begin
+							// if we are at the transparent pixels of the current sprite,
+							// then we draw background pixels
+							b <= pixels[12 - ((xx & 3) << 2) + 0] == 1'b1;
+							g <= pixels[12 - ((xx & 3) << 2) + 1] == 1'b1;
+							r <= pixels[12 - ((xx & 3) << 2) + 2] == 1'b1;
+
+							bs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+							gs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+							rs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+						end
+					end
+					else begin
+						// then we draw background pixels
+						b <= pixels[12 - ((xx & 3) << 2) + 0] == 1'b1;
+						g <= pixels[12 - ((xx & 3) << 2) + 1] == 1'b1;
+						r <= pixels[12 - ((xx & 3) << 2) + 2] == 1'b1;
+
+						bs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+						gs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+						rs <= pixels[12 - ((xx & 3) << 2) + 3] == 1'b1;
+					end
 				end
 			end 
 		end

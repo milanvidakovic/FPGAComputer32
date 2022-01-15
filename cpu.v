@@ -426,18 +426,6 @@ else begin
 			spi_sent_ff_1 <= 1;
 			dma_spi_received_1 <= 0;
 		end 
-		// if (dma_start_rcv_1 && !dma_spi_received_1) begin
-		// 	not_received_counter <= not_received_counter + 1;
-		// 	if (not_received_counter == 50000) begin
-		// 		spi_out <= 255; // send FF to initiate spi read
-		// 		spi_start <= 1;
-		// 		spi_sent_ff_1 <= 1;
-		// 		dma_spi_received_1 <= 0;
-		// 		// restart whole block
-		// 		//dma_current_1 <= 0;
-		// 	end
-		// end
-
 	end
 	DECODE: begin
 		`ifdef DEBUG
@@ -2596,7 +2584,7 @@ else begin
 				// Write through, meaning that we save data in both SDRAM and cache
 				wr_data_o <= data_to_write;
 				`ifdef CACHE
-				// now we need to store the data that had to be saved right into this cache
+				// now we need to store the data that has to be saved right into this cache
 				cl[addr[11:0]] <= data_to_write;
 				// write tag
 				tag[addr[11:0]] <= addr[23:12];
