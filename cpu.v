@@ -774,6 +774,7 @@ else begin
 					end // end of MOV.B reg, xx
 					4'b1110: begin
 						// MOV.W regx, regy + xx
+						/*
 						`ifdef DEBUG
 						$display("%2x: MOV.W r%-d, %4d",ir[3:0], (ir[11:8]), data_r);
 						`endif
@@ -801,6 +802,7 @@ else begin
 								pc <= pc + 2;
 							end
 						endcase
+						*/
 					end // end of MOV.W regx, regy + xx
 					// HALT
 					4'b1111: begin
@@ -2092,6 +2094,7 @@ else begin
 						end
 						// INT xx, SOFTWARE INTERRUPT
 						4'b1111: begin
+							/*
 							`ifdef DEBUG
 							$display("%2x: INT %d", ir[3:0], data_r);
 							`endif
@@ -2143,6 +2146,7 @@ else begin
 									ir <= 0;
 								end
 							endcase
+							*/
 						end   // end of INT xx
 					endcase // end of case (ir[7:4])					
 				end // end of FLOATING POINT GROUP & INT GROUP
